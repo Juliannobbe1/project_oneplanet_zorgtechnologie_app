@@ -1,0 +1,12 @@
+Leveranciers
+zorgprofessionalID;zorgprofessionalNaam;email;rol;organisatieID
+1;Stormy Arthur;stormy.arthur@warmthuis.nl;Verzorgende;1
+2;Rik Rehn;rik.rehn@warmthuis.nl;Verpleegkunde;1
+3;Fina Hartfleet;fina.hartfleet@voorelkaar.nl;Verzorgende;2
+4;Shalom Gowthrop;shalom.gowthrop@voorelkaar.nl;Verzorgende;2
+5;Albertina Morgue;albertina.morgue@bartholomeusgasthuis.nl;Verzorgende;3
+6;Hewe Chitter;hewe.chitter@bartholomeusgasthuis.nl;Psycholoog;3
+7;Vince Day;vince.day@opella.nl;Verzorgende;4
+8;Essy Wigley;essy.wigley@opella.nl;Verpleegkunde;4
+9;Dilly Digan;dilly.digan@opella.nl;Fysioloog;4
+10;Arron De Ruggero;arron.ruggero@opella.nl;Psycholoog;4
