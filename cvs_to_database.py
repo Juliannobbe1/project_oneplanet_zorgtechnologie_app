@@ -1,94 +1,139 @@
 from connect_database import database
 import pandas as pd
+import os
 
 driver = database.connectDatabase()
 
 path = "/Users/juliannobbe/Library/CloudStorage/OneDrive-Chr.HogeschoolEde/School/Hbo-ICT/Jaar 3/Sem 6 - oneplanet zorgtechnologie app/Data/cvs/"
+file_names = ["Leverancier v2.csv", "Organisatie v2.csv", "client v2.csv", "Zorgprofessional v2.csv", "verzorgd.csv", "contracten v2.csv", "Producten v2.csv", "review v2.csv", "toepassing v2.csv", "aanbeveling v2.csv"]
+file_paths = [os.path.join(path, file_name) for file_name in file_names]
+data = [pd.read_csv(file_path) for file_path in file_paths]
 
-# Read the CSV file into a DataFrame
-product_data = pd.read_csv(path+"Producten v2.csv")
-toepassing_data = pd.read_csv(path+"toepassing v2.csv")
-review_data = pd.read_csv(path+"review v2.csv")
-zorgprofessional_data = pd.read_csv(path+"Zorgprofessional v2.csv")
-leverancier_data = pd.read_csv(path+"Leverancier v2.csv")
-organisatie_data = pd.read_csv(path+"Organisatie v2.csv")
-client_data = pd.read_csv(path+"client v2.csv")
-verzorgd_data = pd.read_csv(path+"verzorgd.csv")
-aanbeveling_data = pd.read_csv(path+"aanbeveling v2.csv")
-contracten_data = pd.read_csv(path+"contracten v2.csv")
+nodesqueries = {
+    "product": "MERGE (:product {productNaam: $productNaam, productID: $productID, prijs: $prijs, beschrijving: $beschrijving, categorie: $categorie, link: $link, leverancierID: $leverancierID})",
+    "toepassing": "MERGE (:toepassing {toepassingID: $toepassingID, productID: $productID, toepassing: $toepassing})",
+    "review": "MERGE (:review {reviewID: $reviewID, beschrijving: $beschrijving, score: $score, datum: $datum, productID: $productID, zorgprofessionalID: $zorgprofessionalID})",
+    "zorgprofessional": "MERGE (:zorgprofessional {zorgprofessionalID: $zorgprofessionalID, zorgprofessionalNaam: $zorgprofessionalNaam, email: $email, rol: $rol, organisatieID: $organisatieID})",
+    "leverancier": "MERGE (:leverancier {leverancierID: $leverancierID, leverancierNaam: $leverancierNaam})",
+    "organisatie": "MERGE (:organisatie {organisatieID: $organisatieID, organisatieNaam: $organisatieNaam})",
+    "client": "MERGE (:client {clientID: $clientID, probleem: $probleem})",
+    "aanbeveling": "MERGE (:aanbeveling {aanbevelingID: $aanbevelingID, aanbeveling: $aanbeveling, datum: $datum, productID: $productID, zorgprofessionalID: $zorgprofessionalID})"
+}
 
-# Define the Cypher query to create nodes
-create_product_node_query = "CREATE (:product {productNaam: $productNaam, productID: $productID, prijs: $prijs, beschrijving: $beschrijving, categorie: $categorie, link: $link, leverancierID: $leverancierID})"
-create_toepassing_node_query = "CREATE (:toepassing {toepassinID: $toepassinID, productID: $productID, toepassing: $toepassing})"
-create_review_node_query = "CREATE (:review {reviewID: $reviewID, beschrijving: $beschrijving, score: $score, datum: $datum, productID: $productID, zorgprofessionalID: $zorgprofessionalID})"
-create_zorgprofessional_node_query = "CREATE (:zorgprofessional {zorgprofessionalID: $zorgprofessionalID, zorgprofessionalNaam: $zorgprofessionalNaam, email: $email, rol: $rol, organisatieID: $organisatieID})"
-create_leverancier_node_query = "CREATE (:leverancier {leverancierID: $leverancierID, leverancierNaam: $leverancierNaam})"
-create_organisatie_node_query = "CREATE (:organisatie {organisatieID: $organisatieID, organisatieNaam: $organisatieNaam})"
-create_client_node_query = "CREATE (:client {clientID: $clientID, probleem: $probleem})"
-create_verzorgd_node_query = "CREATE (:verzorgd {zorgprofessionalID: $zorgprofessionalID, clientID: $clientID})"
-create_aanbeveling_node_query = "CREATE (:aanbeveling {aanbevelingID: $aanbevelingID, aanbeveling: $aanbeveling, datum: $datum, productID: $productID, zorgprofessionalID: $zorgprofessionalID})"
-create_contracten_node_query = "CREATE (:review {leverancierID: $leverancierID, organisatieID: $organisatieID})"
+relationshipqueries = {
+    "HEEFT_TOEPASSING": """ 
+    MATCH (a:product {productID: $productID}) 
+    MATCH (b:toepassing {toepassingID: $toepassingID}) 
+    MERGE (a)-[:HEEFT_TOEPASSING]->(b)
+    """,
+    
+    "HEEFT_REVIEW": """ 
+    MATCH (a:review {reviewID: $reviewID})
+    MATCH (b:product {productID: $productID})
+    MERGE (a)-[:OVER_PRODUCT]->(b) 
+    """, 
+    
+    "GEEFT_REVIEW": """
+    MATCH (a:zorgprofessional {zorgprofessionalID: $zorgprofessionalID})
+    MATCH (b:review {reviewID: $reviewID})
+    MERGE (a)-[:GEEFT_REVIEW]->(b)
+    """,
+    
+    "VERZORGD_CLIENT": """
+    MATCH (a:zorgprofessional {zorgprofessionalID: $zorgprofessionalID})
+    MATCH (b:client {clientID: $clientID})
+    MERGE (a)-[:VERZORGD_CLIENT]->(b)
+    """, 
+    
+    "VAN_PRODUCT": """
+    MATCH (a:aanbeveling {aanbevelingID: $aanbevelingID})
+    MATCH (b:product {productID: $productID})
+    MERGE (a)-[:VAN_PRODUCT]->(b)
+    """,
+    
+    "GEEFT_AANBEVELING": """
+    MATCH (a:zorgprofessional {zorgprofessionalID: $zorgprofessionalID})
+    MATCH (b:aanbeveling {aanbevelingID: $aanbevelingID})
+    MERGE (a)-[:GEEFT_AANBEVELING]->(b)
+    """,
+    
+    "VERKOOPT_PRODUCT": """
+    MATCH (a:leverancier {leverancierID: $leverancierID})
+    MATCH (b:product {productID: $productID})
+    MERGE (a)-[:VERKOOPT_PRODUCT]->(b)
+    """,
+    
+    "WERKT_VOOR": """
+    MATCH (a:zorgprofessional {zorgprofessionalID: $zorgprofessionalID})
+    MATCH (b:organisatie {organisatieID: $organisatieID})
+    MERGE (a)-[:WERKT_VOOR]->(b)
+    """, 
+    
+    "HEEFT_CONTRACT_MET": """
+    MATCH (a:organisatie {organisatieID: $organisatieID})
+    MATCH (b:leverancier {leverancierID: $leverancierID})
+    MERGE (a)-[:HEEFT_CONTRACT_MET]->(b)
+    """
+}
+# for label, query in queries.items():
+#     session.run(query)
 
-# Define the Cypher query to create relationships
-create_relationship_heefttoepassing_query = """
-MATCH (a:product {productID: $productID})
-MATCH (b:toepassing {toepassinID: $toepassinID})
-CREATE (a)-[:HEEFT_TOEPASSING]->(b)
-"""
-
-create_relationship_heeftreview_query = """
-MATCH (a:review {reviewID: $reviewID})
-MATCH (b:product {productID: $productID})
-CREATE (a)-[:OVER_PRODUCT]->(b)
-"""
-
-create_relationship_geeftreview_query = """
-MATCH (a:zorgprofessional {zorgprofessionalID: $zorgprofessionalID})
-MATCH (b:review {reviewID: $reviewID})
-CREATE (a)-[:GEEFT_REVIEW]->(b)
-"""
-
-create_relationship_verzorgdclient_query = """
-MATCH (a:zorgprofessional {zorgprofessionalID: $zorgprofessionalID})
-MATCH (b:client {clientID: $clientID})
-CREATE (a)-[:VERZORGD_CLIENT]->(b)
-"""
-
-create_relationship_vanproduct_query = """
-MATCH (a:aanbeveling {aanbevelingID: $aanbevelingID})
-MATCH (b:product {productID: $productID})
-CREATE (a)-[:VAN_PRODUCT]->(b)
-"""
-
-create_relationship_geeftaanbeveling_query = """
-MATCH (a:zorgprofessional {zorgprofessionalID: $zorgprofessionalID})
-MATCH (b:aanbeveling {aanbevelingID: $aanbevelingID})
-CREATE (a)-[:GEEFT_AANBEVELING]->(b)
-"""
-
-create_relationship_verkooptproduct_query = """
-MATCH (a:leverancier {leverancierID: $leverancierID})
-MATCH (b:product {productID: $productID})
-CREATE (a)-[:VERKOOPT_PRODUCT]->(b)
-"""
-
-create_relationship_werktvoor_query = """
-MATCH (a:zorgprofessional {zorgprofessionalID: $zorgprofessionalID})
-MATCH (b:organisatie {organisatieID: $organisatieID})
-CREATE (a)-[:WERKT_VOOR]->(b)
-"""
-
-create_relationship_heeftcontractmet_query = """
-MATCH (a:organisatie {organisatieID: $organisatieID})
-MATCH (b:leverancier {leverancierID: $leverancierID})
-CREATE (a)-[:HEEFT_CONTRACT_MET]->(b)
-"""
-
-# # Loop through the data and create nodes and relationships
-# with driver.session() as session:
-#     for index, row in data.iterrows():
-#         # Create nodes
-#         session.run(create_node_query, name=row["name"])
+with driver.session() as session:
+    # leverancier
+    for index, row in data[0].iterrows():
+        # Create nodes
+        session.run(nodesqueries["leverancier"], leverancierID=row["leverancierID"], leverancierNaam=row["leverancierNaam"])
         
-#         # Create relationships
-#         session.run(create_relationship_query, from_name=row["from_name"], to_name=row["to_name"])
+    for index, row in data[1].iterrows():
+        # Create nodes
+        session.run(nodesqueries["organisatie"], organisatieID=row["organisatieID"], organisatieNaam=["organisatieNaam"])
+        
+    for index, row in data[2].iterrows():
+        # Create nodes
+        session.run(nodesqueries["client"], clientID=row["clientID"], probleem=row["probleem"])
+        
+    # zorgprofessional
+    for index, row in data[3].iterrows():
+        # Create nodes
+        session.run(nodesqueries["zorgprofessional"], zorgprofessionalID=row["zorgprofessionalID"], zorgprofessionalNaam=row["zorgprofessionalNaam"], email=row["email"], rol=row["rol"], organisatieID=row["organisatieID"])
+        # Create relationship
+        session.run(relationshipqueries["WERKT_VOOR"] , zorgprofessionalID=row["zorgprofessionalID"], organisatieID=row["organisatieID"])
+        
+    for index, row in data[4].iterrows():
+        # Create relationship
+        session.run(relationshipqueries["VERZORGD_CLIENT"], zorgprofessionalID=row["zorgprofessionalID"], clientID=row["clientID"])
+        
+    for index, row in data[5].iterrows():
+        # Create relationship
+        session.run(relationshipqueries["HEEFT_CONTRACT_MET"], leverancierID=row["leverancierID"], organisatieID=row["organisatieID"] ) 
+        
+    # Product
+    for index, row in data[6].iterrows():
+        # Create nodes
+        session.run(nodesqueries["product"], productNaam=row["productNaam"], productID=row["productID"], prijs=row["prijs"], beschrijving=row["beschrijving"], categorie=row["categorie"], link=row["link"], leverancierID=row["leverancierID"])
+        # Create relationship
+        session.run(relationshipqueries["VERKOOPT_PRODUCT"], leverancierID=row["leverancierID"], productID=row["productID"]) 
+    
+    # review 
+    for index, row in data[7].iterrows():
+        # Create nodes
+        session.run(nodesqueries["review"], reviewID=row["reviewID"], beschrijving=row["beschrijving"], score=row["score"], datum=row["datum"], productID=row["productID"], zorgprofessionalID=row["zorgprofessionalID"])
+        #create relationship
+        session.run(relationshipqueries["HEEFT_REVIEW"], reviewID=row["reviewID"], productID=row["productID"])
+        session.run(relationshipqueries["GEEFT_REVIEW"], zorgprofessionalID=row["zorgprofessionalID"], reviewID=row["reviewID"])
+        
+    # toepassing
+    for index, row in data[8].iterrows():
+        # Create nodes
+        session.run(nodesqueries["toepassing"], toepassingID=row["toepassingID"], productID=row["productID"], toepassing=row["toepassing"])
+        #Create relationships
+        session.run(relationshipqueries["HEEFT_TOEPASSING"], productID=row["productID"], toepassingID=row["toepassingID"])
+    
+    # aanbeveling
+    for index, row in data[9].iterrows():
+        # Create nodes
+        session.run(nodesqueries["aanbeveling"], aanbevelingID=row["aanbevelingID"], aanbeveling=row["aanbeveling"], datum=row["datum"], productID=row["productID"], zorgprofessionalID=row["zorgprofessionalID"])
+        # Create relationship
+        session.run(relationshipqueries["VAN_PRODUCT"], aanbevelingID=row["aanbevelingID"], productID=row["productID"])
+        session.run(relationshipqueries["GEEFT_AANBEVELING"], zorgprofessionalID=row["zorgprofessionalID"], aanbevelingID=row["aanbevelingID"])
+        
