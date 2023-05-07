@@ -1,17 +1,17 @@
 class Product {
   int? productID;
-  String? productNaam;
+  String productNaam;
   double? prijs;
-  String? beschrijving;
+  String beschrijving;
   String? categorie;
   String? link;
   int? leverancierID;
 
   Product(
       {this.productID,
-      this.productNaam,
+      required this.productNaam,
       this.prijs,
-      this.beschrijving,
+      required this.beschrijving,
       this.categorie,
       this.link,
       this.leverancierID});
