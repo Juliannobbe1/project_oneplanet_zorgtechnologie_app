@@ -31,4 +31,4 @@ jobs:
       - name: Run linter
         run: |
          cd zorg_tech_keuze_app
-         flutter flutter pub get && dart analyze --fatal-infos --fatal-warnings --lint
+         flutter pub get && dart analyze --fatal-infos --fatal-warnings --lint
