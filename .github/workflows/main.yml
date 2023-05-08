@@ -12,7 +12,9 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
-      - name: Continuous integrations flutter
+      - name: Change working directory
+        working-directory: zorg_tech_keuze_app
+      - name: Set up flutter
         uses: subosito/flutter-action@v1
         with:
           flutter-version: '3.7.12'
