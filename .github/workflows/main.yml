@@ -28,7 +28,7 @@ jobs:
         run: |
          cd zorg_tech_keuze_app
          flutter analyze
-      - name: Run linter
+      - name: Analyze project source
         run: |
          cd zorg_tech_keuze_app
-         flutter pub get && dart analyze --fatal-infos --fatal-warnings --lint
+         dart analyze --fatal-infos
