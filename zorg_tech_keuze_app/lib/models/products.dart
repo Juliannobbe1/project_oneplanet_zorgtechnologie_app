@@ -18,13 +18,13 @@ class Product {
 
   factory Product.fromJson(Map<String, dynamic> json) {
     return Product(
-        productID: json['product']['productID'],
-        productNaam: json['product']['productNaam'],
-        prijs: json['product']['prijs'],
-        beschrijving: json['product']['beschrijving'],
-        categorie: json['product']['categorie'],
-        link: json['product']['link'],
-        leverancierID: json['product']['leverancierID']);
+        productID: json['n']['productID'],
+        productNaam: json['n']['productNaam'],
+        prijs: json['n']['prijs'],
+        beschrijving: json['n']['beschrijving'],
+        categorie: json['n']['categorie'],
+        link: json['n']['link'],
+        leverancierID: json['n']['leverancierID']);
   }
 
   Map<String, dynamic> toJson() {
