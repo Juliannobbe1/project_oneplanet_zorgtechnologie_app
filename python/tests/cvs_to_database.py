@@ -1,4 +1,4 @@
-from python.connect_database import database
+from python.database.connect_database import database
 import pandas as pd
 import os
 
