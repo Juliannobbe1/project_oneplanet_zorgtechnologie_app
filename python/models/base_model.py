@@ -1,6 +1,6 @@
 import json
 
-class BaseModel: 
+class base_model: 
     def __init__(self, node_label, driver):
         self.label = node_label
         self.driver = driver
