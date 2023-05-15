@@ -10,7 +10,10 @@ class base_model:
         with self.driver.session() as session:
             result = session.run(query)
             if result: 
-                return json.dumps(result.data())
+                # Extract the relevant data
+                product_data = [item['n'] for item in result.data()]
+                return product_data
+                # return json.dumps(product_data)
             else: 
                 return json.dumps({"message": "Something went wrong"})
         
@@ -22,7 +25,7 @@ class base_model:
             else:
                 return json.dumps({"message": "Resource not found."})
             
-    def post(self, properties):
+    def create(self, properties):
         query = f"MERGE (n:{self.label} {properties}) RETURN n"
         properties = json.dumps(properties)
         with self.driver.session() as session:
