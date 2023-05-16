@@ -4,6 +4,10 @@ class base_model:
     def __init__(self, node_label, driver):
         self.label = node_label
         self.driver = driver
+        self.model_data = {}
+        
+    def model(self):
+        return self.model_data
         
     def get_all(self):
         query = f"MATCH (n:{self.label}) RETURN n"
@@ -12,8 +16,8 @@ class base_model:
             if result: 
                 # Extract the relevant data
                 product_data = [item['n'] for item in result.data()]
+                print(product_data)
                 return product_data
-                # return json.dumps(product_data)
             else: 
                 return json.dumps({"message": "Something went wrong"})
         
