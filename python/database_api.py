@@ -27,64 +27,95 @@ reviewModel = api.model('review', review.model())
 supplierModel = api.model('leverancier', supplier.model())
 
 # organisatie
-@api.route('/organisation')
-class OrgList(Resource):
+@api.route('/organisation', '/organisation/<string:property>/<string:value>')
+class OrganisationAPI(Resource):
     @api.marshal_with(orgModel) 
-    def get_all(self):
-        return org.get_all()
-    
-@api.route('/organisation/<string:property> <value>')    
-class Org(Resource):
-    @api.marshal_with(orgModel)
-    def get(self, property, value):
-        if value.isdigit():  # Check if value is an integer
-            value = int(value)    
-        return org.get(property, value)
+    def get(self, property=None, value=None):
+        if property is None and value is None:
+            return org.get_all()
+        else:
+            if value.isdigit():  # Check if value is an integer
+                value = int(value)
+            return org.get(property, value)
         
-
 # review
-@api.route('/review')
-class ReviewList(Resource):
+@api.route('/review', '/review/<string:property>/<string:value>')
+class ReviewAPI(Resource):
     @api.marshal_with(reviewModel) 
-    def get(self):
-        return review.get_all()
+    def get(self, property=None, value=None):
+        if property is None and value is None:
+            return review.get_all()
+        else:
+            if value.isdigit():  # Check if value is an integer
+                value = int(value)
+            return review.get(property, value)
 
 # supplier
-@api.route('/supplier')
-class SupplierList(Resource):
+@api.route('/supplier','/supplier/<string:property>/<string:value>')
+class SupplierAPI(Resource):
     @api.marshal_with(supplierModel) 
-    def get(self):
-        return supplier.get_all()
+    def get(self, property=None, value=None):
+        if property is None and value is None:
+            return supplier.get_all()
+        else:
+            if value.isdigit():  # Check if value is an integer
+                value = int(value)
+            return supplier.get(property, value)
 
-@api.route('/healthprofessional')
-class HealthProfList(Resource):
+@api.route('/healthprofessional','/healthprofessional/<string:property>/<string:value>')
+class HealthProfAPI(Resource):
     @api.marshal_with(healthProfModel) 
-    def get(self):
-        return healthprof.get_all()
+    def get(self, property=None, value=None):
+        if property is None and value is None:
+            return healthprof.get_all()
+        else:
+            if value.isdigit():  # Check if value is an integer
+                value = int(value)
+            return healthprof.get(property, value)
 
-@api.route('/client')
-class ClientList(Resource):
+@api.route('/client', '/client/<string:property>/<string:value>')
+class ClientAPI(Resource):
     @api.marshal_with(clientModel) 
-    def get(self):
-        return client.get_all()
+    def get(self, property=None, value=None):
+        if property is None and value is None:
+            return client.get_all()
+        else:
+            if value.isdigit():  # Check if value is an integer
+                value = int(value)
+            return client.get(property, value)
 
-@api.route('/application')
-class ApplicationList(Resource):
+@api.route('/application', '/application/<string:property>/<string:value>')
+class ApplicationAPI(Resource):
     @api.marshal_with(applicationModel) 
-    def get(self):
-        return application.get_all()
+    def get(self, property=None, value=None):
+        if property is None and value is None:
+            return application.get_all()
+        else:
+            if value.isdigit():  # Check if value is an integer
+                value = int(value)
+            return application.get(property, value)
     
-@api.route('/products')
-class ProductList(Resource):
+@api.route('/products', '/products/<string:property>/<string:value>')
+class ProductAPI(Resource):
     @api.marshal_with(productModel) 
-    def get(self):
-        return product.get_all()
-
-@api.route('/recommendations')    
-class RecommendationList(Resource):
+    def get(self, property=None, value=None):
+        if property is None and value is None:
+            return product.get_all()
+        else:
+            if value.isdigit():  # Check if value is an integer
+                value = int(value)
+            return product.get(property, value)
+        
+@api.route('/recommendations','/recommendations/<string:property>/<string:value>')    
+class RecommendationAPI(Resource):
     @api.marshal_with(recommendationModel)
-    def get(self):
-        return recommendation.get_all()
+    def get(self, property=None, value=None):
+        if property is None and value is None:
+            return recommendation.get_all()
+        else:
+            if value.isdigit():  # Check if value is an integer
+                value = int(value)
+            return recommendation.get(property, value)
     
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5001)
