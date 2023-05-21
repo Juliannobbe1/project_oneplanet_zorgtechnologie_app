@@ -1,5 +1,4 @@
 from flask_restx import fields
-
 from models.base_model import base_model
 
 class Application(base_model):
@@ -17,11 +16,18 @@ class Client(base_model):
         
 class HealthcareProfessional(base_model):
     def __init__(self, driver):
-        super().__init__("zorgprofesional", driver=driver)
+        super().__init__("zorgprofessional", driver=driver)
+        self.model_data['zorgprofessionalNaam'] = fields.String(required=True)
+        self.model_data['organisatieID'] = fields.Integer(required=True)
+        self.model_data['email'] = fields.String(required=True)
+        self.model_data['rol'] = fields.String(required=True)
+        self.model_data['zorgprofessionalID'] = fields.Integer(required=True)
         
-class organisation_model(base_model):
+class Organisation(base_model):
     def __init__(self, driver):
         super().__init__("organisatie",driver=driver)
+        self.model_data['organisatieID'] = fields.Integer(required=True)
+        self.model_data['organisatieNaam'] = fields.String(required=True)
         
 class Product(base_model):
     def __init__(self, driver):
@@ -44,10 +50,18 @@ class Recommendation(base_model):
         self.model_data['zorgprofessionalID'] = fields.Integer(required=True) 
         self.model_data['datum'] = fields.String()  
         
-class review_model(base_model):
+class Review(base_model):
     def __init__(self, driver):
         super().__init__("review", driver=driver)
+        self.model_data['datum'] = fields.Date(required=True)
+        self.model_data['score'] = fields.String(required=True)
+        self.model_data['beschrijving'] = fields.String(required=True)
+        self.model_data['productID'] = fields.String(required=True)
+        self.model_data['reviewID'] = fields.String(required=True)
+        self.model_data['zorgprofessionalID'] = fields.String(required=True)
         
-class supplier_model(base_model):
+class Supplier(base_model):
     def __init__(self, driver):
         super().__init__("leverancier", driver=driver)
+        self.model_data['leverancierID'] = fields.Integer(required=True)
+        self.model_data['leverancierNaam'] = fields.String(required=True)

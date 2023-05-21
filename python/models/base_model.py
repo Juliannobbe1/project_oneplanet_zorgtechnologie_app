@@ -1,4 +1,6 @@
 import json
+from flask import abort
+import requests
 
 class base_model: 
     def __init__(self, node_label, driver):
@@ -8,26 +10,34 @@ class base_model:
         
     def model(self):
         return self.model_data
+    
+    def extract(self, result): 
+        data = [item['n'] for item in result.data()]
+        if not data: 
+            abort(404, "Item not found")
+        else:
+            return data
         
     def get_all(self):
         query = f"MATCH (n:{self.label}) RETURN n"
         with self.driver.session() as session:
             result = session.run(query)
             if result: 
-                # Extract the relevant data
-                product_data = [item['n'] for item in result.data()]
-                print(product_data)
-                return product_data
+                print(result)
+                # Extract the data
+                data = self.extract(result)
+                return data
             else: 
-                return json.dumps({"message": "Something went wrong"})
+                return abort(404, "Something went wrong")
         
-    def get(self, id):
+    def get(self, property, value):
         with self.driver.session() as session:
-            result = session.run(f"MATCH (n:{self.label}) WHERE n.{self.label}ID = $id RETURN n", id=id)
+            result = session.run(f"MATCH (n:{self.label}) WHERE n.{self.label}{property} = $value RETURN n", value=value)
             if result:
-                return json.dumps(result.data())
+                data = self.extract(result)
+                return data
             else:
-                return json.dumps({"message": "Resource not found."})
+                raise abort(404, "Something went wrong")
             
     def create(self, properties):
         query = f"MERGE (n:{self.label} {properties}) RETURN n"
@@ -37,7 +47,7 @@ class base_model:
             if result:
                 return json.dumps({"message": "Resource created successfully."})
             else:
-                return json.dumps({"message": "Could not save resource"})
+                return abort(404, "Could not save")
             
     def delete(self, label, id):
         with self.driver.session() as session:
