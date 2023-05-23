@@ -1,5 +1,5 @@
 import json
-from flask import abort
+from flask import Response, abort, jsonify
 import requests
 
 class base_model: 
@@ -13,10 +13,16 @@ class base_model:
     
     def extract(self, result): 
         data = [item['n'] for item in result.data()]
+        print(data)
         if not data: 
             abort(404, "Item not found")
         else:
             return data
+        
+    def StringToIntCheck(self, value):
+        if value.isdigit():
+            value = int(value)
+        return value
         
     def get_all(self):
         query = f"MATCH (n:{self.label}) RETURN n"
@@ -32,14 +38,15 @@ class base_model:
         
     def get(self, property, value):
         with self.driver.session() as session:
-            result = session.run(f"MATCH (n:{self.label}) WHERE n.{self.label}{property} = $value RETURN n", value=value)
+            checkedValue = self.StringToIntCheck(value)
+            result = session.run(f"MATCH (n:{self.label}) WHERE n.{property} = $value RETURN n", value=checkedValue)
             if result:
                 data = self.extract(result)
                 return data
             else:
                 raise abort(404, "Something went wrong")
             
-    def create(self, properties):
+    def create(self, properties, value):
         query = f"MERGE (n:{self.label} {properties}) RETURN n"
         properties = json.dumps(properties)
         with self.driver.session() as session:
@@ -49,13 +56,14 @@ class base_model:
             else:
                 return abort(404, "Could not save")
             
-    def delete(self, label, id):
+    def delete(self, property, value):
         with self.driver.session() as session:
-            result = session.run(f"MATCH (n:{label}) WHERE n.{label}ID = $id DETACH DELETE n", id=id)
+            checkedValue = self.StringToIntCheck(value)
+            result = session.run(f"MATCH (n:{self.label}) WHERE n.{property} = $value DETACH DELETE n", value=checkedValue)
             if result:
-                return json.dumps({"message": "Resource deleted successfully."})
+                return jsonify({"message": "Resource deleted successfully."}) #json.dumps({"message": "Resource deleted successfully."})
             else:
-                return json.dumps({"message": "Could not delete resource"})
+                return abort(404, "Could not delete") #json.dumps({"message": "Could not delete resource"})
     
     def put(self, id, properties):
         with self.driver.session() as session:
