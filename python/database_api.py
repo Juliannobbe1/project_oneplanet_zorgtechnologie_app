@@ -1,5 +1,5 @@
-from flask import Flask, request, abort, Response, jsonify
-from flask_restx import Api, Resource, fields, Namespace
+from flask import Flask, abort, jsonify
+from flask_restx import Api, Resource
 from database.connect_database import database
 from models.domain_model import *
 from api_initialation import NamespaceFactory
@@ -12,9 +12,9 @@ factory = NamespaceFactory(driver=driver, api=api)
 models, namespaces, object_names = factory.initialize_factory()
 
 # Access the names of the created objects
-org = object_names['organisatie']
+org = eval(object_names['organisatie'])(driver)
 product = object_names['product']
-recommendation = object_names['aanbeveling']
+recommendation = eval(object_names['aanbeveling'])(driver)
 application = object_names['toepassing']
 client = object_names['client']
 healthprof = object_names['zorgprofessional']
@@ -54,18 +54,23 @@ class OrganisationPropertyResource(Resource):
         return org.get(property, value)
         
     def delete(self, property, value):
-        if property or value is None:
+        if property and value is None:
             return abort(404, "Cannot delete, information is missing")
         else: 
             org.delete(property, value)
             return jsonify({"message": "Organisation deleted successfully."})
         
     def post(self, property, value):
-        if property or value is None:
+        # if data is None:
+        if property and value is None:
             return abort(404, "cannot create, information is missing")
         else: 
-            org.create(property, value)
-            return jsonify({"message": "Organisation created succesfully."})
+            property_list = property.split(', ')
+            value_list = value.split(', ')
+            print(property_list, value_list)
+
+        org.create(property_list, value_list)
+        return jsonify({"message": "Organisation created succesfully."})
         
 # review
 @review_ns.route('/review')
@@ -84,7 +89,18 @@ class ReviewPropertyResource(Resource):
             return abort(404, "Cannot delete, information is missing")
         else: 
             review.delete(property, value)
-            return jsonify({"message": "Review deleted successfully."})   
+            return jsonify({"message": "Review deleted successfully."})
+    
+    def post(self, property, value):
+        if property and value is None:
+            return abort(404, "cannot create, information is missing")
+        else: 
+            property_list = property.split(', ')
+            value_list = value.split(', ')
+            print(property_list, value_list)
+
+        review.create(property_list, value_list)
+        return jsonify({"message": "Review created succesfully."})
 
 # supplier
 @supplier_ns.route('/supplier')
@@ -104,6 +120,17 @@ class SupplierPropertyResource(Resource):
         else: 
             supplier.delete(property, value)
             return jsonify({"message": "supplier deleted successfully."})
+        
+    def post(self, property, value):
+        if property and value is None:
+            return abort(404, "cannot create, information is missing")
+        else: 
+            property_list = property.split(', ')
+            value_list = value.split(', ')
+            print(property_list, value_list)
+
+        supplier.create(property_list, value_list)
+        return jsonify({"message": "Organisation created succesfully."})
             
 # healthprofessional
 @healthprof_ns.route('/healthprofessional')
@@ -123,6 +150,17 @@ class HealthProfessionalPropertyResource(Resource):
         else: 
             healthprof.delete(property, value)
             return jsonify({"message": "healthporfessional deleted successfully."})
+        
+    def post(self, property, value):
+        if property and value is None:
+            return abort(404, "cannot create, information is missing")
+        else: 
+            property_list = property.split(', ')
+            value_list = value.split(', ')
+            print(property_list, value_list)
+
+        healthprof.create(property_list, value_list)
+        return jsonify({"message": "Organisation created succesfully."})
 
 @client_ns.route('/client')
 class ClientResource(Resource):
@@ -141,6 +179,17 @@ class ClientPropertyResource(Resource):
         else: 
             client.delete(property, value)
             return jsonify({"message": "client deleted successfully."})
+    
+    def post(self, property, value):
+        if property and value is None:
+            return abort(404, "cannot create, information is missing")
+        else: 
+            property_list = property.split(', ')
+            value_list = value.split(', ')
+            print(property_list, value_list)
+
+        client.create(property_list, value_list)
+        return jsonify({"message": "Organisation created succesfully."})
 
 @application_ns.route('/application')
 class ApplicationResource(Resource):
@@ -160,6 +209,17 @@ class ApplicationPropertyResource(Resource):
             application.delete(property, value)
             return jsonify({"message": "application deleted successfully."})
         
+    def post(self, property, value):
+        if property and value is None:
+            return abort(404, "cannot create, information is missing")
+        else: 
+            property_list = property.split(', ')
+            value_list = value.split(', ')
+            print(property_list, value_list)
+
+        application.create(property_list, value_list)
+        return jsonify({"message": "Organisation created succesfully."})
+        
 @product_ns.route('/product')
 class ProductResource(Resource):
     @api.marshal_with(productModel) 
@@ -177,6 +237,17 @@ class ProductPropertyResource(Resource):
         else: 
             product.delete(property, value)
             return jsonify({"message": "product deleted successfully."})
+        
+    def post(self, property, value):
+        # if data is None:
+        if property and value is None:
+            return abort(404, "cannot create, information is missing")
+        else: 
+            property_list = property.split(', ')
+            value_list = value.split(', ')
+
+        product.create(property_list, value_list)
+        return jsonify({"message": "Organisation created succesfully."})
 
 @recommendation_ns.route('/recommendations')
 class RecommendationResource(Resource):
@@ -195,6 +266,17 @@ class RecommendationPropertyResource(Resource):
         else: 
             recommendation.delete(property, value)
             return jsonify({"message": "Recommmendation deleted successfully."})
+        
+    def post(self, property, value):
+        # if data is None:
+        if property and value is None:
+            return abort(404, "cannot create, information is missing")
+        else: 
+            property_list = property.split(', ')
+            value_list = value.split(', ')
+            
+        recommendation.create(property_list, value_list)
+        return jsonify({"message": "Organisation created succesfully."})
     
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5001)

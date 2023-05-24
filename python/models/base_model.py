@@ -46,9 +46,15 @@ class base_model:
             else:
                 raise abort(404, "Something went wrong")
             
-    def create(self, properties, value):
-        query = f"MERGE (n:{self.label} {properties}) RETURN n"
-        properties = json.dumps(properties)
+    def create(self, property_list, value_list):
+        
+        query = "CREATE (n:`{}` {{".format(self.label)
+        for i in range(len(property_list)):
+            self.StringToIntCheck(value_list[i])
+            query += '{}: "{}",'.format(property_list[i], value_list[i])
+        query = query.rstrip(",") + "})"
+        
+        # properties = json.dumps(properties)
         with self.driver.session() as session:
             result = session.run(query)
             if result:
@@ -65,16 +71,16 @@ class base_model:
             else:
                 return abort(404, "Could not delete") #json.dumps({"message": "Could not delete resource"})
     
-    def put(self, id, properties):
-        with self.driver.session() as session:
-            node_exists = session.run(f"MATCH (n:{self.label}) WHERE n.{self.label}ID = $id RETURN n", id=id).single()
-            if not node_exists:
-                return json.dumps({"message": "Resource not found."})
-            result = session.run(f"MATCH (n:{self.label}) WHERE n.{self.label}ID = $id SET n += $properties RETURN n", id=id, properties=properties)
-            if result:
-                return json.dumps({"message": "Resource updated successfully."})
-            else:
-                return json.dumps({"message": "Could not update resource."})
+    # def put(self, id, properties):
+    #     with self.driver.session() as session:
+    #         node_exists = session.run(f"MATCH (n:{self.label}) WHERE n.{self.label}ID = $id RETURN n", id=id).single()
+    #         if not node_exists:
+    #             return json.dumps({"message": "Resource not found."})
+    #         result = session.run(f"MATCH (n:{self.label}) WHERE n.{self.label}ID = $id SET n += $properties RETURN n", id=id, properties=properties)
+    #         if result:
+    #             return json.dumps({"message": "Resource updated successfully."})
+    #         else:
+    #             return json.dumps({"message": "Could not update resource."})
             
     def setRelationship(self, start_id, end_id, relationship_type):
         query = f"MATCH (start:{self.label} {{ {self.label}ID: $start_id }}), (end:{self.label} {{ {self.label}ID: $end_id }}) CREATE (start)-[:{relationship_type}]->(end) RETURN start, end"

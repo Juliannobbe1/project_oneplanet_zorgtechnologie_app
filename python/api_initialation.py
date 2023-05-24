@@ -6,36 +6,35 @@ class NamespaceFactory:
         self.driver = driver
         self.api = api
         self.models = {
-            'aanbeveling': Recommendation,
-            'toepassing': Application,
-            'product': Product,
-            'client': Client,
-            'zorgprofessional': HealthcareProfessional,
-            'organisatie': Organisation,
-            'review': Review,
-            'leverancier': Supplier
+            'aanbeveling': Recommendation(driver),
+            'toepassing': Application(driver),
+            'product': Product(driver),
+            'client': Client(driver),
+            'zorgprofessional': HealthcareProfessional(driver),
+            'organisatie': Organisation(driver),
+            'review': Review(driver),
+            'leverancier': Supplier(driver)
         }
         self.namespaces = {}
         self.object_names = {}
         
-    def create_model(self, model_cls):
-        return model_cls(self.driver)
+    # def create_model(self, model_cls):
+    #     return model_cls(self.driver)
 
     def create_namespace(self, name, description=None, decorators=None):
         return Namespace(name, description=description, decorators=decorators)
 
     def initialize_factory(self):
         models = {}
-        for name, model_cls in self.models.items():
-            model_instance = self.create_model(model_cls)
-            models[name] = self.api.model(name, model_instance.model())
+
+        for name, model_instance in self.models.items():
+            model = self.api.model(name, model_instance.model())
+            models[name] = model
             self.namespaces[name] = self.create_namespace(name, description=f'{name.capitalize()} operations')
-            self.object_names[name] = model_cls.__name__
+            self.object_names[name] = model_instance.__class__.__name__
 
         for name, namespace in self.namespaces.items():
             self.api.add_namespace(namespace)
-        #     namespace.models[name] = models[name]  # Register model with namespace
+            namespace.models = models  # Set models dictionary as namespace attribute
 
         return models, self.namespaces, self.object_names
-
-    
