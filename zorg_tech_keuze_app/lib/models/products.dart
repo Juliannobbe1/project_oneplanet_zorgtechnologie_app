@@ -29,13 +29,15 @@ class Product {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
-    data['productID'] = productID;
-    data['productNaam'] = productNaam;
-    data['prijs'] = prijs;
-    data['beschrijving'] = beschrijving;
-    data['categorie'] = categorie;
-    data['link'] = link;
-    data['leverancierID'] = leverancierID;
+    data['product'] = {
+      'beschrijving': beschrijving,
+      'categorie': categorie,
+      'productID': productID,
+      'leverancierID': leverancierID,
+      'link': link,
+      'productNaam': productNaam,
+      'prijs': prijs,
+    };
     return data;
   }
 }

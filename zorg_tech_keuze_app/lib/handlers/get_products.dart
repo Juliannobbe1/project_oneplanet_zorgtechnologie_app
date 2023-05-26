@@ -4,7 +4,7 @@ import 'package:http/http.dart';
 import '../models/products.dart';
 
 class ApiCall {
-  String uri = 'http://192.168.123.41:5001/products';
+  String uri = 'http://127.0.0.1/products';
   Future<List<Product>> getProducts() async {
     Response response = await get(Uri.parse(uri));
     if (response.statusCode == 200) {
