@@ -1,5 +1,25 @@
-reviewID,beschrijving,score,datum,productID,zorgprofessionalID
+﻿reviewID,beschrijving,score,datum,productID,zorgprofessionalID
 1,product werkt goed,5,10/11/2022,2,1
 2,past goed bij de client,4,03/03/2023,4,9
-3,geen goede toepassing,3,30/04/2023,2,7
-4,erg tevreden client maakt er goed gebruik van,2,22/02/2022,5,1
+3,geen goede toepassing,3,03/04/2023,2,7
+4,erg tevreden client maakt er goed gebruik van,2,2/22/2022,5,1
+5,uitstekend product,5,06/15/2022,2,3
+6,goede resultaten gezien,4,08/25/2022,1,5
+7,client is tevreden,3,11/01/2022,4,7
+8,welzijnsverbetering opgemerkt,4,12/18/2022,5,2
+9,handig hulpmiddel,5,01/10/2023,2,1
+10,positieve ervaring,4,04/05/2023,9,4
+11,onvoldoende effectief,2,07/22/2022,3,8
+12,zeer nuttig voor dagelijkse routine,5,09/14/2022,2,6
+13,goede ondersteuning tijdens therapie,4,10/30/2022,9,5
+14,waardevolle sociale interactie,5,02/08/2023,1,7
+15,handig bij zelfzorgactiviteiten,4,05/01/2023,5,3
+16,verbeterde mentale alertheid,3,08/12/2022,10,2
+17,goede slaapresultaten,4,11/26/2022,8,4
+18,nauwkeurige gezondheidsmonitoring,5,01/18/2023,6,6
+19,persoonlijke pijnverlichting,3,03/22/2023,4,9
+20,nuttig bij gewichtsbeheersing,4,06/07/2022,7,1
+21,betrouwbare hartslagmeting,5,09/05/2022,3,2
+22,vermindering van stressniveaus,4,12/10/2022,10,7
+23,snelle valdetectie,5,02/15/2023,5,3
+24,gezonde dieetbeheerondersteuning,3,05/20/2023,7,5

@@ -1,11 +1,66 @@
-zorgprofessionalID,zorgprofessionalNaam,email,rol,organisatieID
+﻿zorgprofessionalID,zorgprofessionalNaam,email,rol,organisatieID
 1,Stormy Arthur,stormy.arthur@warmthuis.nl,Verzorgende,1
-2,Rik Rehn,rik.rehn@warmthuis.nl,Verpleegkunde,1
-3,Fina Hartfleet,fina.hartfleet@voorelkaar.nl,Verzorgende,2
-4,Shalom Gowthrop,shalom.gowthrop@voorelkaar.nl,Verzorgende,2
-5,Albertina Morgue,albertina.morgue@bartholomeusgasthuis.nl,Verzorgende,3
-6,Hewe Chitter,hewe.chitter@bartholomeusgasthuis.nl,Psycholoog,3
-7,Vince Day,vince.day@opella.nl,Verzorgende,4
-8,Essy Wigley,essy.wigley@opella.nl,Verpleegkunde,4
-9,Dilly Digan,dilly.digan@opella.nl,Fysioloog,4
-10,Arron De Ruggero,arron.ruggero@opella.nl,Psycholoog,4
+2,Rik Rehn,rik.rehn@voorelkaar.nl,Verpleegkunde,2
+3,Fina Hartfleet,fina.hartfleet@bartholomeusgasthuis.nl,Verzorgende,3
+4,Shalom Gowthrop,shalom.gowthrop@opella.nl,Verzorgende,4
+5,Albertina Morgue,albertina.morgue@dezorgspecialist.nl,Verzorgende,5
+6,Hewe Chitter,hewe.chitter@zinziazorggroep.nl,Psycholoog,6
+7,Vince Day,vince.day@stichtingzorggroepoudeennieuweland.nl,Verzorgende,7
+8,Essy Wigley,essy.wigley@careyn.nl,Verpleegkunde,8
+9,Dilly Digan,dilly.digan@philadelphiazorg.nl,Fysioloog,9
+10,Arron De Ruggero,arron.ruggero@talismancaregroup.nl,Psycholoog,10
+11,Melissa Huleatt,melissa.huleatt@deleyhoeve.nl,Verzorgende,11
+12,Alrijne Zorggroep,alrijne.zorggroep@alrijne.nl,Verpleegkunde,12
+13,SVRZ,info@svrz.nl,Verzorgende,13
+14,De Wever,dewever@info.nl,Psycholoog,14
+15,Stichting Zuidwester,info@zuidwester.org,Fysioloog,15
+16,Libertas Leiden,info@libertasleiden.nl,Verzorgende,16
+17,De Riethorst Stromenland,info@deriethorststromenland.nl,Verpleegkunde,17
+18,Avoord Zorg en Wonen,info@avoord.nl,Verzorgende,18
+19,Vitras,vitras@vitras.nl,Psycholoog,19
+20,Archipel Zorggroep,info@archipelzorggroep.nl,Fysioloog,20
+21,Adriaens Konstam,adriaens.konstam@warmthuis.nl,Verzorgende,1
+22,Julian Ciric,julian.ciric@voorelkaar.nl,Verpleegkunde,2
+23,Cynthy Lownds,cynthy.lownds@bartholomeusgasthuis.nl,Verzorgende,3
+24,Gibb Titterrell,gibb.titterrell@opella.nl,Verzorgende,4
+25,Grantham Redfearn,grantham.redfearn@dezorgspecialist.nl,Verzorgende,5
+26,Jacquie Goldsbury,jacquie.goldsbury@zinziazorggroep.nl,Psycholoog,6
+27,Julio Levitt,julio.levitt@stichtingzorggroepoudeennieuweland.nl,Verzorgende,7
+28,Maximilien Petrus,maximilien.petrus@careyn.nl,Verpleegkunde,8
+29,Shelia Rugge,shelia.rugge@philadelphiazorg.nl,Fysioloog,9
+30,Emmy Fosberry,emmy.fosberry@talismancaregroup.nl,Psycholoog,10
+31,Sonnie Bristowe,sonnie.bristowe@warmthuis.nl,Verzorgende,1
+32,Roxi Chate,roxi.chate@voorelkaar.nl,Verpleegkunde,2
+33,Paulo Dupey,paulo.dupey@bartholomeusgasthuis.nl,Verzorgende,3
+34,Rollins Scolliar,rollins.scolliar@opella.nl,Verzorgende,4
+35,Kristin Kales,kristin.kales@dezorgspecialist.nl,Verzorgende,5
+36,Kelcy Medling,kelcy.medling@zinziazorggroep.nl,Psycholoog,6
+37,Evangelina Fellon,evangelina.fellon@stichtingzorggroepoudeennieuweland.nl,Verzorgende,7
+38,Kippy Brunskill,kippy.brunskill@careyn.nl,Verpleegkunde,8
+39,Sheelah Clenett,sheelah.clenett@philadelphiazorg.nl,Fysioloog,9
+40,Fitz Aindrais,fitz.aindrais@talismancaregroup.nl,Psycholoog,10
+41,Lyndsey Renyard,lyndsey.renyard@warmthuis.nl,Verzorgende,1
+42,Webster Ryves,webster.ryves@voorelkaar.nl,Verpleegkunde,2
+43,Garvy Trenholme,garvy.trenholme@bartholomeusgasthuis.nl,Verzorgende,3
+44,Flory Yare,flory.yare@opella.nl,Verzorgende,4
+45,Carena Fancutt,carena.fancutt@dezorgspecialist.nl,Verzorgende,5
+46,Kalie Robb,kalie.robb@zinziazorggroep.nl,Psycholoog,6
+47,Edmund Cofax,edmund.cofax@stichtingzorggroepoudeennieuweland.nl,Verzorgende,7
+48,Aigneis Vowels,aigneis.vowels@careyn.nl,Verpleegkunde,8
+49,Lesly Lytton,lesly.lytton@philadelphiazorg.nl,Fysioloog,9
+50,Abdul Stroder,abdul.stroder@talismancaregroup.nl,Psycholoog,10
+51,Burk Adamthwaite,burk.adamthwaite@warmthuis.nl,Verzorgende,1
+52,Ebony Thornsby,ebony.thornsby@voorelkaar.nl,Verpleegkunde,2
+53,Merrily Exposito,merrily.exposito@bartholomeusgasthuis.nl,Verzorgende,3
+54,Inger Swanston,inger.swanston@opella.nl,Verzorgende,4
+55,Hyacinth Whitcher,hyacinth.whitcher@dezorgspecialist.nl,Verzorgende,5
+56,Marijo Foulcher,marijo.foulcher@zinziazorggroep.nl,Psycholoog,6
+57,Marillin Swinn,marillin.swinn@stichtingzorggroepoudeennieuweland.nl,Verzorgende,7
+58,Marnie Toulch,marnie.toulch@careyn.nl,Verpleegkunde,8
+59,Gilburt Timperley,gilburt.timperley@philadelphiazorg.nl,Fysioloog,9
+60,Jaclyn Stribley,jaclyn.stribley@talismancaregroup.nl,Psycholoog,10
+61,Ines Seawell,ines.seawell@warmthuis.nl,Verzorgende,1
+62,Rusty Scoffham,rusty.scoffham@voorelkaar.nl,Verpleegkunde,2
+63,Artie Doward,artie.doward@bartholomeusgasthuis.nl,Verzorgende,3
+64,Dorie Beardmore,dorie.beardmore@opella.nl,Verzorgende,4
+65,Kylynn Nibley,kylynn.nibley@dezorgspecialist.nl,Verzorgende,5

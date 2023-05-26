@@ -4,8 +4,8 @@ import os
 
 driver = database.connectDatabase()
 
-path = "/Users/juliannobbe/Library/CloudStorage/OneDrive-Chr.HogeschoolEde/School/Hbo-ICT/Jaar 3/Sem 6 - oneplanet zorgtechnologie app/Data/cvs/"
-file_names = ["Leverancier v2.csv", "Organisatie v2.csv", "client v2.csv", "Zorgprofessional v2.csv", "verzorgd.csv", "contracten v2.csv", "Producten v2.csv", "review v2.csv", "toepassing v2.csv", "aanbeveling v2.csv"]
+path = "/Users/juliannobbe/Projects/flutter projects/project_oneplanet_zorgtechnologie_app/mockdata"
+file_names = ["Leverancier v2.csv", "Organisatie v3.csv", "client v2.csv", "Zorgprofessional v2.csv", "verzorgd.csv", "contracten v2.csv", "Producten v2.csv", "review v2.csv", "toepassing v2.csv", "aanbeveling v2.csv"]
 file_paths = [os.path.join(path, file_name) for file_name in file_names]
 data = [pd.read_csv(file_path) for file_path in file_paths]
 
@@ -79,14 +79,13 @@ relationshipqueries = {
 #     session.run(query)
 
 with driver.session() as session:
+    for index, row in data[1].iterrows():
+        # Create nodes
+        session.run(nodesqueries["organisatie"], organisatieID=row["organisatieID"], organisatieNaam=row["organisatieNaam"])
     # leverancier
     for index, row in data[0].iterrows():
         # Create nodes
         session.run(nodesqueries["leverancier"], leverancierID=row["leverancierID"], leverancierNaam=row["leverancierNaam"])
-        
-    for index, row in data[1].iterrows():
-        # Create nodes
-        session.run(nodesqueries["organisatie"], organisatieID=row["organisatieID"], organisatieNaam=["organisatieNaam"])
         
     for index, row in data[2].iterrows():
         # Create nodes
@@ -117,7 +116,7 @@ with driver.session() as session:
     # review 
     for index, row in data[7].iterrows():
         # Create nodes
-        session.run(nodesqueries["review"], reviewID=row["reviewID"], beschrijving=row["beschrijving"], score=row["score"], datum=row["datum"], productID=row["productID"], zorgprofessionalID=row["zorgprofessionalID"])
+        session.run(nodesqueries["review"], reviewID=row["reviewID"], beschrijving=row["beschrijving"], score=row["score"], datum=pd.to_datetime(row['datum']).strftime('%Y-%m-%d'), productID=row["productID"], zorgprofessionalID=row["zorgprofessionalID"])
         #create relationship
         session.run(relationshipqueries["HEEFT_REVIEW"], reviewID=row["reviewID"], productID=row["productID"])
         session.run(relationshipqueries["GEEFT_REVIEW"], zorgprofessionalID=row["zorgprofessionalID"], reviewID=row["reviewID"])
@@ -132,7 +131,7 @@ with driver.session() as session:
     # aanbeveling
     for index, row in data[9].iterrows():
         # Create nodes
-        session.run(nodesqueries["aanbeveling"], aanbevelingID=row["aanbevelingID"], aanbeveling=row["aanbeveling"], datum=row["datum"], productID=row["productID"], zorgprofessionalID=row["zorgprofessionalID"])
+        session.run(nodesqueries["aanbeveling"], aanbevelingID=row["aanbevelingID"], aanbeveling=row["aanbeveling"], datum=pd.to_datetime(row['datum']).strftime('%Y-%m-%d'), productID=row["productID"], zorgprofessionalID=row["zorgprofessionalID"])
         # Create relationship
         session.run(relationshipqueries["VAN_PRODUCT"], aanbevelingID=row["aanbevelingID"], productID=row["productID"])
         session.run(relationshipqueries["GEEFT_AANBEVELING"], zorgprofessionalID=row["zorgprofessionalID"], aanbevelingID=row["aanbevelingID"])
