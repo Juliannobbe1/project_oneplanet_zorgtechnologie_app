@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:zorg_tech_keuze_app/handlers/get_products.dart';
 
 import 'models/products.dart';
+import 'handlers/responsive_layout_handler.dart';
 
 void main() {
   runApp(const MyApp());
@@ -28,16 +29,40 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final double scalingFactor = SizeScaler.getScalingFactor(context);
+    final TextStyle textSize = SizeScaler.getResponsiveTextStyle(context);
+
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Homepage'),
+        title: const Text('SizeScaler Example'),
       ),
-      body: TextButton(
-        onPressed: () {
-          Navigator.of(context).push(
-              MaterialPageRoute(builder: (context) => const ProductPage()));
-        },
-        child: const Text('Go To Products'),
+      body: Center(
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                'Scaling Factor: $scalingFactor',
+                style: textSize,
+              ),
+              const SizedBox(height: 16),
+              Text(
+                'Responsive Text',
+                style: textSize,
+              ),
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) => const ProductPage()));
+                },
+                child: Text(
+                  'Go To Products',
+                  style: SizeScaler.getResponsiveTextStyle(context),
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
