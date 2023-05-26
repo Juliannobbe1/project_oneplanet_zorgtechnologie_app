@@ -1,5 +1,5 @@
 from flask_restx import Namespace
-from models.domain_model import Application, Client, HealthcareProfessional, Organisation, Product, Recommendation, Review, Supplier
+from models.domain_model import Application, Client, HealthcareProfessional, Organisation, Product, Recommendation, Review, Supplier, Relationship
 
 class NamespaceFactory:
     def __init__(self, driver, api):
@@ -13,13 +13,11 @@ class NamespaceFactory:
             'zorgprofessional': HealthcareProfessional(driver),
             'organisatie': Organisation(driver),
             'review': Review(driver),
-            'leverancier': Supplier(driver)
+            'leverancier': Supplier(driver),
+            'relatie': Relationship(driver)
         }
         self.namespaces = {}
         self.object_names = {}
-        
-    # def create_model(self, model_cls):
-    #     return model_cls(self.driver)
 
     def create_namespace(self, name, description=None, decorators=None):
         return Namespace(name, description=description, decorators=decorators)

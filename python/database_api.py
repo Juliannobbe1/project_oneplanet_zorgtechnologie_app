@@ -13,13 +13,14 @@ models, namespaces, object_names = factory.initialize_factory()
 
 # Access the names of the created objects
 org = eval(object_names['organisatie'])(driver)
-product = object_names['product']
+product = eval(object_names['product'])(driver)
 recommendation = eval(object_names['aanbeveling'])(driver)
-application = object_names['toepassing']
-client = object_names['client']
-healthprof = object_names['zorgprofessional']
-review = object_names['review']
-supplier = object_names['leverancier']
+application = eval(object_names['toepassing'])(driver)
+client = eval(object_names['client'])(driver)
+healthprof = eval(object_names['zorgprofessional'])(driver)
+review = eval(object_names['review'])(driver)
+supplier = eval(object_names['leverancier'])(driver)
+relationship = eval(object_names['relatie'])(driver)
 
 recommendationModel = models['aanbeveling']
 applicationModel = models['toepassing']
@@ -29,6 +30,7 @@ healthProfModel = models['zorgprofessional']
 orgModel = models['organisatie']
 reviewModel = models['review']
 supplierModel = models['leverancier']
+relationshipModel = models['relatie']
 
 recommendation_ns = namespaces['aanbeveling']
 application_ns = namespaces['toepassing']
@@ -38,16 +40,46 @@ healthprof_ns = namespaces['zorgprofessional']
 organisation_ns = namespaces['organisatie']
 review_ns = namespaces['review']
 supplier_ns = namespaces['leverancier']
+relationship_ns = namespaces['relatie']
+
+@recommendation_ns.route('/')
+class RecommendationResource(Resource):
+    @api.marshal_with(recommendationModel) 
+    def get(self):
+        return recommendation.get_all()
+
+@recommendation_ns.route('/<string:property>/<value>')
+class RecommendationPropertyResource(Resource):
+    def get(self, property, value):
+        return recommendation.get(property, value)
+    
+    def delete(self, property, value):
+        if property or value is None:
+            return abort(404, "Cannot delete, information is missing")
+        else: 
+            recommendation.delete(property, value)
+            return jsonify({"message": "Recommmendation deleted successfully."})
+        
+    def post(self, property, value):
+        # if data is None:
+        if property and value is None:
+            return abort(404, "cannot create, information is missing")
+        else: 
+            property_list = property.split(', ')
+            value_list = value.split(', ')
+            
+        recommendation.create(property_list, value_list)
+        return jsonify({"message": "Organisation created succesfully."})
 
 
-@organisation_ns.route('/organisation')        
+@organisation_ns.route('/')        
 class OrganisationResource(Resource):
     @api.doc(responses={200: 'Success'}, description='Get method description')
     @api.marshal_with(orgModel)
     def get(self):
-       return org.get_all
+       return org.get_all()
 
-@organisation_ns.route('/organisation/<string:property>/<value>')        
+@organisation_ns.route('/<string:property>/<value>')        
 class OrganisationPropertyResource(Resource):
     @api.marshal_with(orgModel) 
     def get(self, property, value):
@@ -73,13 +105,13 @@ class OrganisationPropertyResource(Resource):
         return jsonify({"message": "Organisation created succesfully."})
         
 # review
-@review_ns.route('/review')
+@review_ns.route('/')
 class ReviewResource(Resource):
     @api.marshal_with(reviewModel) 
     def get(self):
         return review.get_all()
 
-@review_ns.route('/review/<string:property>/<value>')
+@review_ns.route('/<string:property>/<value>')
 class ReviewPropertyResource(Resource):
     def get(self, property, value):
         return review.get(property, value)
@@ -103,13 +135,13 @@ class ReviewPropertyResource(Resource):
         return jsonify({"message": "Review created succesfully."})
 
 # supplier
-@supplier_ns.route('/supplier')
+@supplier_ns.route('/')
 class SupplierResource(Resource):
     @api.marshal_with(supplierModel) 
     def get(self):
         return supplier.get_all()
 
-@supplier_ns.route('/supplier/<string:property>/<value>')
+@supplier_ns.route('/<string:property>/<value>')
 class SupplierPropertyResource(Resource):
     def get(self, property, value):
         return supplier.get(property, value)
@@ -133,13 +165,13 @@ class SupplierPropertyResource(Resource):
         return jsonify({"message": "Organisation created succesfully."})
             
 # healthprofessional
-@healthprof_ns.route('/healthprofessional')
+@healthprof_ns.route('/')
 class HealthProfessionalResource(Resource):
     @api.marshal_with(healthProfModel) 
     def get(self):
         return healthprof.get_all()
 
-@healthprof_ns.route('/healthprofessional/<string:property>/<value>')
+@healthprof_ns.route('/<string:property>/<value>')
 class HealthProfessionalPropertyResource(Resource):
     def get(self, property, value):
         return healthprof.get(property, value)
@@ -162,13 +194,13 @@ class HealthProfessionalPropertyResource(Resource):
         healthprof.create(property_list, value_list)
         return jsonify({"message": "Organisation created succesfully."})
 
-@client_ns.route('/client')
+@client_ns.route('/')
 class ClientResource(Resource):
     @api.marshal_with(clientModel) 
     def get(self):
         return client.get_all()
 
-@client_ns.route('/client/<string:property>/<value>')
+@client_ns.route('/<string:property>/<value>')
 class ClientPropertyResource(Resource):
     def get(self, property, value):
         return client.get(property, value)
@@ -191,13 +223,13 @@ class ClientPropertyResource(Resource):
         client.create(property_list, value_list)
         return jsonify({"message": "Organisation created succesfully."})
 
-@application_ns.route('/application')
+@application_ns.route('/')
 class ApplicationResource(Resource):
     @api.marshal_with(applicationModel) 
     def get(self):
         return application.get_all()
 
-@application_ns.route('/application/<string:property>/<value>')
+@application_ns.route('/<string:property>/<value>')
 class ApplicationPropertyResource(Resource):
     def get(self, property, value):
         return application.get(property, value)
@@ -220,13 +252,13 @@ class ApplicationPropertyResource(Resource):
         application.create(property_list, value_list)
         return jsonify({"message": "Organisation created succesfully."})
         
-@product_ns.route('/product')
+@product_ns.route('/')
 class ProductResource(Resource):
     @api.marshal_with(productModel) 
     def get(self):
         return product.get_all()
 
-@product_ns.route('/product/<string:property>/<value>')
+@product_ns.route('/<string:property>/<value>')
 class ProductPropertyResource(Resource):
     def get(self, property, value):
         return product.get(property, value)
@@ -249,34 +281,18 @@ class ProductPropertyResource(Resource):
         product.create(property_list, value_list)
         return jsonify({"message": "Organisation created succesfully."})
 
-@recommendation_ns.route('/recommendations')
-class RecommendationResource(Resource):
-    @api.marshal_with(recommendationModel) 
-    def get(self):
-        return recommendation.get_all()
-
-@recommendation_ns.route('/recommendations/<string:property>/<value>')
-class RecommendationPropertyResource(Resource):
-    def get(self, property, value):
-        return recommendation.get(property, value)
+@relationship_ns.route('/<string:start_node>/<int:start_id>/<string:end_node>/<int:end_id>/<string:relationship_name>')    
+class RelationshipResource(Resource):
+    def post(self, start_node, start_id, end_node, end_id, relationship_name):
+        return relationship.setRelationship(start_node, start_id, end_node, end_id, relationship_name)
     
-    def delete(self, property, value):
-        if property or value is None:
-            return abort(404, "Cannot delete, information is missing")
-        else: 
-            recommendation.delete(property, value)
+    def delete(self, start_node, start_id, end_node, end_id, relationship_name):
+        #!test this if works ???
+        if all(value is not None for value in (start_node, start_id, end_node, end_id, relationship_name)):
+            relationship.deleteRelationship(start_node, start_id, end_node, end_id, relationship_name)
             return jsonify({"message": "Recommmendation deleted successfully."})
-        
-    def post(self, property, value):
-        # if data is None:
-        if property and value is None:
-            return abort(404, "cannot create, information is missing")
         else: 
-            property_list = property.split(', ')
-            value_list = value.split(', ')
-            
-        recommendation.create(property_list, value_list)
-        return jsonify({"message": "Organisation created succesfully."})
-    
+            return abort(404, "Cannot delete, information is missing")
+        
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5001)
