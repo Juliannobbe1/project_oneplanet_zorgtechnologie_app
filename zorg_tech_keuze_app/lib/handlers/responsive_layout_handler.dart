@@ -33,11 +33,13 @@ class SizeScaler {
     }
   }
 
-  static TextStyle getResponsiveTextStyle(BuildContext context) {
+  static TextStyle getResponsiveTextStyle(BuildContext context, double baseSize,
+      FontWeight fontweight, Color color) {
     final double scalingFactor = getScalingFactor(context);
-    final double adjustedFontSize = 20.00 * scalingFactor;
+    final double adjustedFontSize = baseSize * scalingFactor;
 
-    return TextStyle(fontSize: adjustedFontSize);
+    return TextStyle(
+        fontSize: adjustedFontSize, fontWeight: fontweight, color: color);
   }
 
   static double getResponsiveSize(BuildContext context, double baseSize) {
