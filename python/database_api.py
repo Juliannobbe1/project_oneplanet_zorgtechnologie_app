@@ -252,11 +252,17 @@ class ApplicationPropertyResource(Resource):
         application.create(property_list, value_list)
         return jsonify({"message": "Organisation created succesfully."})
         
-@product_ns.route('/')
+@product_ns.route('')
 class ProductResource(Resource):
     @api.marshal_with(productModel) 
     def get(self):
         return product.get_all()
+
+@product_ns.route('/newest')
+class NewProducts(Resource):
+    @api.marshal_with(productModel)
+    def get(self):
+        return product.getNewestProducts()
 
 @product_ns.route('/<string:property>/<value>')
 class ProductPropertyResource(Resource):

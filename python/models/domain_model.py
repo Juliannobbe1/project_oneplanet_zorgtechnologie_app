@@ -40,6 +40,15 @@ class Product(base_model):
         self.model_data['link'] = fields.String()
         self.model_data['productNaam'] = fields.String(required=True, description='Naam van het product')
         self.model_data['prijs'] = fields.Float()
+    
+    def getNewestProducts(self):
+        with self.driver.session() as session:
+            result = session.run(f"MATCH (n:{self.label}) RETURN n ORDER BY n.productID DESC LIMIT 5")
+            if result:
+                data = self.extract(result)
+                return data
+            else:
+                return abort(404, "Something went wrong")
         
         
 class Recommendation(base_model):
