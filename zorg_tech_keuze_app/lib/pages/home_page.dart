@@ -9,7 +9,6 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final double standardWidgetSize = SizeScaler.getResponsiveSize(context, 25);
     final TextStyle standardTextSize = SizeScaler.getResponsiveTextStyle(
         context, 20, FontWeight.bold, Colors.white);
     final TextStyle titleTextSize = SizeScaler.getResponsiveTextStyle(
