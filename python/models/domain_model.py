@@ -43,7 +43,7 @@ class Product(base_model):
     
     def getNewestProducts(self):
         with self.driver.session() as session:
-            result = session.run(f"MATCH (n:{self.label}) RETURN n ORDER BY n.productID DESC LIMIT 5")
+            result = session.run(f"MATCH (n:{self.label}) RETURN n ORDER BY n.productID DESC LIMIT 6")
             if result:
                 data = self.extract(result)
                 return data

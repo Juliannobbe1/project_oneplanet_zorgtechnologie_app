@@ -15,6 +15,27 @@ class ResponsiveLayout {
   static const double tabletWidthBreakpoint = 1200.0;
   static const double phoneHeightBreakpoint = 600.0;
   static const double tabletHeightBreakpoint = 900.0;
+
+  static DeviceType getDeviceType(BuildContext context) {
+    final double screenWidth = MediaQuery.of(context).size.width;
+    final double screenHeight = MediaQuery.of(context).size.height;
+
+    if (screenWidth >= tabletWidthBreakpoint &&
+        screenHeight >= tabletHeightBreakpoint) {
+      return DeviceType.desktop;
+    } else if (screenWidth >= phoneWidthBreakpoint &&
+        screenHeight >= phoneHeightBreakpoint) {
+      return DeviceType.tablet;
+    } else {
+      return DeviceType.phone;
+    }
+  }
+}
+
+enum DeviceType {
+  desktop,
+  tablet,
+  phone,
 }
 
 class SizeScaler {
