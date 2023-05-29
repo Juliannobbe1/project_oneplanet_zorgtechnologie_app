@@ -51,6 +51,6 @@ class PhoneSelectionScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(child: const Text("keuzegids"));
+    return const Text("keuzegids");
   }
 }
