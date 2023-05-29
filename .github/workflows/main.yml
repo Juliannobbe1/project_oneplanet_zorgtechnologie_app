@@ -18,17 +18,17 @@ jobs:
           flutter-version: '3.7.12'
       - name: Get dependencies
         run: |
-         cd zorg_tech_keuze_app
+         cd zorgtechnologieapp
          flutter pub get
       - name: Format code
         run: |
-         cd zorg_tech_keuze_app
+         cd zorgtechnologieapp
          dart format --set-exit-if-changed .
       - name: Analyze code
         run: |
-         cd zorg_tech_keuze_app
+         cd zorgtechnologieapp
          flutter analyze
       - name: Analyze project source
         run: |
-         cd zorg_tech_keuze_app
+         cd zorgtechnologieapp
          dart analyze --fatal-infos
