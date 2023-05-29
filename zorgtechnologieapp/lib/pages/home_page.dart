@@ -13,6 +13,7 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     final deviceType = ResponsiveLayout.getDeviceType(context);
     double screenWidth = MediaQuery.of(context).size.width;
+    double screenHeight = MediaQuery.of(context).size.height;
 
     return Scaffold(
       backgroundColor: Colors.indigo[50],
@@ -27,6 +28,7 @@ class HomePage extends StatelessWidget {
           if (deviceType == DeviceType.tablet ||
               deviceType == DeviceType.desktop) ...[
             TabletHomeScreen(
+              screenHeight: screenHeight,
               screenWidth: screenWidth,
             )
           ] else ...[
@@ -40,9 +42,11 @@ class HomePage extends StatelessWidget {
 
 class TabletHomeScreen extends StatelessWidget {
   final double screenWidth;
+  final double screenHeight;
 
   const TabletHomeScreen({
     Key? key,
+    required this.screenHeight,
     required this.screenWidth,
   }) : super(key: key);
 
@@ -75,7 +79,7 @@ class TabletHomeScreen extends StatelessWidget {
                           ),
                           onPressed: () {
                             Navigator.of(context).push(MaterialPageRoute(
-                              builder: (context) => const ProductPage(),
+                              builder: (context) => const SelectionGuidePage(),
                             ));
                           },
                           child: Text(
@@ -127,9 +131,10 @@ class TabletHomeScreen extends StatelessWidget {
             ],
           ),
           Padding(
-            padding: EdgeInsets.only(left: screenWidth * 0.03, top: 150),
+            padding: EdgeInsets.only(
+                left: screenWidth * 0.025, top: screenWidth * 0.05),
             child: Text(
-              "Nieuwste producten:",
+              "Nieuwste producten: $screenHeight",
               style: SizeScaler.getResponsiveTextStyle(
                   context, 21, FontWeight.bold, Colors.black),
             ),
@@ -142,18 +147,20 @@ class TabletHomeScreen extends StatelessWidget {
                 return Padding(
                   padding: const EdgeInsets.fromLTRB(10, 0, 10, 10.0),
                   child: SizedBox(
-                    height: 400, // Specify the desired height for the ListView
+                    height: screenHeight > 900
+                        ? screenHeight * 0.65
+                        : screenHeight *
+                            0.50, // Specify the desired height for the ListView
                     child: GridView.builder(
-                      gridDelegate:
-                          const SliverGridDelegateWithFixedCrossAxisCount(
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                         crossAxisCount: 2, // Number of columns in the grid
-                        childAspectRatio:
-                            4, // Width to height ratio of each grid item
+                        childAspectRatio: screenHeight > 900
+                            ? 3.5
+                            : 4.5, // Width to height ratio of each grid item
                       ),
                       itemCount: products.length,
                       itemBuilder: (context, index) {
                         final product = products[index];
-
                         return Padding(
                           padding: const EdgeInsets.fromLTRB(20, 25, 20, 5),
                           child: Material(
@@ -183,6 +190,9 @@ class TabletHomeScreen extends StatelessWidget {
                                       16,
                                       FontWeight.normal,
                                       Colors.white),
+                                ),
+                                trailing: SingleProductView(
+                                  product: product,
                                 ),
                               ),
                             ),
