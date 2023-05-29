@@ -191,6 +191,9 @@ class TabletHomeScreen extends StatelessWidget {
                                       FontWeight.normal,
                                       Colors.white),
                                 ),
+                                trailing: SingleProductView(
+                                  product: product,
+                                ),
                               ),
                             ),
                           ),
