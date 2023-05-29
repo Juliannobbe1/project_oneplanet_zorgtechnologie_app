@@ -110,9 +110,11 @@ class TabletHomeScreen extends StatelessWidget {
                             fixedSize: const Size(300, 150),
                           ),
                           onPressed: () {
-                            Navigator.of(context).push(MaterialPageRoute(
-                              builder: (context) => const ProductPage(),
-                            ));
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (context) => const ProductPage(),
+                              ),
+                            );
                           },
                           child: Text(
                             "Technologie-catalogus",
@@ -184,6 +186,9 @@ class TabletHomeScreen extends StatelessWidget {
                                       16,
                                       FontWeight.normal,
                                       Colors.white),
+                                ),
+                                trailing: SingleProductView(
+                                  product: product,
                                 ),
                               ),
                             ),
@@ -308,25 +313,23 @@ class PhoneHomeScreen extends StatelessWidget {
                               color: Colors.blue[500],
                             ),
                             child: ListTile(
-                                title: Text(
-                                  product.productNaam,
-                                  style: SizeScaler.getResponsiveTextStyle(
-                                      context,
-                                      18,
-                                      FontWeight.bold,
-                                      Colors.white),
-                                ),
-                                subtitle: Text(
-                                  'Categorie: ${product.categorie}',
-                                  style: SizeScaler.getResponsiveTextStyle(
-                                      context,
-                                      17,
-                                      FontWeight.normal,
-                                      Colors.white),
-                                ),
-                                trailing: SingleProductView(
-                                  product: product,
-                                )),
+                              title: Text(
+                                product.productNaam,
+                                style: SizeScaler.getResponsiveTextStyle(
+                                    context, 18, FontWeight.bold, Colors.white),
+                              ),
+                              subtitle: Text(
+                                'Categorie: ${product.categorie}',
+                                style: SizeScaler.getResponsiveTextStyle(
+                                    context,
+                                    17,
+                                    FontWeight.normal,
+                                    Colors.white),
+                              ),
+                              trailing: SingleProductView(
+                                product: product,
+                              ),
+                            ),
                           ),
                         ),
                       );
