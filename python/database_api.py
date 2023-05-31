@@ -231,6 +231,7 @@ class ApplicationResource(Resource):
 
 @application_ns.route('/<string:property>/<value>')
 class ApplicationPropertyResource(Resource):
+    @api.marshal_with(applicationModel) 
     def get(self, property, value):
         return application.get(property, value)
     
@@ -251,6 +252,17 @@ class ApplicationPropertyResource(Resource):
 
         application.create(property_list, value_list)
         return jsonify({"message": "Organisation created succesfully."})
+    
+@application_ns.route('/HEEFT_TOEPASSING')
+class HEEFT_TOEPASSING(Resource):
+    @api.marshal_with(applicationModel) 
+    def get(self):
+        return application.getApplicationWithProduct()
+
+@application_ns.route('/distinct')
+class DistinctApplication(Resource):
+    def get(self):
+        return application.getDistinctApplications()
         
 @product_ns.route('')
 class ProductResource(Resource):

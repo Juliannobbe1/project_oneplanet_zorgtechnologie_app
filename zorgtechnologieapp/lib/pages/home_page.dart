@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../handlers/get_products.dart';
+import '../handlers/data_api_handler.dart';
 import '../handlers/responsive_layout_handler.dart';
 import '../models/products.dart';
 import 'products_page.dart';
@@ -139,8 +139,9 @@ class TabletHomeScreen extends StatelessWidget {
                   context, 21, FontWeight.bold, Colors.black),
             ),
           ),
+          // DataAPI().buildListFutureBuilder(DataAPI().newestProducts()),
           FutureBuilder<List<Product>>(
-            future: ApiCall().newestProducts(),
+            future: DataAPI().newestProducts(),
             builder: (context, snapshot) {
               if (snapshot.hasData) {
                 final products = snapshot.data!;
@@ -176,23 +177,23 @@ class TabletHomeScreen extends StatelessWidget {
                               ),
                               child: ListTile(
                                 title: Text(
-                                  product.productNaam,
+                                  product.naam,
                                   style: SizeScaler.getResponsiveTextStyle(
                                       context,
                                       18,
                                       FontWeight.bold,
                                       Colors.white),
                                 ),
-                                subtitle: Text(
-                                  'Categorie: ${product.categorie}',
-                                  style: SizeScaler.getResponsiveTextStyle(
-                                      context,
-                                      16,
-                                      FontWeight.normal,
-                                      Colors.white),
-                                ),
+                                // subtitle: Text(
+                                //   // 'Categorie: ${product.categorie}',
+                                //   style: SizeScaler.getResponsiveTextStyle(
+                                //       context,
+                                //       16,
+                                //       FontWeight.normal,
+                                //       Colors.white),
+                                // ),
                                 trailing: SingleProductView(
-                                  product: product,
+                                  productId: product.iD,
                                 ),
                               ),
                             ),
@@ -291,8 +292,9 @@ class PhoneHomeScreen extends StatelessWidget {
                   context, 22, FontWeight.bold, Colors.black),
             ),
           ),
+          // DataAPI().buildListFutureBuilder(DataAPI().newestProducts()),
           FutureBuilder<List<Product>>(
-            future: ApiCall().newestProducts(),
+            future: DataAPI().newestProducts(),
             builder: (context, snapshot) {
               if (snapshot.hasData) {
                 final products = snapshot.data!;
@@ -317,25 +319,23 @@ class PhoneHomeScreen extends StatelessWidget {
                               color: Colors.blue[500],
                             ),
                             child: ListTile(
-                                title: Text(
-                                  product.productNaam,
-                                  style: SizeScaler.getResponsiveTextStyle(
-                                      context,
-                                      18,
-                                      FontWeight.bold,
-                                      Colors.white),
-                                ),
-                                subtitle: Text(
-                                  'Categorie: ${product.categorie}',
-                                  style: SizeScaler.getResponsiveTextStyle(
-                                      context,
-                                      17,
-                                      FontWeight.normal,
-                                      Colors.white),
-                                ),
-                                trailing: SingleProductView(
-                                  product: product,
-                                )),
+                              title: Text(
+                                product.naam,
+                                style: SizeScaler.getResponsiveTextStyle(
+                                    context, 18, FontWeight.bold, Colors.white),
+                              ),
+                              // subtitle: Text(
+                              //   'Beschrijving: ${product.beschrijving}',
+                              //   style: SizeScaler.getResponsiveTextStyle(
+                              //       context,
+                              //       17,
+                              //       FontWeight.normal,
+                              //       Colors.white),
+                              // ),
+                              trailing: SingleProductView(
+                                productId: product.iD,
+                              ),
+                            ),
                           ),
                         ),
                       );

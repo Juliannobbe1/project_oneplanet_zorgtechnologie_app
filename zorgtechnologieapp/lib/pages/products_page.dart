@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:zorgtechnologieapp/models/toepassing.dart';
 
-import '../handlers/get_products.dart';
+import '../handlers/data_api_handler.dart';
 import '../handlers/responsive_layout_handler.dart';
 import '../models/products.dart';
 
@@ -32,7 +33,7 @@ class TabletProductPage extends StatelessWidget {
         title: const Text("Product page"),
       ),
       body: FutureBuilder<List<Product>>(
-        future: ApiCall().getProducts(),
+        future: DataAPI().getProducts(),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             final products = snapshot.data!;
@@ -55,19 +56,19 @@ class TabletProductPage extends StatelessWidget {
                           color: Colors.blue[500],
                         ),
                         child: ListTile(
-                            title: Text(
-                              product.productNaam,
-                              style: SizeScaler.getResponsiveTextStyle(
-                                  context, 18, FontWeight.bold, Colors.white),
-                            ),
-                            subtitle: Text(
-                              'Categorie: ${product.categorie}',
-                              style: SizeScaler.getResponsiveTextStyle(
-                                  context, 17, FontWeight.normal, Colors.white),
-                            ),
-                            trailing: SingleProductView(
-                              product: product,
-                            )),
+                          title: Text(
+                            product.naam,
+                            style: SizeScaler.getResponsiveTextStyle(
+                                context, 18, FontWeight.bold, Colors.white),
+                          ),
+                          subtitle: Text(
+                            'Toepassing: ${product.beschrijving}',
+                            style: SizeScaler.getResponsiveTextStyle(
+                                context, 17, FontWeight.normal, Colors.white),
+                          ),
+                          // trailing: SingleProductView(
+                          //   productId: product.iD,)
+                        ),
                       ),
                     ),
                   );
@@ -98,14 +99,14 @@ class PhoneProductPage extends StatelessWidget {
       ),
       body: Padding(
         padding: EdgeInsets.only(top: screenWidth * 0.05),
-        child: FutureBuilder<List<Product>>(
-          future: ApiCall().getProducts(),
+        child: FutureBuilder<List<HeeftToepassing>>(
+          future: DataAPI().toepassingProducts(),
           builder: (context, snapshot) {
             if (snapshot.hasData) {
               return ListView(
                 children: [
                   ...snapshot.data!.map(
-                    (product) => Padding(
+                    (toepassing) => Padding(
                       padding: EdgeInsets.fromLTRB(
                           screenWidth * 0.05,
                           screenWidth * 0.03,
@@ -124,17 +125,17 @@ class PhoneProductPage extends StatelessWidget {
                           ),
                           child: ListTile(
                             title: Text(
-                              product.productNaam,
+                              toepassing.productnaam,
                               style: SizeScaler.getResponsiveTextStyle(
                                   context, 18, FontWeight.bold, Colors.white),
                             ),
                             subtitle: Text(
-                              'Categorie: ${product.categorie}',
+                              'Categorie: ${toepassing.toepassing}',
                               style: SizeScaler.getResponsiveTextStyle(
                                   context, 17, FontWeight.normal, Colors.white),
                             ),
                             trailing: SingleProductView(
-                              product: product,
+                              productId: toepassing.productID,
                             ),
                           ),
                         ),
@@ -155,76 +156,198 @@ class PhoneProductPage extends StatelessWidget {
   }
 }
 
+// class SingleProductView extends StatelessWidget {
+//   final Product product;
+//   const SingleProductView({super.key, required this.product});
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     return IconButton(
+//       icon: const Icon(
+//         Icons.info,
+//         color: Colors.black,
+//       ),
+//       onPressed: () {
+//         showDialog(
+//           context: context,
+//           builder: (context) => Dialog(
+//             shape: RoundedRectangleBorder(
+//               borderRadius: BorderRadius.circular(10),
+//             ),
+//             child: Container(
+//               padding: const EdgeInsets.all(16),
+//               constraints: const BoxConstraints(maxHeight: 600),
+//               child: SingleChildScrollView(
+//                 child: Column(
+//                   crossAxisAlignment: CrossAxisAlignment.start,
+//                   children: [
+//                     Text(
+//                       product.naam,
+//                       style: SizeScaler.getResponsiveTextStyle(
+//                           context, 20, FontWeight.bold, Colors.black),
+//                     ),
+//                     const SizedBox(height: 10),
+//                     // Text('Product Name: ${product.productNaam}'),
+//                     // Text('Category: ${product.categorie}'),
+//                     Text(
+//                       product.beschrijving,
+//                       style: SizeScaler.getResponsiveTextStyle(
+//                           context, 20, FontWeight.normal, Colors.black),
+//                     ),
+//                     const SizedBox(height: 5),
+//                     // Text(
+//                     //   'Category: ${product.categorie}',
+//                     //   style: SizeScaler.getResponsiveTextStyle(
+//                     //       context, 20, FontWeight.normal, Colors.black),
+//                     // ),
+//                     // const SizedBox(height: 5),
+//                     Text(
+//                       'Prijs: ${product.prijs}',
+//                       style: SizeScaler.getResponsiveTextStyle(
+//                           context, 20, FontWeight.normal, Colors.black),
+//                     ),
+//                     const SizedBox(height: 5),
+//                     Text('Link: ${product.link}',
+//                         style: SizeScaler.getResponsiveTextStyle(
+//                             context, 20, FontWeight.normal, Colors.black)),
+//
+//                     Row(
+//                       mainAxisAlignment: MainAxisAlignment.end,
+//                       children: [
+//                         TextButton(
+//                           child: const Text('Close'),
+//                           onPressed: () => Navigator.pop(context),
+//                         ),
+//                       ],
+//                     ),
+//                   ],
+//                 ),
+//               ),
+//             ),
+//           ),
+//         );
+//       },
+//     );
+//   }
+// }
+
 class SingleProductView extends StatelessWidget {
-  final Product product;
-  const SingleProductView({super.key, required this.product});
+  final int productId;
+
+  const SingleProductView({Key? key, required this.productId})
+      : super(key: key);
+
+  Future<Product> fetchProduct() async {
+    List<Product> products = await DataAPI().getProducts();
+    return products.firstWhere((product) => product.iD == productId);
+  }
 
   @override
   Widget build(BuildContext context) {
-    return IconButton(
-      icon: const Icon(
-        Icons.info,
-        color: Colors.black,
-      ),
-      onPressed: () {
-        showDialog(
-          context: context,
-          builder: (context) => Dialog(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10),
+    return FutureBuilder<Product>(
+      future: fetchProduct(),
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+          Product product = snapshot.data!;
+          return IconButton(
+            icon: const Icon(
+              Icons.info,
+              color: Colors.black,
             ),
-            child: Container(
-              padding: const EdgeInsets.all(16),
-              constraints: const BoxConstraints(maxHeight: 600),
-              child: SingleChildScrollView(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      product.productNaam,
-                      style: SizeScaler.getResponsiveTextStyle(
-                          context, 20, FontWeight.bold, Colors.black),
+            onPressed: () {
+              showDialog(
+                context: context,
+                builder: (context) => Dialog(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Container(
+                    padding: const EdgeInsets.all(16),
+                    constraints: const BoxConstraints(maxHeight: 600),
+                    child: SingleChildScrollView(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            product.naam,
+                            style: SizeScaler.getResponsiveTextStyle(
+                                context, 20, FontWeight.bold, Colors.black),
+                          ),
+                          const SizedBox(height: 10),
+                          Text(
+                            product.beschrijving,
+                            style: SizeScaler.getResponsiveTextStyle(
+                                context, 20, FontWeight.normal, Colors.black),
+                          ),
+                          const SizedBox(height: 5),
+                          Text(
+                            'Prijs: ${product.prijs}',
+                            style: SizeScaler.getResponsiveTextStyle(
+                                context, 20, FontWeight.normal, Colors.black),
+                          ),
+                          const SizedBox(height: 5),
+                          Text(
+                            'Link: ${product.link}',
+                            style: SizeScaler.getResponsiveTextStyle(
+                                context, 20, FontWeight.normal, Colors.black),
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              TextButton(
+                                child: const Text('Close'),
+                                onPressed: () => Navigator.pop(context),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
                     ),
-                    const SizedBox(height: 10),
-                    // Text('Product Name: ${product.productNaam}'),
-                    // Text('Category: ${product.categorie}'),
-                    Text(
-                      product.beschrijving,
-                      style: SizeScaler.getResponsiveTextStyle(
-                          context, 20, FontWeight.normal, Colors.black),
-                    ),
-                    const SizedBox(height: 5),
-                    Text(
-                      'Category: ${product.categorie}',
-                      style: SizeScaler.getResponsiveTextStyle(
-                          context, 20, FontWeight.normal, Colors.black),
-                    ),
-                    const SizedBox(height: 5),
-                    Text(
-                      'Prijs: ${product.prijs}',
-                      style: SizeScaler.getResponsiveTextStyle(
-                          context, 20, FontWeight.normal, Colors.black),
-                    ),
-                    const SizedBox(height: 5),
-                    Text('Link: ${product.link}',
-                        style: SizeScaler.getResponsiveTextStyle(
-                            context, 20, FontWeight.normal, Colors.black)),
-
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        TextButton(
-                          child: const Text('Close'),
-                          onPressed: () => Navigator.pop(context),
-                        ),
-                      ],
+                  ),
+                ),
+              );
+            },
+          );
+        } else if (snapshot.hasError) {
+          return IconButton(
+            icon: const Icon(
+              Icons.info,
+              color: Colors.black,
+            ),
+            onPressed: () {
+              // Handle error state
+              showDialog(
+                context: context,
+                builder: (context) => AlertDialog(
+                  title: const Text('Error'),
+                  content: const Text('Failed to fetch product details.'),
+                  actions: [
+                    TextButton(
+                      child: const Text('Close'),
+                      onPressed: () => Navigator.pop(context),
                     ),
                   ],
                 ),
-              ),
+              );
+            },
+          );
+        } else {
+          return IconButton(
+            icon: const Icon(
+              Icons.info,
+              color: Colors.black,
             ),
-          ),
-        );
+            onPressed: () {
+              // Display loading state
+              showDialog(
+                context: context,
+                builder: (context) => const Center(
+                  child: CircularProgressIndicator(),
+                ),
+              );
+            },
+          );
+        }
       },
     );
   }

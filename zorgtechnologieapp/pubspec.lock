@@ -139,6 +139,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.8.2"
+  selectable_list:
+    dependency: "direct main"
+    description:
+      name: selectable_list
+      sha256: "102c345d6dfccda9744d65c1fd73c806bfa8561d7e7e57b20fa333fa7c3c9db6"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.1.1"
   sky_engine:
     dependency: transitive
     description: flutter
@@ -210,3 +218,4 @@ packages:
     version: "2.1.4"
 sdks:
   dart: ">=2.19.6 <3.0.0"
+  flutter: ">=1.17.0"

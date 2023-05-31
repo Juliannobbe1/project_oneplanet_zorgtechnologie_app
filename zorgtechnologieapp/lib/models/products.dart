@@ -1,28 +1,25 @@
 class Product {
-  int? productID;
-  String productNaam;
+  int iD;
+  String naam;
   double? prijs;
   String beschrijving;
-  String? categorie;
   String? link;
   int? leverancierID;
 
   Product(
-      {this.productID,
-      required this.productNaam,
+      {required this.iD,
+      required this.naam,
       this.prijs,
       required this.beschrijving,
-      this.categorie,
       this.link,
       this.leverancierID});
 
   factory Product.fromJson(Map<String, dynamic> json) {
     return Product(
-        productID: json['productID'],
-        productNaam: json['productNaam'],
+        iD: json['ID'],
+        naam: json['naam'],
         prijs: json['prijs'],
         beschrijving: json['beschrijving'],
-        categorie: json['categorie'],
         link: json['link'],
         leverancierID: json['leverancierID']);
   }
@@ -31,11 +28,10 @@ class Product {
     final Map<String, dynamic> data = <String, dynamic>{};
     data['product'] = {
       'beschrijving': beschrijving,
-      'categorie': categorie,
-      'productID': productID,
+      'ID': iD,
       'leverancierID': leverancierID,
       'link': link,
-      'productNaam': productNaam,
+      'naam': naam,
       'prijs': prijs,
     };
     return data;

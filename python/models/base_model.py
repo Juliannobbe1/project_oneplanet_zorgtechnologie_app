@@ -12,11 +12,19 @@ class base_model:
     
     def extract(self, result): 
         data = [item['n'] for item in result.data()]
-        print(data)
+        # print(data)
         if not data: 
             abort(404, "Item not found")
         else:
             return data
+    
+    # def extract_multiple(self, result):
+    #     data = [[item['toepassing'], item['product']] for item in result.data()]
+    #     # print(data)
+    #     if not data:
+    #         abort(404, "Item not found")
+    #     else:
+    #         return data
         
     def StringToIntCheck(self, value):
         if value.isdigit():
@@ -40,7 +48,7 @@ class base_model:
             checkedValue = self.StringToIntCheck(value)
             result = session.run(f"MATCH (n:{self.label}) WHERE n.{property} = $value RETURN n", value=checkedValue)
             if result:
-                data = self.extract(result)
+                data = self.extract(result, "n")
                 return data
             else:
                 raise abort(404, "Something went wrong")

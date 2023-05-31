@@ -1,4 +1,4 @@
-from database.connect_database import database
+from connect_database import database
 import pandas as pd
 import os
 
@@ -10,68 +10,68 @@ file_paths = [os.path.join(path, file_name) for file_name in file_names]
 data = [pd.read_csv(file_path) for file_path in file_paths]
 
 nodesqueries = {
-    "product": "MERGE (:product {productNaam: $productNaam, productID: $productID, prijs: $prijs, beschrijving: $beschrijving, categorie: $categorie, link: $link, leverancierID: $leverancierID})",
-    "toepassing": "MERGE (:toepassing {toepassingID: $toepassingID, productID: $productID, toepassing: $toepassing})",
-    "review": "MERGE (:review {reviewID: $reviewID, beschrijving: $beschrijving, score: $score, datum: $datum, productID: $productID, zorgprofessionalID: $zorgprofessionalID})",
-    "zorgprofessional": "MERGE (:zorgprofessional {zorgprofessionalID: $zorgprofessionalID, zorgprofessionalNaam: $zorgprofessionalNaam, email: $email, rol: $rol, organisatieID: $organisatieID})",
-    "leverancier": "MERGE (:leverancier {leverancierID: $leverancierID, leverancierNaam: $leverancierNaam})",
-    "organisatie": "MERGE (:organisatie {organisatieID: $organisatieID, organisatieNaam: $organisatieNaam})",
-    "client": "MERGE (:client {clientID: $clientID, probleem: $probleem})",
-    "aanbeveling": "MERGE (:aanbeveling {aanbevelingID: $aanbevelingID, aanbeveling: $aanbeveling, datum: $datum, productID: $productID, zorgprofessionalID: $zorgprofessionalID})"
+    "product": "MERGE (p:product {ID: $productID, naam: $productNaam, prijs: $prijs, beschrijving: $beschrijving, link: $link, leverancierID: $leverancierID}) ON CREATE SET p.ID = $productID",
+    "toepassing": "MERGE (t:toepassing {ID: $toepassingID, productID: $productID, toepassing: $toepassing}) ON CREATE SET t.ID = $toepassingID",
+    "review": "MERGE (r:review {ID: $reviewID, beschrijving: $beschrijving, score: $score, datum: $datum, productID: $productID, zorgprofessionalID: $zorgprofessionalID}) ON CREATE SET r.ID = $reviewID",
+    "zorgprofessional": "MERGE (z:zorgprofessional {ID: $zorgprofessionalID,  naam: $zorgprofessionalNaam, email: $email, rol: $rol, organisatieID: $organisatieID}) ON CREATE SET z.ID = $zorgprofessionalID",
+    "leverancier": "MERGE (l:leverancier {ID: $leverancierID, naam: $leverancierNaam}) ON CREATE SET l.ID = $leverancierID",
+    "organisatie": "MERGE (o:organisatie {ID: $organisatieID, naam: $organisatieNaam}) ON CREATE SET o.ID = $organisatieID",
+    "client": "MERGE (c:client {ID: $clientID, probleem: $probleem}) ON CREATE SET c.ID = $clientID",
+    "aanbeveling": "MERGE (a:aanbeveling {ID: $aanbevelingID, aanbeveling: $aanbeveling, datum: $datum, productID: $productID, zorgprofessionalID: $zorgprofessionalID}) ON CREATE SET a.ID = $aanbevelingID"
 }
 
 relationshipqueries = {
     "HEEFT_TOEPASSING": """ 
-    MATCH (a:product {productID: $productID}) 
-    MATCH (b:toepassing {toepassingID: $toepassingID}) 
+    MATCH (a:product {ID: $productID}) 
+    MATCH (b:toepassing {ID: $toepassingID}) 
     MERGE (a)-[:HEEFT_TOEPASSING]->(b)
     """,
     
     "HEEFT_REVIEW": """ 
-    MATCH (a:review {reviewID: $reviewID})
-    MATCH (b:product {productID: $productID})
+    MATCH (a:review {ID: $reviewID})
+    MATCH (b:product {ID: $productID})
     MERGE (a)-[:OVER_PRODUCT]->(b) 
     """, 
     
     "GEEFT_REVIEW": """
-    MATCH (a:zorgprofessional {zorgprofessionalID: $zorgprofessionalID})
-    MATCH (b:review {reviewID: $reviewID})
+    MATCH (a:zorgprofessional {ID: $zorgprofessionalID})
+    MATCH (b:review {ID: $reviewID})
     MERGE (a)-[:GEEFT_REVIEW]->(b)
     """,
     
     "VERZORGD_CLIENT": """
-    MATCH (a:zorgprofessional {zorgprofessionalID: $zorgprofessionalID})
-    MATCH (b:client {clientID: $clientID})
+    MATCH (a:zorgprofessional {ID: $zorgprofessionalID})
+    MATCH (b:client {ID: $clientID})
     MERGE (a)-[:VERZORGD_CLIENT]->(b)
     """, 
     
     "VAN_PRODUCT": """
-    MATCH (a:aanbeveling {aanbevelingID: $aanbevelingID})
-    MATCH (b:product {productID: $productID})
+    MATCH (a:aanbeveling {ID: $aanbevelingID})
+    MATCH (b:product {ID: $productID})
     MERGE (a)-[:VAN_PRODUCT]->(b)
     """,
     
     "GEEFT_AANBEVELING": """
-    MATCH (a:zorgprofessional {zorgprofessionalID: $zorgprofessionalID})
-    MATCH (b:aanbeveling {aanbevelingID: $aanbevelingID})
+    MATCH (a:zorgprofessional {ID: $zorgprofessionalID})
+    MATCH (b:aanbeveling {ID: $aanbevelingID})
     MERGE (a)-[:GEEFT_AANBEVELING]->(b)
     """,
     
     "VERKOOPT_PRODUCT": """
-    MATCH (a:leverancier {leverancierID: $leverancierID})
-    MATCH (b:product {productID: $productID})
+    MATCH (a:leverancier {ID: $leverancierID})
+    MATCH (b:product {ID: $productID})
     MERGE (a)-[:VERKOOPT_PRODUCT]->(b)
     """,
     
     "WERKT_VOOR": """
-    MATCH (a:zorgprofessional {zorgprofessionalID: $zorgprofessionalID})
-    MATCH (b:organisatie {organisatieID: $organisatieID})
+    MATCH (a:zorgprofessional {ID: $zorgprofessionalID})
+    MATCH (b:organisatie {ID: $organisatieID})
     MERGE (a)-[:WERKT_VOOR]->(b)
     """, 
     
     "HEEFT_CONTRACT_MET": """
-    MATCH (a:organisatie {organisatieID: $organisatieID})
-    MATCH (b:leverancier {leverancierID: $leverancierID})
+    MATCH (a:organisatie {ID: $organisatieID})
+    MATCH (b:leverancier {ID: $leverancierID})
     MERGE (a)-[:HEEFT_CONTRACT_MET]->(b)
     """
 }
@@ -109,7 +109,7 @@ with driver.session() as session:
     # Product
     for index, row in data[6].iterrows():
         # Create nodes
-        session.run(nodesqueries["product"], productNaam=row["productNaam"], productID=row["productID"], prijs=row["prijs"], beschrijving=row["beschrijving"], categorie=row["categorie"], link=row["link"], leverancierID=row["leverancierID"])
+        session.run(nodesqueries["product"], productNaam=row["productNaam"], productID=row["productID"], prijs=row["prijs"], beschrijving=row["beschrijving"], link=row["link"], leverancierID=row["leverancierID"])
         # Create relationship
         session.run(relationshipqueries["VERKOOPT_PRODUCT"], leverancierID=row["leverancierID"], productID=row["productID"]) 
     
