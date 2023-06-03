@@ -1,0 +1,81 @@
+toepassingID,toepassing,productID
+1,Dagstructuur,2
+2,Rust,2
+3,Voeding,2
+4,Eenzaamheid,2
+5,Dwalen,4
+6,Valpreventie,5
+7,Medicijnenbeheer,7
+8,Communicatie,9
+9,Mobiliteit,1
+10,Veiligheid,4
+11,Entertainment,2
+12,Therapieondersteuning,9
+13,Sociale interactie,1
+14,Zelfzorg,5
+15,Mentale stimulatie,10
+16,Activiteitentracking,3
+17,Slaapverbetering,8
+18,Gezondheidsmonitoring,6
+19,Pijnmanagement,4
+20,Gewichtsbeheersing,7
+21,Hartslagmonitoring,3
+22,Stressvermindering,10
+23,Valdetectie,5
+24,Dieetbeheer,9
+25,Meditatie,8
+26,Drempel,11
+27,Medicijnenbeheer,12
+28,Automatiseren,13
+29,Douche en badkruk,14
+30,Mobiliteit,15
+31,Afstandsbediening,16
+32,Drempel,17
+33,Medicijnenbeheer,18
+34,Automatiseren,19
+35,Douche en badlift,20
+36,Mobiliteit,21
+37,Bloeddrukmeter,22
+38,Deurbel,23
+39,Schepplaat,24
+40,Mobiliteit,25
+41,Thermometer,26
+42,Douche en badkussen,27
+43,Daglichtlamp,28
+44,Douchestoel,29
+45,Rollator-tas,30
+46,Horloge,31
+47,Medicijnenbeheer,32
+48,Anti-slipmat,33
+49,Greepverdikkers,34
+50,Beddienblad,35
+51,Drempel,36
+52,Sprekende wekker,37
+53,Douche en bad Stoelverhoger,38
+54,Bloeddrukmeter,39
+55,Greepverdikkers,34
+56,Mobiliteit,25
+57,Thermometer,26
+58,Douche en badkussen,27
+59,Daglichtlamp,28
+60,Douchestoel,29
+61,Rollator-tas,30
+62,Horloge,31
+63,Medicijnenbeheer,32
+64,Anti-slipmat,33
+65,Greepverdikkers,34
+66,Beddienblad,35
+67,Inklapbare Drempel,36
+68,Sprekende wekker,37
+69,Douche en bad Stoelverhoger,38
+70,Bloeddrukmeter,39
+71,Opvouwbare Drempel,11
+72,Medicijnenbeheer,12
+73,Automatiseren,13
+74,Douche Verstelbare Kruk,14
+75,Elektrische Rolstoel,15
+76,Spraakgestuurde Afstandsbediening,16
+77,Opvouwbare Drempel,17
+78,Medicijnenbeheer,18
+79,Automatiseren,19
+80,Douche en badlift,20

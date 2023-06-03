@@ -101,7 +101,6 @@ class _TabletSelectionScreenState extends State<TabletSelectionScreen> {
                                   context, 15, FontWeight.bold, Colors.black),
                             ),
                           ),
-                          //! needs change before it works
                           FutureBuilder<List<Toepassing>>(
                             future: DataAPI().distinctToepassing(),
                             builder: (context, snapshot) {
@@ -143,82 +142,6 @@ class _TabletSelectionScreenState extends State<TabletSelectionScreen> {
                               }
                             },
                           ),
-
-                          // return SizedBox(
-                          //   height: 450,
-                          //   child: ListView.builder(
-                          //     itemCount: products.length,
-                          //     itemBuilder: (context, index) {
-                          //       final product = products[index];
-                          //       return Padding(
-                          //         padding: const EdgeInsets.fromLTRB(
-                          //             15.0, 10.0, 15.0, 10.0),
-                          //         child: Material(
-                          //           elevation: 5,
-                          //           borderRadius: const BorderRadius.all(
-                          //               Radius.circular(10)),
-                          //           child: Container(
-                          //             decoration: BoxDecoration(
-                          //               borderRadius:
-                          //                   const BorderRadius.all(
-                          //                 Radius.circular(10),
-                          //               ),
-                          //               color: Colors.blue[500],
-                          //             ),
-                          //             child: Padding(
-                          //               padding: EdgeInsets.only(
-                          //                   top: screenHeight * 0.02,
-                          //                   bottom: screenHeight * 0.02,
-                          //                   left: screenWidth * 0.01,
-                          //                   right: screenWidth * 0.01),
-                          //               child: ListTile(
-                          //                 title: Text(
-                          //                   product.naam,
-                          //                   style: SizeScaler
-                          //                       .getResponsiveTextStyle(
-                          //                           context,
-                          //                           18,
-                          //                           FontWeight.bold,
-                          //                           Colors.white),
-                          //                 ),
-                          //                 subtitle: Text(
-                          //                   product.beschrijving,
-                          //                   style: SizeScaler
-                          //                       .getResponsiveTextStyle(
-                          //                           context,
-                          //                           17,
-                          //                           FontWeight.normal,
-                          //                           Colors.white),
-                          //                 ),
-                          //                 // trailing: SingleProductView(
-                          //                 //   product: product,
-                          //                 // ),
-                          //               ),
-                          //             ),
-                          //           ),
-                          //         ),
-                          //       );
-                          //     },
-                          //   ),
-                          // );
-
-                          // SelectableList<HeeftToepassing, String?>(
-                          //   items: toepassingen,
-                          //   itemBuilder: (context, toepassing, selected,
-                          //           onTap) =>
-                          //       ListTile(
-                          //           title: Text(toepassing.toepassing),
-                          //           subtitle: Text(
-                          //               '${products.catogorie.toString()} years old'),
-                          //           selected: selected,
-                          //           onTap: onTap),
-                          //   valueSelector: (product) => product.productNaam,
-                          //   selectedValue: selectedProduct,
-                          //   onItemSelected: (person) => setState(
-                          //       () => selectedProduct = product.productNaam),
-                          //   onItemDeselected: (person) =>
-                          //       setState(() => selectedProduct = null),
-                          // ),
                         ],
                       ),
                     ),
@@ -256,6 +179,17 @@ class _TabletSelectionScreenState extends State<TabletSelectionScreen> {
                             builder: (context, snapshot) {
                               if (snapshot.hasData) {
                                 final products = snapshot.data!;
+
+                                //? edit point
+                                final filteredProducts = selectedToepassing !=
+                                        null
+                                    ? products
+                                        .where((product) =>
+                                            product.iD ==
+                                            selectedToepassing) // Filter products based on selected item
+                                        .toList()
+                                    : products;
+
                                 return SizedBox(
                                   height: 450,
                                   child: ListView.builder(
@@ -334,226 +268,6 @@ class _TabletSelectionScreenState extends State<TabletSelectionScreen> {
     );
   }
 }
-
-// class TabletSelectionScreen extends StatelessWidget {
-//   final double screenWidth;
-//   final double screenHeight;
-//   const TabletSelectionScreen(
-//       {super.key, required this.screenWidth, required this.screenHeight});
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Padding(
-//       padding: EdgeInsets.fromLTRB(screenWidth * 0.02, screenHeight * 0.025,
-//           screenWidth * 0.02, screenHeight * 0.05),
-//       child: Column(
-//         children: [
-//           Padding(
-//             padding: const EdgeInsets.fromLTRB(20.0, 5.0, 15.0, 15.0),
-//             child: Text(
-//               "Welkom bij de keuze gids. De gids zal u enkele vragen stellen om u te helpen bij het vinden van de juiste zorgtechnologie om uw cliënt bij te staan in hun zorgvraag. Selecteer een van de opties hieronder om te beginnen.",
-//               style: SizeScaler.getResponsiveTextStyle(
-//                   context, 15, FontWeight.normal, Colors.black),
-//             ),
-//           ),
-//           Row(
-//             children: [
-//               Expanded(
-//                 flex: 1,
-//                 child: Container(
-//                   height: screenHeight * 0.75,
-//                   color: Colors.transparent,
-//                   child: Padding(
-//                     padding: const EdgeInsets.all(10.0),
-//                     child: Card(
-//                       elevation: 5,
-//                       shape: RoundedRectangleBorder(
-//                           borderRadius: BorderRadius.circular(10)),
-//                       color: Colors.blue[200],
-//                       child: Column(
-//                         children: [
-//                           SizedBox(
-//                             height: screenHeight * 0.05,
-//                           ),
-//                           Padding(
-//                             padding:
-//                                 const EdgeInsets.only(left: 10.0, right: 10),
-//                             child: Text(
-//                               "Selecteer de zorgbehoeften van uw cliënt",
-//                               style: SizeScaler.getResponsiveTextStyle(
-//                                   context, 15, FontWeight.bold, Colors.black),
-//                             ),
-//                           ),
-//                           //! needs change before it works
-//                           SelectableList<HeeftToepassing, String?>(
-//                             items: toepassingen,
-//                             itemBuilder: (context, toepassing, selected,
-//                                     onTap) =>
-//                                 ListTile(
-//                                     title: Text(toepassing.toepassing),
-//                                     subtitle: Text(
-//                                         '${products.catogorie.toString()} years old'),
-//                                     selected: selected,
-//                                     onTap: onTap),
-//                             valueSelector: (product) => product.productNaam,
-//                             selectedValue: selectedProduct,
-//                             onItemSelected: (person) => setState(
-//                                 () => selectedProduct = product.productNaam),
-//                             onItemDeselected: (person) =>
-//                                 setState(() => selectedProduct = null),
-//                           ),
-//                         ],
-//                       ),
-//                     ),
-//                   ),
-//                 ),
-//               ),
-//               Expanded(
-//                 flex: 2,
-//                 child: Container(
-//                   height: screenHeight * 0.75,
-//                   color: Colors.transparent,
-//                   child: Padding(
-//                     padding: const EdgeInsets.all(10.0),
-//                     child: Card(
-//                       elevation: 5,
-//                       shape: RoundedRectangleBorder(
-//                           borderRadius: BorderRadius.circular(10)),
-//                       color: Colors.blue[200],
-//                       child: Column(
-//                         children: [
-//                           SizedBox(
-//                             height: screenHeight * 0.05,
-//                           ),
-//                           Text(
-//                             "Results",
-//                             style: SizeScaler.getResponsiveTextStyle(
-//                                 context, 20, FontWeight.bold, Colors.black),
-//                           ),
-//                           SizedBox(
-//                             height: screenHeight * 0.05,
-//                           ),
-//                           // ! Replace with algorithme function
-//                           FutureBuilder<List<Product>>(
-//                             future: ApiCall().getProducts(),
-//                             builder: (context, snapshot) {
-//                               if (snapshot.hasData) {
-//                                 final products = snapshot.data!;
-//                                 return SizedBox(
-//                                   height: 450,
-//                                   child: ListView.builder(
-//                                     itemCount: products.length,
-//                                     itemBuilder: (context, index) {
-//                                       final product = products[index];
-//                                       return Padding(
-//                                         padding: const EdgeInsets.fromLTRB(
-//                                             15.0, 10.0, 15.0, 10.0),
-//                                         child: Material(
-//                                           elevation: 5,
-//                                           borderRadius: const BorderRadius.all(
-//                                               Radius.circular(10)),
-//                                           child: Container(
-//                                             decoration: BoxDecoration(
-//                                               borderRadius:
-//                                                   const BorderRadius.all(
-//                                                 Radius.circular(10),
-//                                               ),
-//                                               color: Colors.blue[500],
-//                                             ),
-//                                             child: Padding(
-//                                               padding: EdgeInsets.only(
-//                                                   top: screenHeight * 0.02,
-//                                                   bottom: screenHeight * 0.02,
-//                                                   left: screenWidth * 0.01,
-//                                                   right: screenWidth * 0.01),
-//                                               child: ListTile(
-//                                                 title: Text(
-//                                                   product.naam,
-//                                                   style: SizeScaler
-//                                                       .getResponsiveTextStyle(
-//                                                           context,
-//                                                           18,
-//                                                           FontWeight.bold,
-//                                                           Colors.white),
-//                                                 ),
-//                                                 subtitle: Text(
-//                                                   product.beschrijving,
-//                                                   style: SizeScaler
-//                                                       .getResponsiveTextStyle(
-//                                                           context,
-//                                                           17,
-//                                                           FontWeight.normal,
-//                                                           Colors.white),
-//                                                 ),
-//                                                 // trailing: SingleProductView(
-//                                                 //   product: product,
-//                                                 // ),
-//                                               ),
-//                                             ),
-//                                           ),
-//                                         ),
-//                                       );
-//                                     },
-//                                   ),
-//                                 );
-//                               } else if (snapshot.hasError) {
-//                                 return Center(child: Text("${snapshot.error}"));
-//                               } else {
-//                                 return const Center(
-//                                     child: CircularProgressIndicator());
-//                               }
-//                             },
-//                           ),
-//                         ],
-//                       ),
-//                     ),
-//                   ),
-//                 ),
-//               ),
-//             ],
-//           ),
-//         ],
-//       ),
-//     );
-//   }
-// Widget build(BuildContext context) {
-//   return SingleChildScrollView(
-//     child: Column(
-//       children: [
-//         Expanded(
-//           child: Row(
-//             children: [
-//               Expanded(
-//                 child: Card(
-//                   child: Container(
-//                     height: screenHeight * 0.8,
-//                     color: Colors.lightGreen,
-//                   ),
-//                 ),
-//               ),
-//               const VerticalDivider(
-//                 color: Colors.black, // color of divider
-//                 width: 10, // width space of divider
-//                 thickness: 5, // thickness of divider line
-//                 indent: 10, // Spacing at the top of divider.
-//                 endIndent: 10, // Spacing at the bottom of divider.
-//               ),
-//               Expanded(
-//                 child: Card(
-//                   child: Container(
-//                     height: screenHeight * 0.8,
-//                     color: Colors.deepOrange,
-//                   ),
-//                 ),
-//               )
-//             ],
-//           ),
-//         )
-//       ],
-//     ),
-//   );
-// }
-// }
 
 class PhoneSelectionScreen extends StatelessWidget {
   final double screenWidth;

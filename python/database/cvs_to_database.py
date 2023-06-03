@@ -5,7 +5,7 @@ import os
 driver = database.connectDatabase()
 
 path = "/Users/juliannobbe/Projects/flutter projects/project_oneplanet_zorgtechnologie_app/mockdata"
-file_names = ["Leverancier v2.csv", "Organisatie v3.csv", "client v2.csv", "Zorgprofessional v2.csv", "verzorgd.csv", "contracten v2.csv", "Producten v2.csv", "review v2.csv", "toepassing v2.csv", "aanbeveling v2.csv"]
+file_names = ["Leverancier v2.csv", "Organisatie v3.csv", "client v3.csv", "Zorgprofessional v2.csv", "verzorgd v2.csv", "contracten v2.csv", "Producten v2.csv", "review v2.csv", "toepassing v3.csv", "aanbeveling v3.csv"]
 file_paths = [os.path.join(path, file_name) for file_name in file_names]
 data = [pd.read_csv(file_path) for file_path in file_paths]
 
@@ -17,7 +17,7 @@ nodesqueries = {
     "leverancier": "MERGE (l:leverancier {ID: $leverancierID, naam: $leverancierNaam}) ON CREATE SET l.ID = $leverancierID",
     "organisatie": "MERGE (o:organisatie {ID: $organisatieID, naam: $organisatieNaam}) ON CREATE SET o.ID = $organisatieID",
     "client": "MERGE (c:client {ID: $clientID, probleem: $probleem}) ON CREATE SET c.ID = $clientID",
-    "aanbeveling": "MERGE (a:aanbeveling {ID: $aanbevelingID, aanbeveling: $aanbeveling, datum: $datum, productID: $productID, zorgprofessionalID: $zorgprofessionalID}) ON CREATE SET a.ID = $aanbevelingID"
+    # "aanbeveling": "MERGE (a:aanbeveling {ID: $aanbevelingID, aanbeveling: $aanbeveling, datum: $datum, productID: $productID, zorgprofessionalID: $zorgprofessionalID}) ON CREATE SET a.ID = $aanbevelingID"
 }
 
 relationshipqueries = {
@@ -51,10 +51,10 @@ relationshipqueries = {
     MERGE (a)-[:VAN_PRODUCT]->(b)
     """,
     
-    "GEEFT_AANBEVELING": """
+    "KRIJGT_AANBEVELING": """
     MATCH (a:zorgprofessional {ID: $zorgprofessionalID})
-    MATCH (b:aanbeveling {ID: $aanbevelingID})
-    MERGE (a)-[:GEEFT_AANBEVELING]->(b)
+    MATCH (b:product {ID: $productID})
+    MERGE (a)-[:KRIJGT_AANBEVELING {zorgprofessionalID:$zorgprofessionalID,clientID:$clientID,productID:$productID}]->(b)
     """,
     
     "VERKOOPT_PRODUCT": """
@@ -131,8 +131,8 @@ with driver.session() as session:
     # aanbeveling
     for index, row in data[9].iterrows():
         # Create nodes
-        session.run(nodesqueries["aanbeveling"], aanbevelingID=row["aanbevelingID"], aanbeveling=row["aanbeveling"], datum=pd.to_datetime(row['datum']).strftime('%Y-%m-%d'), productID=row["productID"], zorgprofessionalID=row["zorgprofessionalID"])
+        # session.run(nodesqueries["aanbeveling"], aanbevelingID=row["aanbevelingID"], productID=row["productID"], zorgprofessionalID=row["zorgprofessionalID"])
         # Create relationship
-        session.run(relationshipqueries["VAN_PRODUCT"], aanbevelingID=row["aanbevelingID"], productID=row["productID"])
-        session.run(relationshipqueries["GEEFT_AANBEVELING"], zorgprofessionalID=row["zorgprofessionalID"], aanbevelingID=row["aanbevelingID"])
+        # session.run(relationshipqueries["VAN_PRODUCT"], aanbevelingID=row["aanbevelingID"], productID=row["productID"])
+        session.run(relationshipqueries["KRIJGT_AANBEVELING"], zorgprofessionalID=row["zorgprofessionalID"], productID=row["productID"], clientID=row["clientID"])
         
