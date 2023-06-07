@@ -14,6 +14,16 @@ class Product {
       this.link,
       this.leverancierID});
 
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is Product &&
+          runtimeType == other.runtimeType &&
+          naam == other.naam;
+
+  @override
+  int get hashCode => naam.hashCode;
+
   factory Product.fromJson(Map<String, dynamic> json) {
     return Product(
         iD: json['ID'],

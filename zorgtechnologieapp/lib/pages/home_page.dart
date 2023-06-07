@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../handlers/data_api_handler.dart';
 import '../handlers/responsive_layout_handler.dart';
 import '../models/products.dart';
+import '../widgets/futurebuilder.dart';
 import 'products_page.dart';
 import 'selection_guide.dart';
 
@@ -58,6 +59,7 @@ class TabletHomeScreen extends StatelessWidget {
         children: [
           Row(
             children: [
+              //button to keuzegids
               Expanded(
                 flex: 1,
                 child: Padding(
@@ -93,6 +95,8 @@ class TabletHomeScreen extends StatelessWidget {
                   ),
                 ),
               ),
+
+              //button to catalogus
               Expanded(
                 flex: 1,
                 child: Padding(
@@ -130,6 +134,8 @@ class TabletHomeScreen extends StatelessWidget {
               ),
             ],
           ),
+
+          //newest products
           Padding(
             padding: EdgeInsets.only(
                 left: screenWidth * 0.025, top: screenWidth * 0.05),
@@ -139,77 +145,7 @@ class TabletHomeScreen extends StatelessWidget {
                   context, 21, FontWeight.bold, Colors.black),
             ),
           ),
-          // DataAPI().buildListFutureBuilder(DataAPI().newestProducts()),
-          FutureBuilder<List<Product>>(
-            future: DataAPI().newestProducts(),
-            builder: (context, snapshot) {
-              if (snapshot.hasData) {
-                final products = snapshot.data!;
-                return Padding(
-                  padding: const EdgeInsets.fromLTRB(10, 0, 10, 10.0),
-                  child: SizedBox(
-                    height: screenHeight > 900
-                        ? screenHeight * 0.65
-                        : screenHeight *
-                            0.50, // Specify the desired height for the ListView
-                    child: GridView.builder(
-                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 2, // Number of columns in the grid
-                        childAspectRatio: screenHeight > 900
-                            ? 3.5
-                            : 4.5, // Width to height ratio of each grid item
-                      ),
-                      itemCount: products.length,
-                      itemBuilder: (context, index) {
-                        final product = products[index];
-                        return Padding(
-                          padding: const EdgeInsets.fromLTRB(20, 25, 20, 5),
-                          child: Material(
-                            elevation: 10,
-                            borderRadius:
-                                const BorderRadius.all(Radius.circular(10)),
-                            child: Container(
-                              decoration: BoxDecoration(
-                                borderRadius: const BorderRadius.all(
-                                  Radius.circular(10),
-                                ),
-                                color: Colors.blue[500],
-                              ),
-                              child: ListTile(
-                                title: Text(
-                                  product.naam,
-                                  style: SizeScaler.getResponsiveTextStyle(
-                                      context,
-                                      18,
-                                      FontWeight.bold,
-                                      Colors.white),
-                                ),
-                                // subtitle: Text(
-                                //   // 'Categorie: ${product.categorie}',
-                                //   style: SizeScaler.getResponsiveTextStyle(
-                                //       context,
-                                //       16,
-                                //       FontWeight.normal,
-                                //       Colors.white),
-                                // ),
-                                trailing: SingleProductView(
-                                  productId: product.iD,
-                                ),
-                              ),
-                            ),
-                          ),
-                        );
-                      },
-                    ),
-                  ),
-                );
-              } else if (snapshot.hasError) {
-                return Center(child: Text("${snapshot.error}"));
-              } else {
-                return const Center(child: CircularProgressIndicator());
-              }
-            },
-          ),
+          ScreenWithFetcher(fetchData: DataAPI().newestProducts, count: 2),
         ],
       ),
     );
