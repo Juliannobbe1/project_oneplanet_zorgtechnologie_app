@@ -145,7 +145,11 @@ class TabletHomeScreen extends StatelessWidget {
                   context, 21, FontWeight.bold, Colors.black),
             ),
           ),
-          ScreenWithFetcher(fetchData: DataAPI().newestProducts, count: 2),
+          FutureDataWidget(
+            fetchData: DataAPI().newestProducts,
+            countRow: 2,
+            widgetType: FutureWidgetType.gridView,
+          ),
         ],
       ),
     );

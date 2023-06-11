@@ -1,11 +1,10 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
-import 'package:zorgtechnologieapp/models/toepassing.dart';
+import 'package:zorgtechnologieapp/widgets/futurebuilder.dart';
 
 import '../handlers/data_api_handler.dart';
 import '../handlers/responsive_layout_handler.dart';
 import '../models/products.dart';
-import 'package:selectable_list/selectable_list.dart';
 
 class SelectionGuidePage extends StatelessWidget {
   const SelectionGuidePage({super.key});
@@ -55,8 +54,13 @@ class TabletSelectionScreen extends StatefulWidget {
 }
 
 class _TabletSelectionScreenState extends State<TabletSelectionScreen> {
-  String? selectedToepassing;
-  String? selectedProduct;
+  String? selectedProbleem;
+
+  void handleItemSelected(String? item) {
+    setState(() {
+      selectedProbleem = item;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -89,32 +93,35 @@ class _TabletSelectionScreenState extends State<TabletSelectionScreen> {
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10)),
                       color: Colors.blue[200],
-                      child: SingleChildScrollView(
-                        child: Column(
-                          children: [
-                            SizedBox(
-                              height: screenHeight * 0.05,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          SizedBox(
+                            height: screenHeight * 0.05,
+                          ),
+                          Padding(
+                            padding:
+                                const EdgeInsets.only(left: 10.0, right: 10),
+                            child: Text(
+                              "Selecteer de zorgbehoeften van uw cliënt",
+                              style: SizeScaler.getResponsiveTextStyle(
+                                  context, 15, FontWeight.bold, Colors.black),
                             ),
-                            Padding(
-                              padding:
-                                  const EdgeInsets.only(left: 10.0, right: 10),
-                              child: Text(
-                                "Selecteer de zorgbehoeften van uw cliënt",
-                                style: SizeScaler.getResponsiveTextStyle(
-                                    context, 15, FontWeight.bold, Colors.black),
-                              ),
+                          ),
+                          Expanded(
+                            child: FutureDataWidget(
+                              fetchData: DataAPI().distinctProbleem,
+                              widgetType: FutureWidgetType.selectableList,
                             ),
-                            listToepassing(),
-                            selectedToepassing != null
-                                ? listProducts()
-                                : Container(),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
                     ),
                   ),
                 ),
               ),
+
+              //results container
               Expanded(
                 flex: 2,
                 child: Container(
@@ -148,14 +155,14 @@ class _TabletSelectionScreenState extends State<TabletSelectionScreen> {
                                 final products = snapshot.data!;
 
                                 //? edit point
-                                final filteredProducts = selectedToepassing !=
-                                        null
-                                    ? products
-                                        .where((product) =>
-                                            product.iD ==
-                                            selectedToepassing) // Filter products based on selected item
-                                        .toList()
-                                    : products;
+                                // final filteredProducts = selectedProbleem !=
+                                //         null
+                                //     ? products
+                                //         .where((product) =>
+                                //             product.iD ==
+                                //             selectedProbleem) // Filter products based on selected item
+                                //         .toList()
+                                //     : products;
 
                                 return SizedBox(
                                   height: 450,
@@ -236,95 +243,95 @@ class _TabletSelectionScreenState extends State<TabletSelectionScreen> {
   }
 
   //local method
-  FutureBuilder<List<Toepassing>> listToepassing() {
-    return FutureBuilder<List<Toepassing>>(
-      future: DataAPI().distinctToepassing(),
-      builder: (context, snapshot) {
-        if (snapshot.hasData) {
-          final toepassingen = snapshot.data!;
-          final limitedToepassingen =
-              toepassingen.take(5).toList(); // Limit to 5 items
-          return SelectableList<Toepassing, String?>(
-            items: limitedToepassingen,
-            itemBuilder: (context, toepassing, selected, onTap) => Card(
-              elevation: 2.0,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(
-                    10.0), // Set the border radius to make the edges round
-              ),
-              color: Colors.blue[100],
-              child: ListTile(
-                title: Text(toepassing.toepassing),
-                selected: selected,
-                onTap: onTap,
-              ),
-            ),
-            valueSelector: (toepassing) => toepassing.toepassing,
-            selectedValue: selectedToepassing,
-            onItemSelected: (toepassing) {
-              setState(() {
-                selectedToepassing =
-                    toepassing.toepassing; // Assign selected item
-              });
-            },
-            onItemDeselected: (toepassing) {
-              setState(() {
-                selectedToepassing = null; // Deselect the item
-              });
-            },
-          );
-        } else if (snapshot.hasError) {
-          return Center(child: Text("${snapshot.error}"));
-        } else {
-          return const Center(child: CircularProgressIndicator());
-        }
-      },
-    );
-  }
+  // FutureBuilder<List<Toepassing>> listToepassing() {
+  //   return FutureBuilder<List<Toepassing>>(
+  //     future: DataAPI().distinctToepassing(),
+  //     builder: (context, snapshot) {
+  //       if (snapshot.hasData) {
+  //         final toepassingen = snapshot.data!;
+  //         final limitedToepassingen =
+  //             toepassingen.take(5).toList(); // Limit to 5 items
+  //         return SelectableList<Toepassing, String?>(
+  //           items: limitedToepassingen,
+  //           itemBuilder: (context, toepassing, selected, onTap) => Card(
+  //             elevation: 2.0,
+  //             shape: RoundedRectangleBorder(
+  //               borderRadius: BorderRadius.circular(
+  //                   10.0), // Set the border radius to make the edges round
+  //             ),
+  //             color: Colors.blue[100],
+  //             child: ListTile(
+  //               title: Text(toepassing.toepassing),
+  //               selected: selected,
+  //               onTap: onTap,
+  //             ),
+  //           ),
+  //           valueSelector: (toepassing) => toepassing.toepassing,
+  //           selectedValue: selectedToepassing,
+  //           onItemSelected: (toepassing) {
+  //             setState(() {
+  //               selectedToepassing =
+  //                   toepassing.toepassing; // Assign selected item
+  //             });
+  //           },
+  //           onItemDeselected: (toepassing) {
+  //             setState(() {
+  //               selectedToepassing = null; // Deselect the item
+  //             });
+  //           },
+  //         );
+  //       } else if (snapshot.hasError) {
+  //         return Center(child: Text("${snapshot.error}"));
+  //       } else {
+  //         return const Center(child: CircularProgressIndicator());
+  //       }
+  //     },
+  //   );
+  // }
 
-  FutureBuilder<List<Product>> listProducts() {
-    return FutureBuilder<List<Product>>(
-      future: DataAPI().newestProducts(),
-      builder: (context, snapshot) {
-        if (snapshot.hasData) {
-          final product = snapshot.data!;
-          final limitedProduct = product.take(5).toList(); // Limit to 5 items
-          return SelectableList<Product, String?>(
-            items: limitedProduct,
-            itemBuilder: (context, product, selected, onTap) => Card(
-              elevation: 2.0,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(
-                    10.0), // Set the border radius to make the edges round
-              ),
-              color: Colors.white70,
-              child: ListTile(
-                title: Text(product.naam),
-                selected: selected,
-                onTap: onTap,
-              ),
-            ),
-            valueSelector: (product) => product.naam,
-            selectedValue: selectedProduct,
-            onItemSelected: (product) {
-              setState(() {
-                selectedProduct = product.naam; // Assign selected item
-              });
-            },
-            onItemDeselected: (product) {
-              setState(() {
-                selectedProduct = null; // Deselect the item
-              });
-            },
-          );
-        } else if (snapshot.hasError) {
-          return Center(child: Text("${snapshot.error}"));
-        } else {
-          return const Center(child: CircularProgressIndicator());
-        }
-      },
-    );
-  }
+  // FutureBuilder<List<Product>> listProducts() {
+  //   return FutureBuilder<List<Product>>(
+  //     future: DataAPI().newestProducts(),
+  //     builder: (context, snapshot) {
+  //       if (snapshot.hasData) {
+  //         final product = snapshot.data!;
+  //         final limitedProduct = product.take(5).toList(); // Limit to 5 items
+  //         return SelectableList<Product, String?>(
+  //           items: limitedProduct,
+  //           itemBuilder: (context, product, selected, onTap) => Card(
+  //             elevation: 2.0,
+  //             shape: RoundedRectangleBorder(
+  //               borderRadius: BorderRadius.circular(
+  //                   10.0), // Set the border radius to make the edges round
+  //             ),
+  //             color: Colors.white70,
+  //             child: ListTile(
+  //               title: Text(product.naam),
+  //               selected: selected,
+  //               onTap: onTap,
+  //             ),
+  //           ),
+  //           valueSelector: (product) => product.naam,
+  //           selectedValue: selectedProduct,
+  //           onItemSelected: (product) {
+  //             setState(() {
+  //               selectedProduct = product.naam; // Assign selected item
+  //             });
+  //           },
+  //           onItemDeselected: (product) {
+  //             setState(() {
+  //               selectedProduct = null; // Deselect the item
+  //             });
+  //           },
+  //         );
+  //       } else if (snapshot.hasError) {
+  //         return Center(child: Text("${snapshot.error}"));
+  //       } else {
+  //         return const Center(child: CircularProgressIndicator());
+  //       }
+  //     },
+  //   );
+  // }
 
   // FutureBuilder<List<Toepassing>> toepassingList() {
   //   return FutureBuilder<List<Toepassing>>(
@@ -397,8 +404,8 @@ class _PhoneSelectionScreenState extends State<PhoneSelectionScreen> {
               SizedBox(
                 height: screenHeight * 0.05,
               ),
-              Padding(
-                padding: const EdgeInsets.only(left: 10.0, right: 10),
+              const Padding(
+                padding: EdgeInsets.only(left: 10.0, right: 10),
                 child: AutoSizeText(
                   "Selecteer de zorgbehoeften van uw cliënt",
                   maxFontSize: 25,

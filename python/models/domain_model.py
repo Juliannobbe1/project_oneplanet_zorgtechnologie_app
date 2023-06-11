@@ -15,7 +15,7 @@ class Application(base_model):
             result = session.run(query)
             if result: 
                 extracted_data = [{'toepassing': item['toepassing.toepassing'], 'productnaam': item['product.naam'], 'beschrijving': item['product.beschrijving'], 'productID': item['toepassing.productID'], 'ID': item['toepassing.ID']} for item in result.data()]
-                print("extracted_data", extracted_data)
+               
                 
                 return extracted_data
             else: 
@@ -30,23 +30,22 @@ class Application(base_model):
                 return data
             else: 
                 return abort(404, "Something went wrong")
-        # with self.driver.session() as session:
-        #     result = session.run(f"MATCH (t:toepassing)<-[ht:HEEFT_TOEPASSING]-(p) RETURN t, p")
-        #     if result:
-        #         print("result: ", result.data())
-        #         data = self.extract(result, "t")
-        #         # prodata = self.extract(result, "p")
-                
-        #         # print("prodata: ", prodata)
-        #         return data
-        #     else:
-        #         return abort(404, "Something went wrong")
     
 class Client(base_model):
     def __init__(self, driver):
         super().__init__("client", driver=driver)
         self.model_data['ID'] = fields.Integer(required=True)
         self.model_data['probleem'] = fields.String(required=True)
+        
+    def getDistinctProblems(self):
+        query = f"MATCH(n:client) WITH n.probleem as n RETURN DISTINCT n"
+        with self.driver.session() as session:
+            result = session.run(query)
+            if result:
+                data = self.extract(result)
+                return data
+            else: 
+                return abort(404, "Something went wrong")
         
 class HealthcareProfessional(base_model):
     def __init__(self, driver):

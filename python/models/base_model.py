@@ -12,19 +12,11 @@ class base_model:
     
     def extract(self, result): 
         data = [item['n'] for item in result.data()]
-        # print(data)
+        
         if not data: 
             abort(404, "Item not found")
         else:
             return data
-    
-    # def extract_multiple(self, result):
-    #     data = [[item['toepassing'], item['product']] for item in result.data()]
-    #     # print(data)
-    #     if not data:
-    #         abort(404, "Item not found")
-    #     else:
-    #         return data
         
     def StringToIntCheck(self, value):
         if value.isdigit():
@@ -36,8 +28,6 @@ class base_model:
         with self.driver.session() as session:
             result = session.run(query)
             if result: 
-                print(result)
-                # Extract the data
                 data = self.extract(result)
                 return data
             else: 

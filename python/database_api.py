@@ -222,6 +222,11 @@ class ClientPropertyResource(Resource):
 
         client.create(property_list, value_list)
         return jsonify({"message": "Organisation created succesfully."})
+    
+@client_ns.route('/distinct-problem')
+class DistinctApplication(Resource):
+    def get(self):
+        return client.getDistinctProblems()
 
 @application_ns.route('/')
 class ApplicationResource(Resource):
