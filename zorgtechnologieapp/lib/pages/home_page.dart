@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:zorgtechnologieapp/pages/client_overview_page.dart';
 
 import '../handlers/data_api_handler.dart';
 import '../handlers/responsive_layout_handler.dart';
@@ -81,7 +82,8 @@ class TabletHomeScreen extends StatelessWidget {
                           ),
                           onPressed: () {
                             Navigator.of(context).push(MaterialPageRoute(
-                              builder: (context) => const SelectionGuidePage(),
+                              builder: (context) =>
+                                  const ClientOverview(), //const SelectionGuidePage(),
                             ));
                           },
                           child: Text(
@@ -146,10 +148,10 @@ class TabletHomeScreen extends StatelessWidget {
             ),
           ),
           FutureDataWidget(
-            fetchData: DataAPI().newestProducts,
-            countRow: 2,
-            widgetType: FutureWidgetType.gridView,
-          ),
+              fetchData: DataAPI().newestProducts(),
+              countRow: 2,
+              widgetType: FutureWidgetType.gridView,
+              dataType: FutureDataType.product),
         ],
       ),
     );

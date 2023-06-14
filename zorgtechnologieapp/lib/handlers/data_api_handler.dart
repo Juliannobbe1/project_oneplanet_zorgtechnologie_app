@@ -5,7 +5,7 @@ import '../models/toepassing.dart';
 import '../models/clients.dart';
 
 class DataAPI {
-  String baseUrl = 'http://172.16.1.149:5001';
+  String baseUrl = 'http://192.168.123.41:5001';
 
   Future<List<dynamic>> fetchData(String endpoint) async {
     String url = '$baseUrl$endpoint';
@@ -32,6 +32,15 @@ class DataAPI {
         .toList();
   }
 
+  Future<List<Product>> recommendedProducts(
+      int zorgprofID, int clientID) async {
+    List<dynamic> result =
+        await fetchData('/product/aanbeveling/$zorgprofID/$clientID');
+    return result
+        .map((e) => Product.fromJson(e as Map<String, dynamic>))
+        .toList();
+  }
+
   Future<List<HeeftToepassing>> toepassingProducts() async {
     List<dynamic> result = await fetchData('/toepassing/HEEFT_TOEPASSING');
     return result
@@ -49,5 +58,12 @@ class DataAPI {
   Future<List<Clients>> distinctProbleem() async {
     List<dynamic> result = await fetchData('/client/distinct-problem');
     return result.map((probleem) => Clients(probleem: probleem)).toList();
+  }
+
+  Future<List<Clients>> providedClient(int zorgprofID) async {
+    List<dynamic> result = await fetchData('/client/wordtverzorgd/$zorgprofID');
+    return result
+        .map((e) => Clients.fromJson(e as Map<String, dynamic>))
+        .toList();
   }
 }

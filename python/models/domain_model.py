@@ -46,6 +46,17 @@ class Client(base_model):
                 return data
             else: 
                 return abort(404, "Something went wrong")
+    
+    def getClientsOfHCProf(self, zorgprofID):
+        query = f"MATCH (zorgprofessional:zorgprofessional)-[:VERZORGD_CLIENT]->(cliënt:client) WHERE zorgprofessional.ID = {zorgprofID} RETURN cliënt as n"
+        with self.driver.session() as session:
+            result = session.run(query)
+            if result:
+                data = self.extract(result)
+                return data
+            else: 
+                return abort(404, "Something went wrong")
+    
         
 class HealthcareProfessional(base_model):
     def __init__(self, driver):
@@ -75,6 +86,28 @@ class Product(base_model):
     def getNewestProducts(self):
         with self.driver.session() as session:
             result = session.run(f"MATCH (n:{self.label}) RETURN n ORDER BY n.ID DESC LIMIT 6")
+            if result:
+                data = self.extract(result)
+                return data
+            else:
+                return abort(404, "Something went wrong")
+    
+    def getRecommendationProducts(self, zorgprofID, clientID ):
+        query = f"""
+        MATCH (zorgprofessional:zorgprofessional)-[:VERZORGD_CLIENT]->(cliënt:client) 
+        WHERE zorgprofessional.ID = {zorgprofID} AND cliënt.ID = {clientID}
+        WITH zorgprofessional, cliënt.probleem AS probleem
+        MATCH (andereZorgprofessional:zorgprofessional)-[VERZORGD_CLIENT]->(andereCliënt:client)
+        MATCH (andereCliënt:client)
+        WHERE andereCliënt.ID <> {clientID} AND andereCliënt.probleem = probleem
+        WITH zorgprofessional, andereCliënt
+        MATCH (andereCliënt)<-[VERZORGD_CLIENT]-(andereZorgprofessional)-[K:KRIJGT_AANBEVELING]->(product:product)
+        WHERE NOT (zorgprofessional)-[:KRIJGT_AANBEVELING]->(product)
+        WITH product AS n 
+        RETURN DISTINCT n
+        """
+        with self.driver.session() as session:
+            result = session.run(query)
             if result:
                 data = self.extract(result)
                 return data

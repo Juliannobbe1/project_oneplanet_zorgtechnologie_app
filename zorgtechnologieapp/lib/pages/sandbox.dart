@@ -10,9 +10,10 @@ class SandBox extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: FutureDataWidget(
-        fetchData: DataAPI().newestProducts,
+        fetchData: DataAPI().newestProducts(),
         widgetType: FutureWidgetType.gridView,
         countRow: 1,
+        dataType: FutureDataType.product,
       ),
     );
   }

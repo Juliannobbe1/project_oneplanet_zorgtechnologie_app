@@ -194,6 +194,7 @@ class HealthProfessionalPropertyResource(Resource):
         healthprof.create(property_list, value_list)
         return jsonify({"message": "Organisation created succesfully."})
 
+# Client
 @client_ns.route('/')
 class ClientResource(Resource):
     @api.marshal_with(clientModel) 
@@ -227,7 +228,13 @@ class ClientPropertyResource(Resource):
 class DistinctApplication(Resource):
     def get(self):
         return client.getDistinctProblems()
+    
+@client_ns.route('/wordtverzorgd/<int:zorgprofID>')
+class ClientsOfHCProf(Resource):
+    def get(self, zorgprofID):
+        return client.getClientsOfHCProf(zorgprofID)
 
+# toepassing
 @application_ns.route('/')
 class ApplicationResource(Resource):
     @api.marshal_with(applicationModel) 
@@ -268,7 +275,8 @@ class HEEFT_TOEPASSING(Resource):
 class DistinctApplication(Resource):
     def get(self):
         return application.getDistinctApplications()
-        
+
+# product 
 @product_ns.route('')
 class ProductResource(Resource):
     @api.marshal_with(productModel) 
@@ -280,6 +288,12 @@ class NewProducts(Resource):
     @api.marshal_with(productModel)
     def get(self):
         return product.getNewestProducts()
+    
+@product_ns.route('/aanbeveling/<int:zorgprofID>/<int:clientID>')
+class ProductsRecommendation(Resource):
+    @api.marshal_with(productModel)
+    def get(self, zorgprofID, clientID):
+        return product.getRecommendationProducts(zorgprofID, clientID)
 
 @product_ns.route('/<string:property>/<value>')
 class ProductPropertyResource(Resource):
