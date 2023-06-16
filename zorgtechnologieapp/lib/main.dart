@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import 'pages/home_page.dart';
+import 'pages/sandbox.dart';
 
 void main() {
   runApp(
@@ -37,7 +38,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      // home: const SandBox(),
+      //home: const ProductImageScreen(),
       home: const HomePage(),
       debugShowCheckedModeBanner: false,
     );

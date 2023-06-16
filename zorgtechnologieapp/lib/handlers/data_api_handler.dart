@@ -1,5 +1,5 @@
 import 'dart:convert';
-import 'package:http/http.dart';
+import 'package:http/http.dart' as http;
 import '../models/products.dart';
 import '../models/toepassing.dart';
 import '../models/clients.dart';
@@ -9,13 +9,59 @@ class DataAPI {
 
   Future<List<dynamic>> fetchData(String endpoint) async {
     String url = '$baseUrl$endpoint';
-    Response response = await get(Uri.parse(url));
+    http.Response response = await http.get(Uri.parse(url));
     if (response.statusCode == 200) {
       final List<dynamic> result = jsonDecode(response.body);
       return result;
     } else {
       throw Exception(response.reasonPhrase);
     }
+  }
+
+  Future<void> postData(String endpoint, payload) async {
+    final url = '$baseUrl$endpoint';
+
+    final response = await http.post(Uri.parse(url),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode(payload));
+
+    if (response.statusCode == 200) {
+      final responseBody = jsonDecode(response.body);
+      print(responseBody[
+          'message']); // Replace 'message' with the appropriate key in the response
+    } else {
+      throw Exception(response.reasonPhrase);
+    }
+  }
+
+  Future<void> putData(String endpoint) async {
+    final url = '$baseUrl$endpoint';
+
+    final response = await http.put(Uri.parse(url));
+
+    if (response.statusCode == 200) {
+      final responseBody = jsonDecode(response.body);
+      print(
+          responseBody); // Replace 'message' with the appropriate key in the response
+    } else {
+      throw Exception(response.reasonPhrase);
+    }
+  }
+
+  Future<void> createClientRelationship(int clientID, int zorgprofID) async {
+    await putData('/client/relationship/$clientID/$zorgprofID');
+  }
+
+  Future<void> createClient(int id, String probleem) async {
+    final payload = {"ID": id, "probleem": probleem};
+    await postData('/client/', payload);
+  }
+
+  Future<List<Clients>> latestClient() async {
+    List<dynamic> result = await fetchData('/client/latest');
+    return result
+        .map((e) => Clients.fromJson(e as Map<String, dynamic>))
+        .toList();
   }
 
   Future<List<Product>> getProducts() async {
@@ -25,8 +71,22 @@ class DataAPI {
         .toList();
   }
 
+  Future<List<Product>> getOneProducts(int id) async {
+    List<dynamic> result = await fetchData('/product/$id');
+    return result
+        .map((e) => Product.fromJson(e as Map<String, dynamic>))
+        .toList();
+  }
+
   Future<List<Product>> newestProducts() async {
     List<dynamic> result = await fetchData('/product/newest');
+    return result
+        .map((e) => Product.fromJson(e as Map<String, dynamic>))
+        .toList();
+  }
+
+  Future<List<Product>> getProductsForClient(int clientID) async {
+    List<dynamic> result = await fetchData('/product/client/$clientID');
     return result
         .map((e) => Product.fromJson(e as Map<String, dynamic>))
         .toList();

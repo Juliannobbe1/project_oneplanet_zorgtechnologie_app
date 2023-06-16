@@ -119,9 +119,10 @@ class TabletHomeScreen extends StatelessWidget {
                             fixedSize: const Size(300, 150),
                           ),
                           onPressed: () {
-                            Navigator.of(context).push(MaterialPageRoute(
-                              builder: (context) => const ProductPage(),
-                            ));
+                            // Navigator.of(context).push(MaterialPageRoute(
+                            //   builder: (context) => const ProductPage(),
+                            // ));
+                            // DataAPI().createClient(61, 'Test 8');
                           },
                           child: Text(
                             "Technologie-catalogus",

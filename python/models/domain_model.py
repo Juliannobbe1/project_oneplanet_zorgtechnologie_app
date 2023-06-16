@@ -1,4 +1,5 @@
-from flask import abort, jsonify
+import json
+from flask import abort, jsonify, send_file
 from flask_restx import fields
 from models.base_model import base_model
 
@@ -15,8 +16,7 @@ class Application(base_model):
             result = session.run(query)
             if result: 
                 extracted_data = [{'toepassing': item['toepassing.toepassing'], 'productnaam': item['product.naam'], 'beschrijving': item['product.beschrijving'], 'productID': item['toepassing.productID'], 'ID': item['toepassing.ID']} for item in result.data()]
-               
-                
+
                 return extracted_data
             else: 
                 return abort(404, "Something went wrong")
@@ -34,7 +34,7 @@ class Application(base_model):
 class Client(base_model):
     def __init__(self, driver):
         super().__init__("client", driver=driver)
-        self.model_data['ID'] = fields.Integer(required=True)
+        self.model_data['ID'] = fields.Integer(required=False)
         self.model_data['probleem'] = fields.String(required=True)
         
     def getDistinctProblems(self):
@@ -55,6 +55,24 @@ class Client(base_model):
                 data = self.extract(result)
                 return data
             else: 
+                return abort(404, "Something went wrong")
+            
+    def setClientHealthcareProfRelationship(self, clientID, zorgprofID):
+        query = f"MATCH (c:client) WHERE c.ID = {clientID} MATCH (z:zorgprofessional) WHERE z.ID = {zorgprofID} CREATE (c)<-[:VERZORGD_CLIENT]-(z)"
+        with self.driver.session() as session:
+            result = session.run(query)
+            if result:
+                return json.dumps({"message": "Relationship created successfully."})
+            else: 
+                return abort(404, "Something went wrong")
+            
+    def getLatestClient(self):
+        with self.driver.session() as session:
+            result = session.run(f"MATCH (n:{self.label}) RETURN n ORDER BY n.ID DESC LIMIT 1")
+            if result:
+                data = self.extract(result)
+                return data
+            else:
                 return abort(404, "Something went wrong")
     
         
@@ -82,6 +100,7 @@ class Product(base_model):
         self.model_data['link'] = fields.String()
         self.model_data['naam'] = fields.String(required=True, description='Naam van het product')
         self.model_data['prijs'] = fields.Float()
+        self.model_data['imageBase64'] = fields.String()
     
     def getNewestProducts(self):
         with self.driver.session() as session:
@@ -113,8 +132,33 @@ class Product(base_model):
                 return data
             else:
                 return abort(404, "Something went wrong")
+            
+    def getProductsOneClient(self, clientID):
+        query = f"MATCH (n:product)<-[k:KRIJGT_AANBEVELING]-(a:zorgprofessional)-[z:VERZORGD_CLIENT]->(c:client) WHERE c.ID = {clientID} AND k.clientID = {clientID} RETURN DISTINCT n"
+        with self.driver.session() as session:
+            result = session.run(query)
+            if result:
+                data = self.extract(result)
+                return data
+            else:
+                return abort(404, "Something went wrong")
+            
+    def setRecommendedRelationship(self, zorgprofID, productID):
+        # query = f"MATCH (c:client) WHERE c.ID = {clientID} MATCH (z:zorgprofessional) WHERE z.ID = {zorgprofID} CREATE (c)<-[:VERZORGD_CLIENT]-(z)"
+        query = f"MATCH (z:zorgprofessional) WHERE z.ID = {zorgprofID} MATCH (p:product) WHERE p.ID = {productID} CREATE (p)<-[:KRIJGT_AANBEVELING]-(z)"
+        # zorgprofID = self.StringToIntCheck(zorgprofID)
+        # productID = self.StringToIntCheck(productID)
+        # # clientID = self.StringToIntCheck(clientID)
+        # parameters = {"zorgprofID": zorgprofID, "productID": productID}#, "clientID": clientID}
         
-        
+        with self.driver.session() as session:
+            result = session.run(query)
+            if result:
+                data = self.extract(result)
+                return data
+            else:
+                return abort(404, "Something went wrong")
+
 class Recommendation(base_model):
     def __init__(self, driver):
         super().__init__("aanbeveling", driver=driver)

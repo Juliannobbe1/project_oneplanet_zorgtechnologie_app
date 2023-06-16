@@ -5,6 +5,7 @@ class Product {
   String beschrijving;
   String? link;
   int? leverancierID;
+  String? imageBase64;
 
   Product(
       {required this.iD,
@@ -12,7 +13,8 @@ class Product {
       this.prijs,
       required this.beschrijving,
       this.link,
-      this.leverancierID});
+      this.leverancierID,
+      this.imageBase64});
 
   @override
   bool operator ==(Object other) =>
@@ -31,7 +33,8 @@ class Product {
         prijs: json['prijs'],
         beschrijving: json['beschrijving'],
         link: json['link'],
-        leverancierID: json['leverancierID']);
+        // leverancierID: json['leverancierID'],
+        imageBase64: json['imageBase64']);
   }
 
   Map<String, dynamic> toJson() {

@@ -1,12 +1,13 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:zorgtechnologieapp/models/clients.dart';
 import 'package:zorgtechnologieapp/models/toepassing.dart';
+import '../handlers/data_api_handler.dart';
 import '../handlers/responsive_layout_handler.dart';
 import '../models/products.dart';
 import '../pages/products_page.dart';
-// import '../pages/selection_guide.dart';
 
-// typedef DataFetcher = Future<List<dynamic>> Function();
 typedef SelectedItemCallback = void Function(
     int selectedItemIndex, String item);
 
@@ -147,18 +148,74 @@ class FutureDataWidgetState extends State<FutureDataWidget> {
           leading: Text(
             'Client: ${client.iD}',
             style: SizeScaler.getResponsiveTextStyle(
-                context, 18, FontWeight.bold, Colors.black),
+              context,
+              18,
+              FontWeight.bold,
+              Colors.black,
+            ),
           ),
           title: Text(
             "Probleem: ${client.probleem}",
             style: SizeScaler.getResponsiveTextStyle(
-                context, 18, FontWeight.bold, Colors.black),
+              context,
+              18,
+              FontWeight.bold,
+              Colors.black,
+            ),
           ),
           contentPadding: const EdgeInsets.all(20),
-          subtitle: Text(
-            'Maakt gebruik van: ',
-            style: SizeScaler.getResponsiveTextStyle(
-                context, 18, FontWeight.bold, Colors.black),
+          subtitle: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              FutureBuilder<List<Product>>(
+                future: DataAPI().getProductsForClient(client.iD!),
+                builder: (context, snapshot) {
+                  if (snapshot.hasData) {
+                    final productList = snapshot.data!;
+                    final productNames =
+                        productList.map((product) => product.naam).join(', ');
+                    return Text(
+                      'Maakt gebruik van: $productNames',
+                      style: SizeScaler.getResponsiveTextStyle(
+                        context,
+                        18,
+                        FontWeight.normal,
+                        Colors.black,
+                      ),
+                    );
+                    // return ListView.builder(
+                    //   shrinkWrap: true,
+                    //   physics: NeverScrollableScrollPhysics(),
+                    //   itemCount: productList.length,
+                    //   itemBuilder: (context, index) {
+                    //     final product = productList[index];
+                    //     return Text(
+                    //       'Maakt gebruik van producten: ${product.naam}',
+                    //       style: SizeScaler.getResponsiveTextStyle(
+                    //         context,
+                    //         18,
+                    //         FontWeight.bold,
+                    //         Colors.black,
+                    //       ),
+                    //     );
+                    //   },
+                    // );
+                  } else if (snapshot.hasError) {
+                    return Text(
+                      'Error: ${snapshot.error}',
+                      style: SizeScaler.getResponsiveTextStyle(
+                        context,
+                        18,
+                        FontWeight.bold,
+                        Colors.black,
+                      ),
+                    );
+                  }
+                  // Show a loading indicator while fetching the product
+                  return const CircularProgressIndicator();
+                },
+              ),
+            ],
           ),
           onTap: () {
             // Navigator.of(context).push(MaterialPageRoute(
@@ -214,7 +271,9 @@ class FutureDataWidgetState extends State<FutureDataWidget> {
             crossAxisCount: count, //count, // Number of columns in the grid
             childAspectRatio: screenHeight > 900
                 ? 3.5
-                : 4.5, // Width to height ratio of each grid item
+                : count >= 2
+                    ? 4.5
+                    : 5.5, // Width to height ratio of each grid item
           ),
           itemCount: dataList.length,
           itemBuilder: (context, index) {
@@ -244,16 +303,37 @@ class FutureDataWidgetState extends State<FutureDataWidget> {
     );
   }
 
+  String limitStringCharacters(String text, int limit) {
+    if (text.length <= limit) {
+      return text;
+    } else {
+      return '${text.substring(0, limit)}...';
+    }
+  }
+
   //generate for each tile what needs to be on the tile
   Widget productListTile(Product product) {
-    return ListTile(
-      title: Text(
-        product.naam,
-        style: SizeScaler.getResponsiveTextStyle(
-            context, 18, FontWeight.bold, Colors.white),
-      ),
-      trailing: SingleProductView(
-        productId: product.iD,
+    return Card(
+      // elevation: 4,
+      margin: const EdgeInsets.all(10),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+      child: ListTile(
+        leading: Image.memory(base64.decode(product.imageBase64!)),
+        title: Text(
+          product.naam,
+          style: SizeScaler.getResponsiveTextStyle(
+              context, 18, FontWeight.bold, Colors.black),
+        ),
+        subtitle: Text(limitStringCharacters(product.beschrijving, 85),
+            style: const TextStyle(fontSize: 16)),
+        trailing: SingleProductView(
+          productId: product.iD,
+        ),
+        contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+        dense: true,
+        enabled: false,
+        selected: true,
+        selectedColor: Colors.blue,
       ),
     );
   }

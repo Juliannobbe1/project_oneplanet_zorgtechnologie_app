@@ -17,7 +17,6 @@ class SelectionGuidePage extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.indigo[50],
       appBar: AppBar(
-        // leading: const Icon(Icons.menu),
         title: Text(
           "$deviceType",
         ),
@@ -55,12 +54,17 @@ class TabletSelectionScreen extends StatefulWidget {
 class _TabletSelectionScreenState extends State<TabletSelectionScreen> {
   int selectedBehoefteIndex = -1;
   String? zorgbehoefte;
+  int? latestClient;
 
-  void handleZorgbehoefteSelected(int index, String item) {
+  void handleZorgbehoefteSelected(int index, String item) async {
+    final client = await DataAPI().latestClient();
     setState(() {
+      latestClient = client[0].iD;
       selectedBehoefteIndex = index;
       zorgbehoefte = item;
     });
+    DataAPI().createClient(latestClient! + 1, zorgbehoefte!);
+    DataAPI().createClientRelationship(latestClient! + 1, 1);
   }
 
   void handle2ItemSelected(int index, String item) {
@@ -125,38 +129,40 @@ class _TabletSelectionScreenState extends State<TabletSelectionScreen> {
                               onItemSelected: handleZorgbehoefteSelected,
                             ),
                           ),
-                          selectedBehoefteIndex != -1
-                              ? Column(
-                                  children: [
-                                    Padding(
-                                      padding: const EdgeInsets.only(
-                                          left: 10.0, right: 10),
-                                      child: Text(
-                                        "Selecteer de zorgbehoeften van uw cliënt",
-                                        style:
-                                            SizeScaler.getResponsiveTextStyle(
-                                                context,
-                                                15,
-                                                FontWeight.bold,
-                                                Colors.black),
-                                      ),
-                                    ),
-                                    SizedBox(
-                                      height: 375,
-                                      child: FutureDataWidget(
-                                        fetchData:
-                                            DataAPI().distinctToepassing(),
-                                        widgetType:
-                                            FutureWidgetType.selectableList,
-                                        dataType:
-                                            FutureDataType.toepassingSelect,
-                                        onItemSelected: (int selectedItemIndex,
-                                            String item) {},
-                                      ),
-                                    ),
-                                  ],
-                                )
-                              : Container(),
+                          //! change to right selectable
+                          // selectedBehoefteIndex != -1
+                          //     ? Column(
+                          //         children: [
+                          //           // DataAPI().createClient(id, probleem),
+                          //           Padding(
+                          //             padding: const EdgeInsets.only(
+                          //                 left: 10, right: 10),
+                          //             child: Text(
+                          //               "Selecteer de zorgbehoeften van uw cliënt",
+                          //               style:
+                          //                   SizeScaler.getResponsiveTextStyle(
+                          //                       context,
+                          //                       15,
+                          //                       FontWeight.bold,
+                          //                       Colors.black),
+                          //             ),
+                          //           ),
+                          //           SizedBox(
+                          //             height: 375,
+                          //             child: FutureDataWidget(
+                          //               fetchData:
+                          //                   DataAPI().distinctToepassing(),
+                          //               widgetType:
+                          //                   FutureWidgetType.selectableList,
+                          //               dataType:
+                          //                   FutureDataType.toepassingSelect,
+                          //               onItemSelected: (int selectedItemIndex,
+                          //                   String item) {},
+                          //             ),
+                          //           ),
+                          //         ],
+                          //       )
+                          //     : Container(),
                         ],
                       ),
                     ),
@@ -187,15 +193,14 @@ class _TabletSelectionScreenState extends State<TabletSelectionScreen> {
                             style: SizeScaler.getResponsiveTextStyle(
                                 context, 20, FontWeight.bold, Colors.black),
                           ),
-                          SizedBox(
-                            height: screenHeight * 0.05,
-                          ),
+
                           // ! Replace with algorithme function
 
                           selectedBehoefteIndex != -1
-                              ? FutureDataWidget(
-                                  fetchData:
-                                      DataAPI().recommendedProducts(26, 26),
+                              ? //Text('$latestClient')
+                              FutureDataWidget(
+                                  fetchData: DataAPI().recommendedProducts(
+                                      1, latestClient! + 1),
                                   widgetType: FutureWidgetType.gridView,
                                   dataType: FutureDataType.product,
                                   countRow: 1,
