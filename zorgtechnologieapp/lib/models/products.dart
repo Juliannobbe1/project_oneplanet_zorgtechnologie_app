@@ -16,15 +16,13 @@ class Product {
       this.leverancierID,
       this.imageBase64});
 
-  // @override
-  // bool operator ==(Object other) =>
-  //     identical(this, other) ||
-  //     other is Product &&
-  //         runtimeType == other.runtimeType &&
-  //         naam == other.naam;
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is Product && runtimeType == other.runtimeType && iD == other.iD;
 
-  // @override
-  // int get hashCode => naam.hashCode;
+  @override
+  int get hashCode => naam.hashCode;
 
   factory Product.fromJson(Map<String, dynamic> json) {
     return Product(

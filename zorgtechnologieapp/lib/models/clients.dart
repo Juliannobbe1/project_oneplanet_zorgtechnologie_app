@@ -21,10 +21,10 @@ class Clients {
     );
   }
 
-  // Map<String, dynamic> toJson() {
-  //   final Map<String, dynamic> data = <String, dynamic>{};
-  //   data['probleem'] = probleem;
-  //   data['ID'] = iD;
-  //   return data;
-  // }
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['probleem'] = probleem;
+    data['ID'] = iD;
+    return data;
+  }
 }

@@ -11,11 +11,13 @@ class ResponsiveLayout {
     required this.phoneBuilder,
   });
 
+  // Define breakpoints for screen widths and heights
   static const double phoneWidthBreakpoint = 600.0;
   static const double tabletWidthBreakpoint = 1200.0;
   static const double phoneHeightBreakpoint = 600.0;
   static const double tabletHeightBreakpoint = 900.0;
 
+  // Determine the device type based on the screen size
   static DeviceType getDeviceType(BuildContext context) {
     final double screenWidth = MediaQuery.of(context).size.width;
     final double screenHeight = MediaQuery.of(context).size.height;
@@ -39,6 +41,7 @@ enum DeviceType {
 }
 
 class SizeScaler {
+  // Get the scaling factor based on the screen size
   static double getScalingFactor(BuildContext context) {
     final double screenWidth = MediaQuery.of(context).size.width;
     final double screenHeight = MediaQuery.of(context).size.height;
@@ -54,6 +57,7 @@ class SizeScaler {
     }
   }
 
+  // Get a responsive text style based on the base size, font weight, and color
   static TextStyle getResponsiveTextStyle(BuildContext context, double baseSize,
       FontWeight fontweight, Color color) {
     final double scalingFactor = getScalingFactor(context);
@@ -63,6 +67,7 @@ class SizeScaler {
         fontSize: adjustedFontSize, fontWeight: fontweight, color: color);
   }
 
+  // Get a responsive size based on the base size
   static double getResponsiveSize(BuildContext context, double baseSize) {
     final double scalingFactor = getScalingFactor(context);
     final double adjustedSize = baseSize * scalingFactor;

@@ -11,11 +11,16 @@ class ClientOverview extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.indigo[50],
       appBar: AppBar(
         title: Text(
-          "Clienten Overzicht ",
+          "Clienten Overzicht ", // App bar title
           style: SizeScaler.getResponsiveTextStyle(
-              context, 16, FontWeight.bold, Colors.white),
+              context,
+              16,
+              FontWeight.bold,
+              Colors
+                  .white), // Define the text style using SizeScaler for responsive text sizing
         ),
       ),
       body: Padding(
@@ -24,12 +29,16 @@ class ClientOverview extends StatelessWidget {
           children: [
             Expanded(
               child: FutureDataWidget(
-                fetchData: DataAPI()
-                    .providedClient("e040d519-dcc5-4969-86c3-54006f21656c"),
-                widgetType: FutureWidgetType.selectableList,
-                dataType: FutureDataType.clients,
+                fetchData: DataAPI().providedClient(
+                    "e040d519-dcc5-4969-86c3-54006f21656c"), // Fetch client data using DataAPI
+                widgetType: FutureWidgetType
+                    .selectableList, // Display a selectable list of clients
+                dataType:
+                    FutureDataType.clients, // Specify the data type as clients
               ),
             ),
+
+            // Button for adding a new client
             FloatingActionButton.extended(
               onPressed: () {
                 Navigator.of(context).push(
@@ -38,11 +47,16 @@ class ClientOverview extends StatelessWidget {
                   ),
                 );
               },
-              icon: const Icon(Icons.add, size: 50.0),
+              icon: const Icon(Icons.add,
+                  size: 50.0), // Add icon to the floating action button
               label: Text(
-                'Nieuwe Client',
+                'Nieuwe Client', // Button label
                 style: SizeScaler.getResponsiveTextStyle(
-                    context, 16, FontWeight.bold, Colors.white),
+                    context,
+                    16,
+                    FontWeight.bold,
+                    Colors
+                        .white), // Define the text style using SizeScaler for responsive text sizing
               ),
             ),
           ],

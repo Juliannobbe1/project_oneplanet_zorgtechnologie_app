@@ -1,6 +1,6 @@
 import os
 import base64
-from database.connect_database import database
+from connect_database import database
 
 # Function to retrieve the image file names in the specified folder
 def get_image_files(folder_path):
@@ -19,7 +19,7 @@ def encode_image_to_base64(image_path):
 driver = database.connectDatabase()
 
 # Folder path containing the images
-image_folder_path = '/Users/juliannobbe/Projects/flutter projects/project_oneplanet_zorgtechnologie_app/Afbeeldingen Zorgtechnologiëen/'
+image_folder_path = 'Afbeeldingen Zorgtechnologiëen'
 
 # Connect to the Neo4j database
 # driver = GraphDatabase.driver(uri, auth=(username, password))
@@ -33,7 +33,6 @@ image_files = get_image_files(image_folder_path)
 with driver.session() as session:
     for i in range(len(image_files)):
         
-
         file_name = image_files[i]
         file_name_without_extension = os.path.splitext(file_name)[0]  # Remove file extension
         name_parts = file_name_without_extension.split(". ", 1)  # Split by the first occurrence of ". "
