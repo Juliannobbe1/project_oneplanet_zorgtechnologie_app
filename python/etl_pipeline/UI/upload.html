@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Bestand uploaden</title>
+    <script>
+        function downloadHandleiding() {
+            var link = document.createElement('a');
+            link.href = '/static/handleiding.pdf'
+            link.download = 'handleiding.pdf';
+            link.click();
+        }
+    </script>
+</head>
+<body>
+    <h1>Producten integreren met Zorgtechnologiekeuzeapp</h1>
+    <p>Welkom bij de integratiepagina. Hier kunt u bestanden uploaden voor het integreren van producten.</p>
+    <p>Let op de bestanden die geaccepteerd worden zijn: JSON, XML en CSV</p>
+    <p>Voor meer informatie, raadpleeg de handleiding.</p>
+    <button onclick="downloadHandleiding()">Download Handleiding</button>
+    <hr>
+    <form method="POST" enctype="multipart/form-data">
+        <input type="file" name="file">
+        <input type="submit" value="Uploaden">
+    </form>
+</body>
+</html>

@@ -1,41 +1,48 @@
 class Product {
-  int? productID;
-  String productNaam;
+  String iD;
+  String naam;
   double? prijs;
   String beschrijving;
-  String? categorie;
   String? link;
   int? leverancierID;
+  String? imageBase64;
 
   Product(
-      {this.productID,
-      required this.productNaam,
+      {required this.iD,
+      required this.naam,
       this.prijs,
       required this.beschrijving,
-      this.categorie,
       this.link,
-      this.leverancierID});
+      this.leverancierID,
+      this.imageBase64});
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is Product && runtimeType == other.runtimeType && iD == other.iD;
+
+  @override
+  int get hashCode => naam.hashCode;
 
   factory Product.fromJson(Map<String, dynamic> json) {
     return Product(
-        productID: json['productID'],
-        productNaam: json['productNaam'],
+        iD: json['ID'],
+        naam: json['naam'],
         prijs: json['prijs'],
         beschrijving: json['beschrijving'],
-        categorie: json['categorie'],
         link: json['link'],
-        leverancierID: json['leverancierID']);
+        // leverancierID: json['leverancierID'],
+        imageBase64: json['imageBase64']);
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
     data['product'] = {
       'beschrijving': beschrijving,
-      'categorie': categorie,
-      'productID': productID,
+      'ID': iD,
       'leverancierID': leverancierID,
       'link': link,
-      'productNaam': productNaam,
+      'naam': naam,
       'prijs': prijs,
     };
     return data;

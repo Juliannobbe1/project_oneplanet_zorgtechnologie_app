@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:zorgtechnologieapp/pages/client_overview_page.dart';
 
-import '../handlers/get_products.dart';
+import '../handlers/data_api_handler.dart';
 import '../handlers/responsive_layout_handler.dart';
 import '../models/products.dart';
+import '../widgets/futurebuilder.dart';
 import 'products_page.dart';
 import 'selection_guide.dart';
 
@@ -11,16 +13,21 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final deviceType = ResponsiveLayout.getDeviceType(context);
-    double screenWidth = MediaQuery.of(context).size.width;
-    double screenHeight = MediaQuery.of(context).size.height;
+    final deviceType = ResponsiveLayout.getDeviceType(
+        context); // Determine the type of device (e.g., phone, tablet, desktop)
+    double screenWidth =
+        MediaQuery.of(context).size.width; // Get the width of the screen
+    double screenHeight =
+        MediaQuery.of(context).size.height; // Get the height of the screen
 
     return Scaffold(
-      backgroundColor: Colors.indigo[50],
+      backgroundColor:
+          Colors.indigo[50], // Set the background color of the scaffold
       appBar: AppBar(
-        leading: const Icon(Icons.menu),
-        title: Text(
-          "$deviceType",
+        leading:
+            const Icon(Icons.menu), // Display a menu icon as the leading widget
+        title: const Text(
+          "Welcome", // Set the title of the app bar
         ),
       ),
       body: Column(
@@ -30,9 +37,11 @@ class HomePage extends StatelessWidget {
             TabletHomeScreen(
               screenHeight: screenHeight,
               screenWidth: screenWidth,
-            )
+            ) // Display a tablet-specific or desktop-specific home screen
           ] else ...[
-            PhoneHomeScreen(screenWidth: screenWidth)
+            PhoneHomeScreen(
+                screenWidth:
+                    screenWidth) // Display a phone-specific home screen
           ]
         ],
       ),
@@ -58,6 +67,7 @@ class TabletHomeScreen extends StatelessWidget {
         children: [
           Row(
             children: [
+              // Button to Keuzegids
               Expanded(
                 flex: 1,
                 child: Padding(
@@ -70,7 +80,7 @@ class TabletHomeScreen extends StatelessWidget {
                         borderRadius: const BorderRadius.all(
                           Radius.circular(10),
                         ),
-                        color: Colors.blue[900],
+                        color: Colors.blue[800],
                       ),
                       child: Center(
                         child: TextButton(
@@ -79,13 +89,17 @@ class TabletHomeScreen extends StatelessWidget {
                           ),
                           onPressed: () {
                             Navigator.of(context).push(MaterialPageRoute(
-                              builder: (context) => const SelectionGuidePage(),
+                              builder: (context) => const ClientOverview(),
                             ));
                           },
                           child: Text(
-                            "Keuzegids",
+                            "Keuzegids", // Button text
                             style: SizeScaler.getResponsiveTextStyle(
-                                context, 20, FontWeight.normal, Colors.white),
+                                context,
+                                20,
+                                FontWeight.normal,
+                                Colors
+                                    .white), // Define the text style using SizeScaler for responsive text sizing
                           ),
                         ),
                       ),
@@ -93,6 +107,8 @@ class TabletHomeScreen extends StatelessWidget {
                   ),
                 ),
               ),
+
+              // Button to Catalogus
               Expanded(
                 flex: 1,
                 child: Padding(
@@ -118,9 +134,13 @@ class TabletHomeScreen extends StatelessWidget {
                             ));
                           },
                           child: Text(
-                            "Technologie-catalogus",
+                            "Technologie-catalogus", // Button text
                             style: SizeScaler.getResponsiveTextStyle(
-                                context, 20, FontWeight.normal, Colors.white),
+                                context,
+                                20,
+                                FontWeight.normal,
+                                Colors
+                                    .white), // Define the text style using SizeScaler for responsive text sizing
                           ),
                         ),
                       ),
@@ -130,85 +150,29 @@ class TabletHomeScreen extends StatelessWidget {
               ),
             ],
           ),
+
+          // Newest Products
           Padding(
             padding: EdgeInsets.only(
                 left: screenWidth * 0.025, top: screenWidth * 0.05),
             child: Text(
-              "Nieuwste producten: $screenHeight",
+              "Nieuwste producten: ", // Heading text
               style: SizeScaler.getResponsiveTextStyle(
-                  context, 21, FontWeight.bold, Colors.black),
+                  context,
+                  21,
+                  FontWeight.bold,
+                  Colors
+                      .black), // Define the text style using SizeScaler for responsive text sizing
             ),
           ),
-          FutureBuilder<List<Product>>(
-            future: ApiCall().newestProducts(),
-            builder: (context, snapshot) {
-              if (snapshot.hasData) {
-                final products = snapshot.data!;
-                return Padding(
-                  padding: const EdgeInsets.fromLTRB(10, 0, 10, 10.0),
-                  child: SizedBox(
-                    height: screenHeight > 900
-                        ? screenHeight * 0.65
-                        : screenHeight *
-                            0.50, // Specify the desired height for the ListView
-                    child: GridView.builder(
-                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 2, // Number of columns in the grid
-                        childAspectRatio: screenHeight > 900
-                            ? 3.5
-                            : 4.5, // Width to height ratio of each grid item
-                      ),
-                      itemCount: products.length,
-                      itemBuilder: (context, index) {
-                        final product = products[index];
-                        return Padding(
-                          padding: const EdgeInsets.fromLTRB(20, 25, 20, 5),
-                          child: Material(
-                            elevation: 10,
-                            borderRadius:
-                                const BorderRadius.all(Radius.circular(10)),
-                            child: Container(
-                              decoration: BoxDecoration(
-                                borderRadius: const BorderRadius.all(
-                                  Radius.circular(10),
-                                ),
-                                color: Colors.blue[500],
-                              ),
-                              child: ListTile(
-                                title: Text(
-                                  product.productNaam,
-                                  style: SizeScaler.getResponsiveTextStyle(
-                                      context,
-                                      18,
-                                      FontWeight.bold,
-                                      Colors.white),
-                                ),
-                                subtitle: Text(
-                                  'Categorie: ${product.categorie}',
-                                  style: SizeScaler.getResponsiveTextStyle(
-                                      context,
-                                      16,
-                                      FontWeight.normal,
-                                      Colors.white),
-                                ),
-                                trailing: SingleProductView(
-                                  product: product,
-                                ),
-                              ),
-                            ),
-                          ),
-                        );
-                      },
-                    ),
-                  ),
-                );
-              } else if (snapshot.hasError) {
-                return Center(child: Text("${snapshot.error}"));
-              } else {
-                return const Center(child: CircularProgressIndicator());
-              }
-            },
-          ),
+          FutureDataWidget(
+              fetchData: DataAPI()
+                  .newestProducts(), // Fetch the newest products data using DataAPI
+              countRow: 2, // Display two products per row
+              widgetType: FutureWidgetType
+                  .gridView, // Use gridView as the widget type for displaying the products
+              dataType: FutureDataType
+                  .product), // Specify that the data type is a product
         ],
       ),
     );
@@ -217,6 +181,7 @@ class TabletHomeScreen extends StatelessWidget {
 
 class PhoneHomeScreen extends StatelessWidget {
   final double screenWidth;
+
   const PhoneHomeScreen({super.key, required this.screenWidth});
 
   @override
@@ -225,6 +190,7 @@ class PhoneHomeScreen extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          // Button to Keuzegids
           Padding(
             padding: const EdgeInsets.fromLTRB(15.0, 20.0, 15.0, 5.0),
             child: AspectRatio(
@@ -245,15 +211,23 @@ class PhoneHomeScreen extends StatelessWidget {
                         Navigator.of(context).push(MaterialPageRoute(
                             builder: (context) => const SelectionGuidePage()));
                       },
-                      child: Text("Keuzegids",
-                          style: SizeScaler.getResponsiveTextStyle(
-                              context, 20, FontWeight.bold, Colors.white)),
+                      child: Text(
+                        "Keuzegids", // Button text
+                        style: SizeScaler.getResponsiveTextStyle(
+                            context,
+                            20,
+                            FontWeight.bold,
+                            Colors
+                                .white), // Define the text style using SizeScaler for responsive text sizing
+                      ),
                     ),
                   ),
                 ),
               ),
             ),
           ),
+
+          // Button to Technologie-catalogus
           Padding(
             padding: const EdgeInsets.all(15.0),
             child: AspectRatio(
@@ -274,25 +248,40 @@ class PhoneHomeScreen extends StatelessWidget {
                         Navigator.of(context).push(MaterialPageRoute(
                             builder: (context) => const ProductPage()));
                       },
-                      child: Text("Technologie-catalogus",
-                          style: SizeScaler.getResponsiveTextStyle(
-                              context, 20, FontWeight.bold, Colors.white)),
+                      child: Text(
+                        "Technologie-catalogus", // Button text
+                        style: SizeScaler.getResponsiveTextStyle(
+                            context,
+                            20,
+                            FontWeight.bold,
+                            Colors
+                                .white), // Define the text style using SizeScaler for responsive text sizing
+                      ),
                     ),
                   ),
                 ),
               ),
             ),
           ),
+
+          // Heading for Newest Products
           Padding(
             padding: EdgeInsets.only(left: screenWidth * 0.03, top: 15),
             child: Text(
-              "Nieuwste producten:",
+              "Nieuwste producten:", // Heading text
               style: SizeScaler.getResponsiveTextStyle(
-                  context, 22, FontWeight.bold, Colors.black),
+                  context,
+                  22,
+                  FontWeight.bold,
+                  Colors
+                      .black), // Define the text style using SizeScaler for responsive text sizing
             ),
           ),
+
+          // FutureBuilder for displaying Newest Products
           FutureBuilder<List<Product>>(
-            future: ApiCall().newestProducts(),
+            future: DataAPI()
+                .newestProducts(), // Fetch the newest products data using DataAPI
             builder: (context, snapshot) {
               if (snapshot.hasData) {
                 final products = snapshot.data!;
@@ -317,25 +306,20 @@ class PhoneHomeScreen extends StatelessWidget {
                               color: Colors.blue[500],
                             ),
                             child: ListTile(
-                                title: Text(
-                                  product.productNaam,
-                                  style: SizeScaler.getResponsiveTextStyle(
-                                      context,
-                                      18,
-                                      FontWeight.bold,
-                                      Colors.white),
-                                ),
-                                subtitle: Text(
-                                  'Categorie: ${product.categorie}',
-                                  style: SizeScaler.getResponsiveTextStyle(
-                                      context,
-                                      17,
-                                      FontWeight.normal,
-                                      Colors.white),
-                                ),
-                                trailing: SingleProductView(
-                                  product: product,
-                                )),
+                              title: Text(
+                                product.naam, // Product name
+                                style: SizeScaler.getResponsiveTextStyle(
+                                    context,
+                                    18,
+                                    FontWeight.bold,
+                                    Colors
+                                        .white), // Define the text style using SizeScaler for responsive text sizing
+                              ),
+                              trailing: SingleProductView(
+                                productId: product
+                                    .iD, // Pass the product ID to SingleProductView widget
+                              ),
+                            ),
                           ),
                         ),
                       );
@@ -343,9 +327,13 @@ class PhoneHomeScreen extends StatelessWidget {
                   ),
                 );
               } else if (snapshot.hasError) {
-                return Center(child: Text("${snapshot.error}"));
+                return Center(
+                    child: Text(
+                        "${snapshot.error}")); // Display an error message if there's an error in fetching the data
               } else {
-                return const Center(child: CircularProgressIndicator());
+                return const Center(
+                    child:
+                        CircularProgressIndicator()); // Display a progress indicator while data is being fetched
               }
             },
           ),

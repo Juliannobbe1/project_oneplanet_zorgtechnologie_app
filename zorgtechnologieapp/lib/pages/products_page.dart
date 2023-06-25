@@ -1,230 +1,170 @@
 import 'package:flutter/material.dart';
 
-import '../handlers/get_products.dart';
+import '../handlers/data_api_handler.dart';
 import '../handlers/responsive_layout_handler.dart';
 import '../models/products.dart';
+import '../widgets/futurebuilder.dart';
 
 class ProductPage extends StatelessWidget {
   const ProductPage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    double screenWidth = MediaQuery.of(context).size.width;
     return Scaffold(
-        appBar: AppBar(
-          backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-          title: const Text("Product page"),
-        ),
-        body: PhoneProductPage(
-          screenWidth: screenWidth,
-        ));
-  }
-}
-
-class TabletProductPage extends StatelessWidget {
-  const TabletProductPage({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
+      backgroundColor: Colors.indigo[50],
       appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: const Text("Product page"),
-      ),
-      body: FutureBuilder<List<Product>>(
-        future: ApiCall().getProducts(),
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            final products = snapshot.data!;
-            return SizedBox(
-              height: 325,
-              child: ListView.builder(
-                itemCount: products.length,
-                itemBuilder: (context, index) {
-                  final product = products[index];
-                  return Padding(
-                    padding: const EdgeInsets.fromLTRB(15.0, 10.0, 15.0, 10.0),
-                    child: Material(
-                      elevation: 5,
-                      borderRadius: const BorderRadius.all(Radius.circular(10)),
-                      child: Container(
-                        decoration: BoxDecoration(
-                          borderRadius: const BorderRadius.all(
-                            Radius.circular(10),
-                          ),
-                          color: Colors.blue[500],
-                        ),
-                        child: ListTile(
-                            title: Text(
-                              product.productNaam,
-                              style: SizeScaler.getResponsiveTextStyle(
-                                  context, 18, FontWeight.bold, Colors.white),
-                            ),
-                            subtitle: Text(
-                              'Categorie: ${product.categorie}',
-                              style: SizeScaler.getResponsiveTextStyle(
-                                  context, 17, FontWeight.normal, Colors.white),
-                            ),
-                            trailing: SingleProductView(
-                              product: product,
-                            )),
-                      ),
-                    ),
-                  );
-                },
-              ),
-            );
-          } else if (snapshot.hasError) {
-            return Center(child: Text("${snapshot.error}"));
-          } else {
-            return const Center(child: CircularProgressIndicator());
-          }
-        },
-      ),
-    );
-  }
-}
-
-class PhoneProductPage extends StatelessWidget {
-  final double screenWidth;
-  const PhoneProductPage({super.key, required this.screenWidth});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: const Text("Product page"),
-      ),
-      body: Padding(
-        padding: EdgeInsets.only(top: screenWidth * 0.05),
-        child: FutureBuilder<List<Product>>(
-          future: ApiCall().getProducts(),
-          builder: (context, snapshot) {
-            if (snapshot.hasData) {
-              return ListView(
-                children: [
-                  ...snapshot.data!.map(
-                    (product) => Padding(
-                      padding: EdgeInsets.fromLTRB(
-                          screenWidth * 0.05,
-                          screenWidth * 0.03,
-                          screenWidth * 0.05,
-                          screenWidth * 0.03),
-                      child: Material(
-                        elevation: 5,
-                        borderRadius:
-                            const BorderRadius.all(Radius.circular(10)),
-                        child: Container(
-                          decoration: BoxDecoration(
-                            borderRadius: const BorderRadius.all(
-                              Radius.circular(10),
-                            ),
-                            color: Colors.blue[500],
-                          ),
-                          child: ListTile(
-                            title: Text(
-                              product.productNaam,
-                              style: SizeScaler.getResponsiveTextStyle(
-                                  context, 18, FontWeight.bold, Colors.white),
-                            ),
-                            subtitle: Text(
-                              'Categorie: ${product.categorie}',
-                              style: SizeScaler.getResponsiveTextStyle(
-                                  context, 17, FontWeight.normal, Colors.white),
-                            ),
-                            trailing: SingleProductView(
-                              product: product,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              );
-            } else if (snapshot.hasError) {
-              return Text('${snapshot.error}');
-            } else {
-              return const Center(child: CircularProgressIndicator());
-            }
-          },
+        title: Text(
+          "Technologie Overzicht ", // App bar title
+          style: SizeScaler.getResponsiveTextStyle(
+              context,
+              16,
+              FontWeight.bold,
+              Colors
+                  .white), // Define the text style using SizeScaler for responsive text sizing
         ),
+      ),
+      body: Column(
+        children: [
+          FutureDataWidget(
+              fetchData:
+                  DataAPI().getProducts(), // Fetch product data using DataAPI
+              countRow: 2, // Specify the number of rows for the grid view
+              widgetType:
+                  FutureWidgetType.gridView, // Display the data in a grid view
+              dataType:
+                  FutureDataType.product), // Specify the data type as product
+        ],
       ),
     );
   }
 }
 
 class SingleProductView extends StatelessWidget {
-  final Product product;
-  const SingleProductView({super.key, required this.product});
+  final String productId;
+
+  const SingleProductView({Key? key, required this.productId})
+      : super(key: key);
+
+  Future<Product> fetchProduct() async {
+    List<Product> products =
+        await DataAPI().getProducts(); // Fetch all products using DataAPI
+    return products.firstWhere((product) =>
+        product.iD == productId); // Find the product with matching ID
+  }
 
   @override
   Widget build(BuildContext context) {
-    return IconButton(
-      icon: const Icon(
-        Icons.info,
-        color: Colors.black,
-      ),
-      onPressed: () {
-        showDialog(
-          context: context,
-          builder: (context) => Dialog(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10),
+    return FutureBuilder<Product>(
+      future:
+          fetchProduct(), // Fetch the product data using fetchProduct() method
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+          // If product data is available
+          Product product = snapshot.data!; // Get the product object
+          return IconButton(
+            icon: const Icon(
+              Icons.info,
+              color: Colors.black,
             ),
-            child: Container(
-              padding: const EdgeInsets.all(16),
-              constraints: const BoxConstraints(maxHeight: 600),
-              child: SingleChildScrollView(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      product.productNaam,
-                      style: SizeScaler.getResponsiveTextStyle(
-                          context, 20, FontWeight.bold, Colors.black),
+            onPressed: () {
+              showDialog(
+                context: context,
+                builder: (context) => Dialog(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Container(
+                    padding: const EdgeInsets.all(16),
+                    constraints: const BoxConstraints(maxHeight: 600),
+                    child: SingleChildScrollView(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            product.naam, // Display the product name
+                            style: SizeScaler.getResponsiveTextStyle(
+                                context, 20, FontWeight.bold, Colors.black),
+                          ),
+                          const SizedBox(height: 10),
+                          Text(
+                            product
+                                .beschrijving, // Display the product description
+                            style: SizeScaler.getResponsiveTextStyle(
+                                context, 20, FontWeight.normal, Colors.black),
+                          ),
+                          const SizedBox(height: 5),
+                          Text(
+                            'Prijs: ${product.prijs}', // Display the product price
+                            style: SizeScaler.getResponsiveTextStyle(
+                                context, 20, FontWeight.normal, Colors.black),
+                          ),
+                          const SizedBox(height: 5),
+                          Text(
+                            'Link: ${product.link}', // Display the product link
+                            style: SizeScaler.getResponsiveTextStyle(
+                                context, 20, FontWeight.normal, Colors.black),
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              TextButton(
+                                child: const Text('Close'), // Close button text
+                                onPressed: () =>
+                                    Navigator.pop(context), // Close the dialog
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
                     ),
-                    const SizedBox(height: 10),
-                    // Text('Product Name: ${product.productNaam}'),
-                    // Text('Category: ${product.categorie}'),
-                    Text(
-                      product.beschrijving,
-                      style: SizeScaler.getResponsiveTextStyle(
-                          context, 20, FontWeight.normal, Colors.black),
-                    ),
-                    const SizedBox(height: 5),
-                    Text(
-                      'Category: ${product.categorie}',
-                      style: SizeScaler.getResponsiveTextStyle(
-                          context, 20, FontWeight.normal, Colors.black),
-                    ),
-                    const SizedBox(height: 5),
-                    Text(
-                      'Prijs: ${product.prijs}',
-                      style: SizeScaler.getResponsiveTextStyle(
-                          context, 20, FontWeight.normal, Colors.black),
-                    ),
-                    const SizedBox(height: 5),
-                    Text('Link: ${product.link}',
-                        style: SizeScaler.getResponsiveTextStyle(
-                            context, 20, FontWeight.normal, Colors.black)),
-
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        TextButton(
-                          child: const Text('Close'),
-                          onPressed: () => Navigator.pop(context),
-                        ),
-                      ],
+                  ),
+                ),
+              );
+            },
+          );
+        } else if (snapshot.hasError) {
+          // If there's an error fetching product data
+          return IconButton(
+            icon: const Icon(
+              Icons.info,
+              color: Colors.black,
+            ),
+            onPressed: () {
+              showDialog(
+                context: context,
+                builder: (context) => AlertDialog(
+                  title: const Text('Error'),
+                  content: const Text(
+                      'Failed to fetch product details.'), // Display error message
+                  actions: [
+                    TextButton(
+                      child: const Text('Close'), // Close button text
+                      onPressed: () =>
+                          Navigator.pop(context), // Close the dialog
                     ),
                   ],
                 ),
-              ),
+              );
+            },
+          );
+        } else {
+          // If product data is still loading
+          return IconButton(
+            icon: const Icon(
+              Icons.info,
+              color: Colors.black,
             ),
-          ),
-        );
+            onPressed: () {
+              showDialog(
+                context: context,
+                builder: (context) => const Center(
+                  child:
+                      CircularProgressIndicator(), // Display a loading indicator
+                ),
+              );
+            },
+          );
+        }
       },
     );
   }
