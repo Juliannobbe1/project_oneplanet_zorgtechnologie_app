@@ -24,7 +24,8 @@ class ClientOverview extends StatelessWidget {
           children: [
             Expanded(
               child: FutureDataWidget(
-                fetchData: DataAPI().providedClient(1),
+                fetchData: DataAPI()
+                    .providedClient("e040d519-dcc5-4969-86c3-54006f21656c"),
                 widgetType: FutureWidgetType.selectableList,
                 dataType: FutureDataType.clients,
               ),

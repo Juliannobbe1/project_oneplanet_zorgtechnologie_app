@@ -7,8 +7,8 @@ class Application(base_model):
     def __init__(self,driver):
         super().__init__("toepassing", driver=driver)
         self.model_data['toepassing'] = fields.String(required=True)
-        self.model_data['productID'] = fields.Integer(required=True)
-        self.model_data['ID'] = fields.Integer(required=True)
+        self.model_data['productID'] = fields.String(required=True)
+        self.model_data['ID'] = fields.String(required=True)
         
     def getApplicationWithProduct(self):
         query = f"MATCH ({self.label}:{self.label})<-[ht:HEEFT_TOEPASSING]-(product) RETURN {self.label}.{self.label}, product.naam, product.beschrijving, {self.label}.productID, {self.label}.ID "
@@ -34,7 +34,7 @@ class Application(base_model):
 class Client(base_model):
     def __init__(self, driver):
         super().__init__("client", driver=driver)
-        self.model_data['ID'] = fields.Integer(required=False)
+        self.model_data['ID'] = fields.String(required=False)
         self.model_data['probleem'] = fields.String(required=True)
         
     def getDistinctProblems(self):
@@ -48,7 +48,7 @@ class Client(base_model):
                 return abort(404, "Something went wrong")
     
     def getClientsOfHCProf(self, zorgprofID):
-        query = f"MATCH (zorgprofessional:zorgprofessional)-[:VERZORGD_CLIENT]->(cliënt:client) WHERE zorgprofessional.ID = {zorgprofID} RETURN cliënt as n"
+        query = f"MATCH (zorgprofessional:zorgprofessional)-[:VERZORGD_CLIENT]->(cliënt:client) WHERE zorgprofessional.ID = '{zorgprofID}' RETURN cliënt as n"
         with self.driver.session() as session:
             result = session.run(query)
             if result:
@@ -58,7 +58,7 @@ class Client(base_model):
                 return abort(404, "Something went wrong")
             
     def setClientHealthcareProfRelationship(self, clientID, zorgprofID):
-        query = f"MATCH (c:client) WHERE c.ID = {clientID} MATCH (z:zorgprofessional) WHERE z.ID = {zorgprofID} CREATE (c)<-[:VERZORGD_CLIENT]-(z)"
+        query = f"MATCH (c:client) WHERE c.ID = '{clientID}' MATCH (z:zorgprofessional) WHERE z.ID = '{zorgprofID}' CREATE (c)<-[:VERZORGD_CLIENT]-(z)"
         with self.driver.session() as session:
             result = session.run(query)
             if result:
@@ -80,23 +80,23 @@ class HealthcareProfessional(base_model):
     def __init__(self, driver):
         super().__init__("zorgprofessional", driver=driver)
         self.model_data['naam'] = fields.String(required=True)
-        self.model_data['organisatieID'] = fields.Integer(required=True)
+        self.model_data['organisatieID'] = fields.String(required=True)
         self.model_data['email'] = fields.String(required=True)
         self.model_data['rol'] = fields.String(required=True)
-        self.model_data['ID'] = fields.Integer(required=True)
+        self.model_data['ID'] = fields.String(required=True)
         
 class Organisation(base_model):
     def __init__(self, driver):
         super().__init__("organisatie",driver=driver)
-        self.model_data['ID'] = fields.Integer(required=True)
+        self.model_data['ID'] = fields.String(required=True)
         self.model_data['naam'] = fields.String(required=True)
         
 class Product(base_model):
     def __init__(self, driver):
         super().__init__("product", driver=driver)
         self.model_data['beschrijving'] = fields.String()
-        self.model_data['ID'] = fields.Integer()
-        self.model_data['leverancierID'] = fields.Integer()
+        self.model_data['ID'] = fields.String()
+        self.model_data['leverancierID'] = fields.String()
         self.model_data['link'] = fields.String()
         self.model_data['naam'] = fields.String(required=True, description='Naam van het product')
         self.model_data['prijs'] = fields.Float()
@@ -104,7 +104,7 @@ class Product(base_model):
     
     def getNewestProducts(self):
         with self.driver.session() as session:
-            result = session.run(f"MATCH (n:{self.label}) RETURN n ORDER BY n.ID DESC LIMIT 6")
+            result = session.run(f"MATCH (n:product)RETURN n ORDER BY id(n) DESC LIMIT 6")
             if result:
                 data = self.extract(result)
                 return data
@@ -113,16 +113,15 @@ class Product(base_model):
     
     def getRecommendationProducts(self, zorgprofID, clientID ):
         query = f"""
-        MATCH (zorgprofessional:zorgprofessional)-[:VERZORGD_CLIENT]->(cliënt:client) 
-        WHERE zorgprofessional.ID = {zorgprofID} AND cliënt.ID = {clientID}
+        MATCH (zorgprofessional:zorgprofessional)-[:VERZORGD_CLIENT]->(cliënt:client)
+        WHERE zorgprofessional.ID = '{zorgprofID}' AND cliënt.ID = '{clientID}'
         WITH zorgprofessional, cliënt.probleem AS probleem
-        MATCH (andereZorgprofessional:zorgprofessional)-[VERZORGD_CLIENT]->(andereCliënt:client)
-        MATCH (andereCliënt:client)
-        WHERE andereCliënt.ID <> {clientID} AND andereCliënt.probleem = probleem
+        MATCH (andereZorgprofessional:zorgprofessional)-[:VERZORGD_CLIENT]->(andereCliënt:client)
+        WHERE andereCliënt.ID <> '{clientID}' AND andereCliënt.probleem = probleem
         WITH zorgprofessional, andereCliënt
         MATCH (andereCliënt)<-[VERZORGD_CLIENT]-(andereZorgprofessional)-[K:KRIJGT_AANBEVELING]->(product:product)
-        WHERE NOT (zorgprofessional)-[:KRIJGT_AANBEVELING]->(product)
-        WITH product AS n 
+        WHERE NOT (zorgprofessional)-[:KRIJGT_AANBEVELING]->(product) AND K.clientID = andereCliënt.ID
+        WITH product AS n
         RETURN DISTINCT n
         """
         with self.driver.session() as session:
@@ -134,7 +133,7 @@ class Product(base_model):
                 return abort(404, "Something went wrong")
             
     def getProductsOneClient(self, clientID):
-        query = f"MATCH (n:product)<-[k:KRIJGT_AANBEVELING]-(a:zorgprofessional)-[z:VERZORGD_CLIENT]->(c:client) WHERE c.ID = {clientID} AND k.clientID = {clientID} RETURN DISTINCT n"
+        query = f"MATCH (n:product)<-[k:KRIJGT_AANBEVELING]-(a:zorgprofessional)-[z:VERZORGD_CLIENT]->(c:client) WHERE c.ID = '{clientID}' AND k.clientID = '{clientID}' RETURN DISTINCT n"
         with self.driver.session() as session:
             result = session.run(query)
             if result:
@@ -145,7 +144,7 @@ class Product(base_model):
             
     def setRecommendedRelationship(self, zorgprofID, productID):
         # query = f"MATCH (c:client) WHERE c.ID = {clientID} MATCH (z:zorgprofessional) WHERE z.ID = {zorgprofID} CREATE (c)<-[:VERZORGD_CLIENT]-(z)"
-        query = f"MATCH (z:zorgprofessional) WHERE z.ID = {zorgprofID} MATCH (p:product) WHERE p.ID = {productID} CREATE (p)<-[:KRIJGT_AANBEVELING]-(z)"
+        query = f"MATCH (z:zorgprofessional) WHERE z.ID = '{zorgprofID}' MATCH (p:product) WHERE p.ID = '{productID}' CREATE (p)<-[:KRIJGT_AANBEVELING]-(z)"
         # zorgprofID = self.StringToIntCheck(zorgprofID)
         # productID = self.StringToIntCheck(productID)
         # # clientID = self.StringToIntCheck(clientID)
@@ -163,9 +162,9 @@ class Recommendation(base_model):
     def __init__(self, driver):
         super().__init__("aanbeveling", driver=driver)
         self.model_data['aanbeveling'] = fields.String(required=True)
-        self.model_data['productID'] = fields.Integer(required=True)
-        self.model_data['ID'] = fields.Integer(required=True)
-        self.model_data['zorgprofessionalID'] = fields.Integer(required=True) 
+        self.model_data['productID'] = fields.String(required=True)
+        self.model_data['ID'] = fields.String(required=True)
+        self.model_data['zorgprofessionalID'] = fields.String(required=True) 
         self.model_data['datum'] = fields.String()  
         
 class Review(base_model):
@@ -181,19 +180,19 @@ class Review(base_model):
 class Supplier(base_model):
     def __init__(self, driver):
         super().__init__("leverancier", driver=driver)
-        self.model_data['ID'] = fields.Integer(required=True)
+        self.model_data['ID'] = fields.String(required=True)
         self.model_data['naam'] = fields.String(required=True)
         
 class Relationship(base_model):
     def __init__(self, driver):
         super().__init__("relatie", driver)
-        self.model_data['start_id'] = fields.Integer()
-        self.model_data['end_id'] = fields.Integer()
+        self.model_data['start_id'] = fields.String()
+        self.model_data['end_id'] = fields.String()
         self.model_data['relationship_name'] = fields.String()
         
     def setRelationship( self, start_node, start_id, end_node, end_id, relationship_name):
         with self.driver.session() as session:
-            result = session.run(f"MATCH (start:{start_node} {{{start_node}ID: $start_id }}), (end:{end_node} {{{end_node}ID: $end_id }}) CREATE (start)-[:{relationship_name}]->(end) RETURN start, end", start_id=start_id, start_node=start_node, end_id=end_id, end_node=end_node)
+            result = session.run(f"MATCH (start:{start_node} {{{start_node}ID: $start_id }}), (end:{end_node} {{{end_node}ID: $end_id }}) CREATE (start)-[:{relationship_name}]->(end) RETURN start, end", start_id=str(start_id), start_node=start_node, end_id=str(end_id), end_node=end_node)
             if result:
                 return jsonify({"message": "Relationship created successfully."})
             else:
@@ -202,7 +201,7 @@ class Relationship(base_model):
     def deleteRelationship(self, start_node, start_id, end_node, end_id, relationship_name):
         with self.driver.session() as session:
             # checkedValue = self.StringToIntCheck(value)
-            result = session.run(f"MATCH (start:{start_node} {{{start_node}ID: $start_id }})-[r:{relationship_name}]->(end:{end_node} {{{end_node}ID: $end_id }}) DELETE r", start_id=start_id, start_node=start_node, end_id=end_id, end_node=end_node)
+            result = session.run(f"MATCH (start:{start_node} {{{start_node}ID: $start_id }})-[r:{relationship_name}]->(end:{end_node} {{{end_node}ID: $end_id }}) DELETE r", start_id=str(start_id), start_node=start_node, end_id=str(end_id), end_node=end_node)
             if result:
                 return jsonify({"message": "Resource deleted successfully."}) 
             else:

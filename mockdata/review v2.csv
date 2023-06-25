@@ -1,25 +1,25 @@
-﻿reviewID,beschrijving,score,datum,productID,zorgprofessionalID
-1,product werkt goed,5,10/11/2022,2,1
-2,past goed bij de client,4,03/03/2023,4,9
-3,geen goede toepassing,3,03/04/2023,2,7
-4,erg tevreden client maakt er goed gebruik van,2,2/22/2022,5,1
-5,uitstekend product,5,06/15/2022,2,3
-6,goede resultaten gezien,4,08/25/2022,1,5
-7,client is tevreden,3,11/01/2022,4,7
-8,welzijnsverbetering opgemerkt,4,12/18/2022,5,2
-9,handig hulpmiddel,5,01/10/2023,2,1
-10,positieve ervaring,4,04/05/2023,9,4
-11,onvoldoende effectief,2,07/22/2022,3,8
-12,zeer nuttig voor dagelijkse routine,5,09/14/2022,2,6
-13,goede ondersteuning tijdens therapie,4,10/30/2022,9,5
-14,waardevolle sociale interactie,5,02/08/2023,1,7
-15,handig bij zelfzorgactiviteiten,4,05/01/2023,5,3
-16,verbeterde mentale alertheid,3,08/12/2022,10,2
-17,goede slaapresultaten,4,11/26/2022,8,4
-18,nauwkeurige gezondheidsmonitoring,5,01/18/2023,6,6
-19,persoonlijke pijnverlichting,3,03/22/2023,4,9
-20,nuttig bij gewichtsbeheersing,4,06/07/2022,7,1
-21,betrouwbare hartslagmeting,5,09/05/2022,3,2
-22,vermindering van stressniveaus,4,12/10/2022,10,7
-23,snelle valdetectie,5,02/15/2023,5,3
-24,gezonde dieetbeheerondersteuning,3,05/20/2023,7,5
+reviewID,beschrijving,score,datum,productID,zorgprofessionalID
+6b69b730-b77b-496e-9571-8d4890306db2,product werkt goed,5,10/11/2022,c91962af-c659-41d9-ba99-5f1825031520,dd0f0c52-0cc3-45a4-9dbb-7e78731ad3c3
+b72a6122-050a-4098-9f6d-ebe1cbef199b,past goed bij de client,4,03/03/2023,87d88637-5951-4b28-a5e2-490e0f33d020,8be1e0db-7ff2-4c17-804a-259d59ababf6
+fa6b7d6d-dee9-49c4-bb52-ee252884fc50,geen goede toepassing,3,03/04/2023,c91962af-c659-41d9-ba99-5f1825031520,60150a48-dbe4-4d85-9b85-0d71a0513aa3
+151a629d-ecf4-4f72-a8a9-a7321833a57d,erg tevreden client maakt er goed gebruik van,2,2/22/2022,cd04c096-db72-4a61-a54b-fd192420bb4c,dd0f0c52-0cc3-45a4-9dbb-7e78731ad3c3
+3f32bb7f-bea5-4049-bd3d-6a2d1012f06e,uitstekend product,5,06/15/2022,c91962af-c659-41d9-ba99-5f1825031520,5b4c8d0e-f07f-4d8f-8a15-19b3b5968e66
+0f736c47-8c10-4892-8ecc-d40c1cf3bd3e,goede resultaten gezien,4,08/25/2022,dd49b898-2b3f-4601-98e9-8e0c23abf391,5db6869c-23c7-48cc-9e7a-71886bfae9e0
+c2b04af2-cd9c-4253-9613-455279627f14,client is tevreden,3,11/01/2022,87d88637-5951-4b28-a5e2-490e0f33d020,60150a48-dbe4-4d85-9b85-0d71a0513aa3
+217ec52a-4688-470c-a398-0db3262ad89e,welzijnsverbetering opgemerkt,4,12/18/2022,cd04c096-db72-4a61-a54b-fd192420bb4c,b1f9535f-8d88-45a0-9d6f-af08e8197d0d
+ae30727d-7895-450e-9a6a-3be8926b301b,handig hulpmiddel,5,01/10/2023,c91962af-c659-41d9-ba99-5f1825031520,dd0f0c52-0cc3-45a4-9dbb-7e78731ad3c3
+90446f8d-8069-408f-8458-d751a580d3a7,positieve ervaring,4,04/05/2023,35537f9e-eb92-4392-bd47-55ff9ea13d57,0a6b62ef-ec5d-45a2-a29e-cc9a388ad745
+428429d0-4d4a-496d-8a14-3f303c3f18ee,onvoldoende effectief,2,07/22/2022,7bf40470-39e5-4e60-81e2-0b0c90d3fcef,e040d519-dcc5-4969-86c3-54006f21656c
+cd36c5d5-d6ab-4392-a4b4-5df53ad0f751,zeer nuttig voor dagelijkse routine,5,09/14/2022,c91962af-c659-41d9-ba99-5f1825031520,fd8c937a-33d4-44b1-ae4e-4af62b56dbd8
+086582fd-bc69-4ed2-8a1f-fc6df0369acb,goede ondersteuning tijdens therapie,4,10/30/2022,35537f9e-eb92-4392-bd47-55ff9ea13d57,5db6869c-23c7-48cc-9e7a-71886bfae9e0
+54bc0d35-f29e-456d-933b-8d1c4aaa6ab5,waardevolle sociale interactie,5,02/08/2023,dd49b898-2b3f-4601-98e9-8e0c23abf391,60150a48-dbe4-4d85-9b85-0d71a0513aa3
+4eec54e3-d37c-4ef4-b514-f498c5a494f8,handig bij zelfzorgactiviteiten,4,05/01/2023,cd04c096-db72-4a61-a54b-fd192420bb4c,5b4c8d0e-f07f-4d8f-8a15-19b3b5968e66
+d2ecc264-fcb1-4b54-8233-18df81cdd3b7,verbeterde mentale alertheid,3,08/12/2022,8742e997-1d84-4ea4-ad35-c154c59d7493,b1f9535f-8d88-45a0-9d6f-af08e8197d0d
+20ff049d-7920-4e3c-a81b-3583e6861f07,goede slaapresultaten,4,11/26/2022,3a3d8fd4-76c9-4455-9be0-06885aceab02,0a6b62ef-ec5d-45a2-a29e-cc9a388ad745
+2f765f27-3838-4d3c-a70b-4d0ae8f8b333,nauwkeurige gezondheidsmonitoring,5,01/18/2023,d5c76c95-8fc6-48e4-831f-528b7083e023,fd8c937a-33d4-44b1-ae4e-4af62b56dbd8
+9dfec240-6fb7-46f4-84af-201b084bd5d7,persoonlijke pijnverlichting,3,03/22/2023,87d88637-5951-4b28-a5e2-490e0f33d020,8be1e0db-7ff2-4c17-804a-259d59ababf6
+e956e167-831b-42e4-b106-d5e2de8b6626,nuttig bij gewichtsbeheersing,4,06/07/2022,80f287dd-7aba-44b3-b653-c8bb72a94a48,dd0f0c52-0cc3-45a4-9dbb-7e78731ad3c3
+9b163bd9-2671-40f4-b7f1-486b8128bf9f,betrouwbare hartslagmeting,5,09/05/2022,7bf40470-39e5-4e60-81e2-0b0c90d3fcef,b1f9535f-8d88-45a0-9d6f-af08e8197d0d
+e97ddb56-e8d2-4bc2-a6f7-90062281bacf,vermindering van stressniveaus,4,12/10/2022,8742e997-1d84-4ea4-ad35-c154c59d7493,60150a48-dbe4-4d85-9b85-0d71a0513aa3
+e85aa3ec-930f-4b04-b3f4-aecc445cdbc3,snelle valdetectie,5,02/15/2023,cd04c096-db72-4a61-a54b-fd192420bb4c,5b4c8d0e-f07f-4d8f-8a15-19b3b5968e66
+90e29118-f458-434d-a568-f62821c87783,gezonde dieetbeheerondersteuning,3,05/20/2023,80f287dd-7aba-44b3-b653-c8bb72a94a48,5db6869c-23c7-48cc-9e7a-71886bfae9e0

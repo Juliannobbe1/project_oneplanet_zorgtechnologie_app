@@ -48,11 +48,12 @@ class DataAPI {
     }
   }
 
-  Future<void> createClientRelationship(int clientID, int zorgprofID) async {
+  Future<void> createClientRelationship(
+      String clientID, String zorgprofID) async {
     await putData('/client/relationship/$clientID/$zorgprofID');
   }
 
-  Future<void> createClient(int id, String probleem) async {
+  Future<void> createClient(String id, String probleem) async {
     final payload = {"ID": id, "probleem": probleem};
     await postData('/client/', payload);
   }
@@ -85,7 +86,7 @@ class DataAPI {
         .toList();
   }
 
-  Future<List<Product>> getProductsForClient(int clientID) async {
+  Future<List<Product>> getProductsForClient(String clientID) async {
     List<dynamic> result = await fetchData('/product/client/$clientID');
     return result
         .map((e) => Product.fromJson(e as Map<String, dynamic>))
@@ -93,7 +94,7 @@ class DataAPI {
   }
 
   Future<List<Product>> recommendedProducts(
-      int zorgprofID, int clientID) async {
+      String zorgprofID, String clientID) async {
     List<dynamic> result =
         await fetchData('/product/aanbeveling/$zorgprofID/$clientID');
     return result
@@ -120,7 +121,7 @@ class DataAPI {
     return result.map((probleem) => Clients(probleem: probleem)).toList();
   }
 
-  Future<List<Clients>> providedClient(int zorgprofID) async {
+  Future<List<Clients>> providedClient(String zorgprofID) async {
     List<dynamic> result = await fetchData('/client/wordtverzorgd/$zorgprofID');
     return result
         .map((e) => Clients.fromJson(e as Map<String, dynamic>))

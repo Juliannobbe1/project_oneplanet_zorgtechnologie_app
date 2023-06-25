@@ -21,8 +21,8 @@ class HomePage extends StatelessWidget {
       backgroundColor: Colors.indigo[50],
       appBar: AppBar(
         leading: const Icon(Icons.menu),
-        title: Text(
-          "$deviceType",
+        title: const Text(
+          "",
         ),
       ),
       body: Column(
@@ -73,7 +73,7 @@ class TabletHomeScreen extends StatelessWidget {
                         borderRadius: const BorderRadius.all(
                           Radius.circular(10),
                         ),
-                        color: Colors.blue[900],
+                        color: Colors.blue[800],
                       ),
                       child: Center(
                         child: TextButton(
@@ -119,9 +119,9 @@ class TabletHomeScreen extends StatelessWidget {
                             fixedSize: const Size(300, 150),
                           ),
                           onPressed: () {
-                            // Navigator.of(context).push(MaterialPageRoute(
-                            //   builder: (context) => const ProductPage(),
-                            // ));
+                            Navigator.of(context).push(MaterialPageRoute(
+                              builder: (context) => const ProductPage(),
+                            ));
                             // DataAPI().createClient(61, 'Test 8');
                           },
                           child: Text(
@@ -143,7 +143,7 @@ class TabletHomeScreen extends StatelessWidget {
             padding: EdgeInsets.only(
                 left: screenWidth * 0.025, top: screenWidth * 0.05),
             child: Text(
-              "Nieuwste producten: $screenHeight",
+              "Nieuwste producten: ",
               style: SizeScaler.getResponsiveTextStyle(
                   context, 21, FontWeight.bold, Colors.black),
             ),

@@ -1,6 +1,7 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:zorgtechnologieapp/widgets/futurebuilder.dart';
+import 'package:uuid/uuid.dart';
 
 import '../handlers/data_api_handler.dart';
 import '../handlers/responsive_layout_handler.dart';
@@ -52,19 +53,23 @@ class TabletSelectionScreen extends StatefulWidget {
 }
 
 class _TabletSelectionScreenState extends State<TabletSelectionScreen> {
+  var uuid = const Uuid();
   int selectedBehoefteIndex = -1;
   String? zorgbehoefte;
-  int? latestClient;
+  String? clientID;
 
   void handleZorgbehoefteSelected(int index, String item) async {
-    final client = await DataAPI().latestClient();
+    // final client = await DataAPI().latestClient();
+    var v4 = uuid.v4();
     setState(() {
-      latestClient = client[0].iD;
+      // latestClient = client[0].iD;
+      clientID = v4;
       selectedBehoefteIndex = index;
       zorgbehoefte = item;
     });
-    DataAPI().createClient(latestClient! + 1, zorgbehoefte!);
-    DataAPI().createClientRelationship(latestClient! + 1, 1);
+    DataAPI().createClient(v4, zorgbehoefte!);
+    DataAPI()
+        .createClientRelationship(v4, "e040d519-dcc5-4969-86c3-54006f21656c");
   }
 
   void handle2ItemSelected(int index, String item) {
@@ -200,7 +205,8 @@ class _TabletSelectionScreenState extends State<TabletSelectionScreen> {
                               ? //Text('$latestClient')
                               FutureDataWidget(
                                   fetchData: DataAPI().recommendedProducts(
-                                      1, latestClient! + 1),
+                                      "e040d519-dcc5-4969-86c3-54006f21656c",
+                                      clientID!),
                                   widgetType: FutureWidgetType.gridView,
                                   dataType: FutureDataType.product,
                                   countRow: 1,

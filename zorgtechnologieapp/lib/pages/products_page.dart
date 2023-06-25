@@ -4,6 +4,7 @@ import 'package:zorgtechnologieapp/models/toepassing.dart';
 import '../handlers/data_api_handler.dart';
 import '../handlers/responsive_layout_handler.dart';
 import '../models/products.dart';
+import '../widgets/futurebuilder.dart';
 
 class ProductPage extends StatelessWidget {
   const ProductPage({super.key});
@@ -16,9 +17,7 @@ class ProductPage extends StatelessWidget {
           backgroundColor: Theme.of(context).colorScheme.inversePrimary,
           title: const Text("Product page"),
         ),
-        body: PhoneProductPage(
-          screenWidth: screenWidth,
-        ));
+        body: const TabletProductPage());
   }
 }
 
@@ -32,126 +31,11 @@ class TabletProductPage extends StatelessWidget {
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: const Text("Product page"),
       ),
-      body: FutureBuilder<List<Product>>(
-        future: DataAPI().getProducts(),
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            final products = snapshot.data!;
-            return SizedBox(
-              height: 325,
-              child: ListView.builder(
-                itemCount: products.length,
-                itemBuilder: (context, index) {
-                  final product = products[index];
-                  return Padding(
-                    padding: const EdgeInsets.fromLTRB(15.0, 10.0, 15.0, 10.0),
-                    child: Material(
-                      elevation: 5,
-                      borderRadius: const BorderRadius.all(Radius.circular(10)),
-                      child: Container(
-                        decoration: BoxDecoration(
-                          borderRadius: const BorderRadius.all(
-                            Radius.circular(10),
-                          ),
-                          color: Colors.blue[500],
-                        ),
-                        child: ListTile(
-                          title: Text(
-                            product.naam,
-                            style: SizeScaler.getResponsiveTextStyle(
-                                context, 18, FontWeight.bold, Colors.white),
-                          ),
-                          subtitle: Text(
-                            'Toepassing: ${product.beschrijving}',
-                            style: SizeScaler.getResponsiveTextStyle(
-                                context, 17, FontWeight.normal, Colors.white),
-                          ),
-                          // trailing: SingleProductView(
-                          //   productId: product.iD,)
-                        ),
-                      ),
-                    ),
-                  );
-                },
-              ),
-            );
-          } else if (snapshot.hasError) {
-            return Center(child: Text("${snapshot.error}"));
-          } else {
-            return const Center(child: CircularProgressIndicator());
-          }
-        },
-      ),
-    );
-  }
-}
-
-class PhoneProductPage extends StatelessWidget {
-  final double screenWidth;
-  const PhoneProductPage({super.key, required this.screenWidth});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: const Text("Product page"),
-      ),
-      body: Padding(
-        padding: EdgeInsets.only(top: screenWidth * 0.05),
-        child: FutureBuilder<List<HeeftToepassing>>(
-          future: DataAPI().toepassingProducts(),
-          builder: (context, snapshot) {
-            if (snapshot.hasData) {
-              return ListView(
-                children: [
-                  ...snapshot.data!.map(
-                    (toepassing) => Padding(
-                      padding: EdgeInsets.fromLTRB(
-                          screenWidth * 0.05,
-                          screenWidth * 0.03,
-                          screenWidth * 0.05,
-                          screenWidth * 0.03),
-                      child: Material(
-                        elevation: 5,
-                        borderRadius:
-                            const BorderRadius.all(Radius.circular(10)),
-                        child: Container(
-                          decoration: BoxDecoration(
-                            borderRadius: const BorderRadius.all(
-                              Radius.circular(10),
-                            ),
-                            color: Colors.blue[500],
-                          ),
-                          child: ListTile(
-                            title: Text(
-                              toepassing.productnaam,
-                              style: SizeScaler.getResponsiveTextStyle(
-                                  context, 18, FontWeight.bold, Colors.white),
-                            ),
-                            subtitle: Text(
-                              'Categorie: ${toepassing.toepassing}',
-                              style: SizeScaler.getResponsiveTextStyle(
-                                  context, 17, FontWeight.normal, Colors.white),
-                            ),
-                            trailing: SingleProductView(
-                              productId: toepassing.productID,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              );
-            } else if (snapshot.hasError) {
-              return Text('${snapshot.error}');
-            } else {
-              return const Center(child: CircularProgressIndicator());
-            }
-          },
-        ),
-      ),
+      body: FutureDataWidget(
+          fetchData: DataAPI().newestProducts(),
+          countRow: 2,
+          widgetType: FutureWidgetType.gridView,
+          dataType: FutureDataType.product),
     );
   }
 }
@@ -232,7 +116,7 @@ class PhoneProductPage extends StatelessWidget {
 // }
 
 class SingleProductView extends StatelessWidget {
-  final int productId;
+  final String productId;
 
   const SingleProductView({Key? key, required this.productId})
       : super(key: key);

@@ -1,6 +1,6 @@
 class Clients {
   String probleem;
-  int? iD;
+  String? iD;
 
   Clients({required this.probleem, this.iD});
 

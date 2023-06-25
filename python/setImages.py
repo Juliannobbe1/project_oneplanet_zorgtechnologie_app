@@ -28,17 +28,21 @@ image_folder_path = '/Users/juliannobbe/Projects/flutter projects/project_onepla
 image_files = get_image_files(image_folder_path)
 
 # Ensure the number of image files matches the number of products
-if len(image_files) != 50:
-    print("Number of image files does not match the number of products: ", len(image_files))
-else:
+
     # Update the image paths for the products in Neo4j
-    with driver.session() as session:
-        for i in range(len(image_files)):
-            product_id = i + 1  # Assuming product IDs start from 1
-            image_path = os.path.join(image_folder_path, image_files[i])
-            base64_image = encode_image_to_base64(image_path)
-            query = f"MATCH (p:product {{ID: {product_id}}}) SET p.imageBase64 = '{base64_image}'"
-            session.run(query)
+with driver.session() as session:
+    for i in range(len(image_files)):
+        
+
+        file_name = image_files[i]
+        file_name_without_extension = os.path.splitext(file_name)[0]  # Remove file extension
+        name_parts = file_name_without_extension.split(". ", 1)  # Split by the first occurrence of ". "
+        name = name_parts[1] if len(name_parts) > 1 else name_parts[0]  # Extract the desired name
+        
+        image_path = os.path.join(image_folder_path, file_name)
+        base64_image = encode_image_to_base64(image_path)
+        query = f"MATCH (p:product {{naam: '{name}'}}) SET p.imageBase64 = '{base64_image}'"
+        session.run(query)
 
 # Close the Neo4j driver
 driver.close()

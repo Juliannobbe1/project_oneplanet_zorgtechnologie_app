@@ -1,7 +1,7 @@
 class HeeftToepassing {
   String toepassing;
   String productnaam;
-  int productID;
+  String productID;
 
   HeeftToepassing({
     required this.toepassing,
