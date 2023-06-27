@@ -54,31 +54,41 @@ supplier_ns = namespaces['leverancier']
 relationship_ns = namespaces['relatie']
 
 # Define the routes for the RecommendationResource
-@recommendation_ns.route('/')
+@recommendation_ns.route('/<string:zorgprofessionalID>/<string:productID>/<string:clientID>')
 class RecommendationResource(Resource):
-    @api.marshal_with(recommendationModel) 
+    @api.marshal_with(recommendationModel)     
+    def put(self, zorgprofessionalID, productID,clientID):
+        """
+        This method handles the PUT request to update a recommendation.
+        It takes the payload as input and updates the recommendation with the provided data.
+        It returns the updated recommendation.
+        """
+        recommendation.setRecommendation( zorgprofessionalID, productID,clientID)
+
+# Define the routes for the OrganisationResource
+@organisation_ns.route('/')
+class OrganisationResource(Resource):
+    @api.doc(responses={200: 'Success'}, description='Get method description')
+    @api.marshal_with(orgModel)
     def get(self):
-        return recommendation.get_all()
-    
+        """
+        This method handles the GET request to retrieve all organisations.
+        It returns a list of organisations.
+        """
+        return org.get_all()
+
     def post(self, data):
+        """
+        This method handles the POST request to create a new organisation.
+        It takes in data as input and creates a new organisation based on the provided data.
+        If the data is None, it returns an error response indicating that information is missing.
+        Otherwise, it creates the organisation and returns a success message.
+        """
         if data is None:
             return abort(404, "Cannot create, information is missing")
-        else: 
-            recommendation.create(data)
-            return jsonify({"message": "Organization created successfully."})
-
-# Define the routes for the RecommendationPropertyResource
-@recommendation_ns.route('/<string:property>/<value>')
-class RecommendationPropertyResource(Resource):
-    def get(self, property, value):
-        return recommendation.get(property, value)
-    
-    def delete(self, property, value):
-        if property is None or value is None:
-            return abort(404, "Cannot delete, information is missing")
-        else: 
-            recommendation.delete(property, value)
-            return jsonify({"message": "Recommendation deleted successfully."})
+        else:
+            org.create(data)
+            return jsonify({"message": "Organisation created successfully."})
 
 # Define the routes for the OrganisationResource
 @organisation_ns.route('/')
@@ -511,15 +521,15 @@ class NewProducts(Resource):
         return product.getNewestProducts()
 
 
-@product_ns.route('/aanbeveling/<string:zorgprofID>/<string:clientID>')
+@product_ns.route('/aanbeveling/<string:zorgprofID>/<string:probleem>')
 class ProductsRecommendation(Resource):
     @api.marshal_with(productModel)
-    def get(self, zorgprofID, clientID):
+    def get(self, zorgprofID, probleem):
         """
         This method handles the GET request to retrieve recommended products for a specific healthcare professional and client.
         It takes the healthcare professional ID and client ID as input and returns the recommended products.
         """
-        return product.getRecommendationProducts(zorgprofID, clientID)
+        return product.getRecommendationProducts(zorgprofID, probleem)
 
 
 @product_ns.route('/client/<string:clientID>')

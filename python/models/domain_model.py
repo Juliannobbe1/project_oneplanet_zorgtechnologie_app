@@ -111,13 +111,13 @@ class Product(base_model):
             else:
                 return abort(404, "Something went wrong")
     
-    def getRecommendationProducts(self, zorgprofID, clientID ):
+    def getRecommendationProducts(self, zorgprofID, probleem ):
         query = f"""
-        MATCH (zorgprofessional:zorgprofessional)-[:VERZORGD_CLIENT]->(cliënt:client)
-        WHERE zorgprofessional.ID = '{zorgprofID}' AND cliënt.ID = '{clientID}'
-        WITH zorgprofessional, cliënt.probleem AS probleem
+        MATCH (zorgprofessional:zorgprofessional)
+        WHERE zorgprofessional.ID = '{zorgprofID}'
+        WITH zorgprofessional
         MATCH (andereZorgprofessional:zorgprofessional)-[:VERZORGD_CLIENT]->(andereCliënt:client)
-        WHERE andereCliënt.ID <> '{clientID}' AND andereCliënt.probleem = probleem
+        WHERE andereCliënt.probleem = '{probleem}'
         WITH zorgprofessional, andereCliënt
         MATCH (andereCliënt)<-[VERZORGD_CLIENT]-(andereZorgprofessional)-[K:KRIJGT_AANBEVELING]->(product:product)
         WHERE NOT (zorgprofessional)-[:KRIJGT_AANBEVELING]->(product) AND K.clientID = andereCliënt.ID
@@ -143,12 +143,7 @@ class Product(base_model):
                 return abort(404, "Something went wrong")
             
     def setRecommendedRelationship(self, zorgprofID, productID):
-        # query = f"MATCH (c:client) WHERE c.ID = {clientID} MATCH (z:zorgprofessional) WHERE z.ID = {zorgprofID} CREATE (c)<-[:VERZORGD_CLIENT]-(z)"
         query = f"MATCH (z:zorgprofessional) WHERE z.ID = '{zorgprofID}' MATCH (p:product) WHERE p.ID = '{productID}' CREATE (p)<-[:KRIJGT_AANBEVELING]-(z)"
-        # zorgprofID = self.StringToIntCheck(zorgprofID)
-        # productID = self.StringToIntCheck(productID)
-        # # clientID = self.StringToIntCheck(clientID)
-        # parameters = {"zorgprofID": zorgprofID, "productID": productID}#, "clientID": clientID}
         
         with self.driver.session() as session:
             result = session.run(query)
@@ -157,15 +152,6 @@ class Product(base_model):
                 return data
             else:
                 return abort(404, "Something went wrong")
-
-class Recommendation(base_model):
-    def __init__(self, driver):
-        super().__init__("aanbeveling", driver=driver)
-        self.model_data['aanbeveling'] = fields.String(required=True)
-        self.model_data['productID'] = fields.String(required=True)
-        self.model_data['ID'] = fields.String(required=True)
-        self.model_data['zorgprofessionalID'] = fields.String(required=True) 
-        self.model_data['datum'] = fields.String()  
         
 class Review(base_model):
     def __init__(self, driver):
@@ -206,3 +192,32 @@ class Relationship(base_model):
                 return jsonify({"message": "Resource deleted successfully."}) 
             else:
                 return abort(404, "Could not delete")
+            
+class Recommendation(base_model):
+    def __init__(self, driver):
+        super().__init__("aanbeveling", driver=driver)
+        self.model_data['ID'] = fields.String(required=True)
+        self.model_data['aanbeveling'] = fields.String(required=True)
+        
+    def getRecommendationsByProduct(self, productID):
+        # Query to retrieve recommendations by product ID
+        query = f"MATCH (p:product)-[:AANBEVELEN]-(r:aanbeveling) WHERE p.ID = '{productID}' RETURN r"
+        with self.driver.session() as session:
+            result = session.run(query)
+            if result:
+                data = self.extract(result)
+                return data
+            else:
+                return abort(404, "Something went wrong")
+
+    def setRecommendation(self, zorgprofessionalID, productID,clientID):
+        # Query to create a recommendation relationship between a product and a recommendation
+        query = f"MATCH (p:product) WHERE p.ID = '{productID}' MATCH (z:zorgprofessional) WHERE z.ID = '{zorgprofessionalID}' CREATE (p)<-[:KRIJGT_AANBEVELING {{aanbevelingsID: randomUUID(), zorgprofessionalID: '{zorgprofessionalID}', productID: '{productID}', clientID: '{clientID}'}}]-(z)"
+        with self.driver.session() as session:
+            result = session.run(query)
+            if result:
+                return "Relationship created successfully"
+            else:
+                return abort(404, "Something went wrong")
+            
+    

@@ -11,45 +11,55 @@ import '../pages/products_page.dart';
 typedef SelectedItemCallback = void Function(
     int selectedItemIndex, String item);
 
-enum FutureWidgetType { selectableList, gridView }
+enum FutureWidgetType {
+  selectableList,
+  gridView
+} // Enum to represent different types of future widgets
 
-enum FutureDataType { product, probleemSelect, toepassingSelect, clients }
+enum FutureDataType {
+  product, // Data type representing product
+  probleemSelect, // Data type representing problem selection
+  toepassingSelect, // Data type representing application selection
+  clients, // Data type representing clients
+  recommendProduct // Data type representing recommended product
+}
 
 class FutureDataWidget extends StatefulWidget {
-  final Future<List<dynamic>> fetchData;
-  final int? countRow;
-  final FutureWidgetType widgetType;
-  final FutureDataType dataType;
-  final SelectedItemCallback? onItemSelected;
+  final Future<List<dynamic>> fetchData; // Future that fetches data
+  final int? countRow; // Number of rows
+  final FutureWidgetType widgetType; // Type of future widget
+  final FutureDataType dataType; // Type of future data
+  final SelectedItemCallback? onItemSelected; // Callback for item selection
 
-  const FutureDataWidget(
-      {Key? key,
-      required this.fetchData,
-      this.countRow,
-      required this.widgetType,
-      required this.dataType,
-      this.onItemSelected})
-      : super(key: key);
+  const FutureDataWidget({
+    Key? key,
+    required this.fetchData,
+    this.countRow,
+    required this.widgetType,
+    required this.dataType,
+    this.onItemSelected,
+  }) : super(key: key);
 
   @override
   FutureDataWidgetState createState() => FutureDataWidgetState();
 }
 
 class FutureDataWidgetState extends State<FutureDataWidget> {
-  late Future<List<dynamic>> _dataFuture;
-  late int countRow;
-  late FutureWidgetType widgetType;
-  late FutureDataType dataType;
+  late Future<List<dynamic>> _dataFuture; // Future to fetch data
+  late int countRow; // Number of rows in grid view
+  late FutureWidgetType
+      widgetType; // Type of widget (grid view or selectable list)
+  late FutureDataType dataType; // Type of data to display
 
   @override
   void initState() {
     super.initState();
-    _dataFuture = widget.fetchData;
-    widgetType = widget.widgetType;
-    dataType = widget.dataType;
+    _dataFuture = widget.fetchData; // Fetch data from the widget
+    widgetType = widget.widgetType; // Set widget type
+    dataType = widget.dataType; // Set data type
   }
 
-  int selectedItemIndex = -1;
+  int selectedItemIndex = -1; // Index of selected item
 
   @override
   Widget build(BuildContext context) {
@@ -57,18 +67,20 @@ class FutureDataWidgetState extends State<FutureDataWidget> {
       future: _dataFuture,
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return const CircularProgressIndicator();
+          return const CircularProgressIndicator(); // Show loading indicator while data is being fetched
         } else if (snapshot.hasError) {
-          return Text('Error: ${snapshot.error}');
+          return Text(
+              'Error: ${snapshot.error}'); // Show error message if data fetching fails
         } else {
           final dataList = snapshot.data!;
 
           if (widgetType == FutureWidgetType.gridView) {
             countRow = widget.countRow!;
-            return gridBuildWidget(context, dataList, countRow, dataType);
+            return gridBuildWidget(context, dataList, countRow,
+                dataType); // Build grid view widget
           } else {
-            return selectableListWidget(
-                context, dataList, selectedItemIndex, dataType);
+            return selectableListWidget(context, dataList, selectedItemIndex,
+                dataType); // Build selectable list widget
           }
         }
       },
@@ -94,9 +106,59 @@ class FutureDataWidgetState extends State<FutureDataWidget> {
                   ? toepassingSelectTile(data, index)
                   : dataType == FutureDataType.clients
                       ? clientSelectTile(data, index)
-                      : Container(), // Replace 'null' with an empty Container widget
+                      : dataType == FutureDataType.recommendProduct
+                          ? productSelect(data, index)
+                          : Container(), // Replace 'null' with an empty Container widget
         );
       },
+    );
+  }
+
+  Widget productSelect(Product product, int index) {
+    return Material(
+      elevation: 10,
+      borderRadius: BorderRadius.circular(10),
+      child: Ink(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(10),
+          color: selectedItemIndex == index ? Colors.blue : Colors.blue[100],
+        ),
+        child: ListTile(
+          leading: Image.memory(base64.decode(product.imageBase64!)),
+          // Display the image of the product
+          title: Text(
+            product.naam,
+            style: SizeScaler.getResponsiveTextStyle(
+              context,
+              18,
+              FontWeight.bold,
+              Colors.black,
+            ),
+          ),
+          // Display the name of the product
+          subtitle: Text(
+            limitStringCharacters(product.beschrijving, 85),
+            // Limit the description text to 85 characters
+            style: const TextStyle(fontSize: 16),
+          ),
+          trailing: SingleProductView(
+            productId: product.iD,
+          ),
+          // Display a custom widget for a single product view
+          onTap: () {
+            setState(() {
+              if (selectedItemIndex == index) {
+                selectedItemIndex = -1; // Deselect the item
+                widget.onItemSelected!(-1, "");
+              } else {
+                selectedItemIndex = index; // Select the item
+                widget.onItemSelected!(index, product.iD);
+              }
+            });
+          },
+          // Handle tap events for the list tile
+        ),
+      ),
     );
   }
 
@@ -119,6 +181,7 @@ class FutureDataWidgetState extends State<FutureDataWidget> {
               selectedItemIndex == index ? Colors.white : Colors.black,
             ),
           ),
+          // Display the problem text of the client
           onTap: () {
             setState(() {
               if (selectedItemIndex == index) {
@@ -130,6 +193,7 @@ class FutureDataWidgetState extends State<FutureDataWidget> {
               }
             });
           },
+          // Handle tap events for the list tile
         ),
       ),
     );
@@ -145,8 +209,9 @@ class FutureDataWidgetState extends State<FutureDataWidget> {
           color: selectedItemIndex == index ? Colors.blue : Colors.blue[100],
         ),
         child: ListTile(
+          // Display client ID
           leading: Text(
-            'Client: ${client.iD}',
+            'Client: 1',
             style: SizeScaler.getResponsiveTextStyle(
               context,
               18,
@@ -154,6 +219,7 @@ class FutureDataWidgetState extends State<FutureDataWidget> {
               Colors.black,
             ),
           ),
+          // Display client problem
           title: Text(
             "Probleem: ${client.probleem}",
             style: SizeScaler.getResponsiveTextStyle(
@@ -174,6 +240,7 @@ class FutureDataWidgetState extends State<FutureDataWidget> {
                     final productList = snapshot.data!;
                     final productNames =
                         productList.map((product) => product.naam).join(', ');
+                    // Display the products used by the client
                     return Text(
                       'Maakt gebruik van: $productNames',
                       style: SizeScaler.getResponsiveTextStyle(
@@ -183,24 +250,8 @@ class FutureDataWidgetState extends State<FutureDataWidget> {
                         Colors.black,
                       ),
                     );
-                    // return ListView.builder(
-                    //   shrinkWrap: true,
-                    //   physics: NeverScrollableScrollPhysics(),
-                    //   itemCount: productList.length,
-                    //   itemBuilder: (context, index) {
-                    //     final product = productList[index];
-                    //     return Text(
-                    //       'Maakt gebruik van producten: ${product.naam}',
-                    //       style: SizeScaler.getResponsiveTextStyle(
-                    //         context,
-                    //         18,
-                    //         FontWeight.bold,
-                    //         Colors.black,
-                    //       ),
-                    //     );
-                    //   },
-                    // );
                   } else if (snapshot.hasError) {
+                    // Display an error message if there's an error
                     return Text(
                       'Error: ${snapshot.error}',
                       style: SizeScaler.getResponsiveTextStyle(
@@ -211,18 +262,12 @@ class FutureDataWidgetState extends State<FutureDataWidget> {
                       ),
                     );
                   }
-                  // Show a loading indicator while fetching the product
+                  // Show a loading indicator while fetching the products
                   return const CircularProgressIndicator();
                 },
               ),
             ],
           ),
-          onTap: () {
-            // Navigator.of(context).push(MaterialPageRoute(
-            //   builder: (context) =>
-            //       const SelectionGuidePage(),
-            // ));
-          },
         ),
       ),
     );
@@ -238,6 +283,7 @@ class FutureDataWidgetState extends State<FutureDataWidget> {
           color: selectedItemIndex == index ? Colors.blue : Colors.blue[100],
         ),
         child: ListTile(
+          // Display the application name
           title: Text(
             toepassing.toepassing,
             style: SizeScaler.getResponsiveTextStyle(
@@ -263,12 +309,11 @@ class FutureDataWidgetState extends State<FutureDataWidget> {
 
   Widget gridBuildWidget(BuildContext context, List<dynamic> dataList,
       int count, FutureDataType dataType) {
-    // double screenWidth = MediaQuery.of(context).size.width;
     double screenHeight = MediaQuery.of(context).size.height;
     return Expanded(
       child: GridView.builder(
           gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: count, //count, // Number of columns in the grid
+            crossAxisCount: count, // Number of columns in the grid
             childAspectRatio: screenHeight > 900
                 ? 3.5
                 : count >= 2
@@ -278,7 +323,6 @@ class FutureDataWidgetState extends State<FutureDataWidget> {
           itemCount: dataList.length,
           itemBuilder: (context, index) {
             final data = dataList[index];
-            // if (data is Product) {
             return Padding(
               padding: const EdgeInsets.fromLTRB(20, 25, 20, 5),
               child: Material(
@@ -296,10 +340,7 @@ class FutureDataWidgetState extends State<FutureDataWidget> {
                         : clientsListTile(data)),
               ),
             );
-          }
-          // return null;
-          // },
-          ),
+          }),
     );
   }
 
@@ -311,19 +352,20 @@ class FutureDataWidgetState extends State<FutureDataWidget> {
     }
   }
 
-  //generate for each tile what needs to be on the tile
+  // Generate the tile for each product
   Widget productListTile(Product product) {
     return Card(
-      // elevation: 4,
       margin: const EdgeInsets.all(10),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
       child: ListTile(
         leading: Image.memory(base64.decode(product.imageBase64!)),
+        // Display the product name
         title: Text(
           product.naam,
           style: SizeScaler.getResponsiveTextStyle(
               context, 18, FontWeight.bold, Colors.black),
         ),
+        // Display a truncated description of the product
         subtitle: Text(limitStringCharacters(product.beschrijving, 85),
             style: const TextStyle(fontSize: 16)),
         trailing: SingleProductView(
@@ -333,24 +375,28 @@ class FutureDataWidgetState extends State<FutureDataWidget> {
         dense: true,
         enabled: false,
         selected: true,
-        selectedColor: Colors.blue,
+        selectedTileColor: Colors.blue,
       ),
     );
   }
 
+  // Generate the tile for each client
   Widget clientsListTile(Clients client) {
     return ListTile(
+      // Display client ID
       leading: Text(
         'Client: ${client.iD}',
         style: SizeScaler.getResponsiveTextStyle(
             context, 18, FontWeight.bold, Colors.white),
       ),
+      // Display client problem
       title: Text(
         client.probleem,
         style: SizeScaler.getResponsiveTextStyle(
             context, 18, FontWeight.bold, Colors.white),
       ),
       contentPadding: const EdgeInsets.all(20),
+      // Display "Maakt gebruik van: " (translated: "Uses: ")
       subtitle: Text(
         'Maakt gebruik van: ',
         style: SizeScaler.getResponsiveTextStyle(
