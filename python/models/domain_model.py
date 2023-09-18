@@ -118,8 +118,56 @@ class Organisation(base_model):
 class Product(base_model):
     def __init__(self, driver):
         super().__init__("product", driver=driver)
-        self.model_data['naam'] = fields.String(required=True)
-        self.model_data['beschrijving'] = fields.String(required=True)
+        self.model_data['beschrijving'] = fields.String()
+        self.model_data['ID'] = fields.String()
+        self.model_data['leverancierID'] = fields.String()
+        self.model_data['link'] = fields.String()
+        self.model_data['naam'] = fields.String(required=True, description='Naam van het product')
+        self.model_data['prijs'] = fields.Float()
+        self.model_data['imageBase64'] = fields.String()
+    
+    def getNewestProducts(self):
+        with self.driver.session() as session:
+            result = session.run(f"MATCH (n:product)RETURN n ORDER BY id(n) DESC LIMIT 6")
+            if result:
+                data = self.extract(result)
+                return data
+            else:
+                return abort(404, "Something went wrong")
+    
+    def getRecommendationProducts(self, zorgprofID, probleem ):
+        query = f"""
+        MATCH (zorgprofessional:zorgprofessional)
+        WHERE zorgprofessional.ID = '{zorgprofID}'
+        WITH zorgprofessional
+        MATCH (andereZorgprofessional:zorgprofessional)-[:VERZORGD_CLIENT]->(andereCliënt:client)
+        WHERE andereCliënt.probleem = '{probleem}'
+        WITH zorgprofessional, andereCliënt
+        MATCH (andereCliënt)<-[VERZORGD_CLIENT]-(andereZorgprofessional)-[K:KRIJGT_AANBEVELING]->(product:product)
+        WHERE NOT (zorgprofessional)-[:KRIJGT_AANBEVELING]->(product) AND K.clientID = andereCliënt.ID
+        WITH product AS n
+        RETURN DISTINCT n
+        """
+        with self.driver.session() as session:
+            result = session.run(query)
+            if result:
+                data = self.extract(result)
+                return data
+            else:
+                return abort(404, "Something went wrong")
+            
+    def getProductsOneClient(self, clientID):
+        query = f"MATCH (n:product)<-[k:KRIJGT_AANBEVELING]-(a:zorgprofessional)-[z:VERZORGD_CLIENT]->(c:client) WHERE c.ID = '{clientID}' AND k.clientID = '{clientID}' RETURN DISTINCT n"
+        with self.driver.session() as session:
+            result = session.run(query)
+            if result:
+                data = self.extract(result)
+                return data
+            else:
+                return abort(404, "Something went wrong")
+            
+    def setRecommendedRelationship(self, zorgprofID, productID):
+        query = f"MATCH (z:zorgprofessional) WHERE z.ID = '{zorgprofID}' MATCH (p:product) WHERE p.ID = '{productID}' CREATE (p)<-[:KRIJGT_AANBEVELING]-(z)"
         
     def getDistinctProducts(self):
         # Query to retrieve distinct products
@@ -131,12 +179,6 @@ class Product(base_model):
                 return data
             else:
                 return abort(404, "Something went wrong")
-
-class Recommendation(base_model):
-    def __init__(self, driver):
-        super().__init__("aanbeveling", driver=driver)
-        self.model_data['ID'] = fields.String(required=True)
-        self.model_data['aanbeveling'] = fields.String(required=True)
         
     def getRecommendationsByProduct(self, productID):
         # Query to retrieve recommendations by product ID
@@ -157,4 +199,33 @@ class Recommendation(base_model):
             if result:
                 return "Relationship created successfully"
             else:
+                return abort(404, "Could not delete")
+            
+class Recommendation(base_model):
+    def __init__(self, driver):
+        super().__init__("aanbeveling", driver=driver)
+        self.model_data['ID'] = fields.String(required=True)
+        self.model_data['aanbeveling'] = fields.String(required=True)
+        
+    def getRecommendationsByProduct(self, productID):
+        # Query to retrieve recommendations by product ID
+        query = f"MATCH (p:product)-[:AANBEVELEN]-(r:aanbeveling) WHERE p.ID = '{productID}' RETURN r"
+        with self.driver.session() as session:
+            result = session.run(query)
+            if result:
+                data = self.extract(result)
+                return data
+            else:
                 return abort(404, "Something went wrong")
+
+    def setRecommendation(self, zorgprofessionalID, productID,clientID):
+        # Query to create a recommendation relationship between a product and a recommendation
+        query = f"MATCH (p:product) WHERE p.ID = '{productID}' MATCH (z:zorgprofessional) WHERE z.ID = '{zorgprofessionalID}' CREATE (p)<-[:KRIJGT_AANBEVELING {{aanbevelingsID: randomUUID(), zorgprofessionalID: '{zorgprofessionalID}', productID: '{productID}', clientID: '{clientID}'}}]-(z)"
+        with self.driver.session() as session:
+            result = session.run(query)
+            if result:
+                return "Relationship created successfully"
+            else:
+                return abort(404, "Something went wrong")
+            
+    

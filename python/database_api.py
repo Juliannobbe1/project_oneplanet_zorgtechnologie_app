@@ -90,6 +90,31 @@ class OrganisationResource(Resource):
             org.create(data)
             return jsonify({"message": "Organisation created successfully."})
 
+# Define the routes for the OrganisationResource
+@organisation_ns.route('/')
+class OrganisationResource(Resource):
+    @api.doc(responses={200: 'Success'}, description='Get method description')
+    @api.marshal_with(orgModel)
+    def get(self):
+        """
+        This method handles the GET request to retrieve all organisations.
+        It returns a list of organisations.
+        """
+        return org.get_all()
+
+    def post(self, data):
+        """
+        This method handles the POST request to create a new organisation.
+        It takes in data as input and creates a new organisation based on the provided data.
+        If the data is None, it returns an error response indicating that information is missing.
+        Otherwise, it creates the organisation and returns a success message.
+        """
+        if data is None:
+            return abort(404, "Cannot create, information is missing")
+        else:
+            org.create(data)
+            return jsonify({"message": "Organisation created successfully."})
+
 
 @organisation_ns.route('/<string:property>/<value>')
 class OrganisationPropertyResource(Resource):

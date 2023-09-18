@@ -6,7 +6,7 @@ import '../models/toepassing.dart';
 import '../models/clients.dart';
 
 class DataAPI {
-  String baseUrl = 'http://192.168.123.41:5001';
+  String baseUrl = 'http://192.168.72.182:5001';
 
   /// Fetches data from the specified [endpoint] using a GET request.
   /// Returns a [Future] that resolves to a list of dynamic objects.
@@ -44,7 +44,7 @@ class DataAPI {
 
     if (response.statusCode == 200) {
       final responseBody = jsonDecode(response.body);
-      log(responseBody); // Replace 'message' with the appropriate key in the response
+      log('$responseBody'); // Replace 'message' with the appropriate key in the response
     } else {
       throw Exception(response.reasonPhrase);
     }
