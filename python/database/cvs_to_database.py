@@ -1,10 +1,10 @@
 # Import necessary libraries
-from connect_database import database
+from connect_database import Database
 import pandas as pd
 import os
 
 # Connect to the database
-driver = database.connectDatabase()
+driver = Database.connectDatabase()
 
 # Set up file paths
 path = "mockdata"

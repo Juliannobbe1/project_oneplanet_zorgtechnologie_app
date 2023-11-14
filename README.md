@@ -36,16 +36,14 @@ Projectstructuur
     Zorg ervoor dat Python 3.x op je systeem is geïnstalleerd.
     Zorg ervoor dat flutter 3.7 geinstaleerd is. 
     Installeer docker op je syteem
-    Installeer de database: docker run \ --publish=7474:7474 --publish=7687:7687 \ --volume=$HOME/neo4j/data:/data \ neo4j
+    Installeer de database: `docker run -e NEO4J_AUTH="neo4j/iVOG0qvVg9iYYGz6WVf8BW19Xv4zmmHbDIkH0ur9PCU" --publish=7474:7474 --publish=7687:7687 --volume=$HOME/neo4j/data:/data neo4j`
 
     Clone de repository naar je lokale machine.
     Navigeer naar de projectmap: cd zorgtechnologie-applicatie.
     Installeer de vereiste afhankelijkheden van python met pip: pip install flask-restx flask neo4j pandas loguru
     Navigeer naar de flutter deel van de applicatie: cd project_oneplant_zorgtechnologie_app/zorgtechnologieapp/
     Installeer de vereiste van flutter met pub: pub get
-    Navigeer naar: python/database/connect_database.py
-    Vul in neo4j ww en gebruikersnaam
-    run python programma om database te vullen: cvs_to_database.py
+    run python programma vanuit de repo root om database te vullen: `python python/database/cvs_to_database.py`
 
 ## Gebruik
 

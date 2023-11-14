@@ -1,7 +1,8 @@
+import sys
 from uuid import uuid4
 from flask import Flask, abort, jsonify
 from flask_restx import Api, Resource
-from database.connect_database import database
+from database.connect_database import Database
 from models.domain_model import *
 from api_initialation import NamespaceFactory
 from loguru import logger
@@ -15,7 +16,7 @@ api = Api(app)
 logger.trace("Initialized Flask API")
 
 # Connect to the database
-driver = database.connectDatabase()
+driver = Database.connectDatabase()
 logger.trace("Successfully connected to the database")
 
 # Initialize the NamespaceFactory with the database driver and API
@@ -726,6 +727,8 @@ class RelationshipResource(Resource):
 
 
 if __name__ == '__main__':
-    logger.add("file_{time}.log", level="INFO", rotation="1 day")
+    logger.add(sys.stdout, colorize=True, format="<green>{time}</green> <level>{message}</level>", level="TRACE")
+    logger.add(sys.stderr, format="<red>{time}</red> <level>{message}</level>", level="ERROR")
+    logger.add("file_{time}.log", level="TRACE", rotation="1 day")
     logger.trace("Starting app on port 5001")
     app.run(host='0.0.0.0', port=5001)

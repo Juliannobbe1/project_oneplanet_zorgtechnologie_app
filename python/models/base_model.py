@@ -14,16 +14,16 @@ class base_model:
         return self.model_data
 
     def extract(self, result):
-        logger.info("Attempting data extraction from result '{result}'", result=result)
+        logger.trace("Attempting data extraction from result '{result}'", result=result)
         # Extracts 'n' from each item in the result data
         data = [item['n'] for item in result.data()]
 
         if not data:
-            logger.error("Item not found while extracting result '{result}'", result)
+            logger.error("Item not found while extracting result '{result}'", result=result)
             # Raises a 404 error if no data is found
             abort(404, "Item not found")
         else:
-            logger.info("Successfully extracted data from result '{result}'", result)
+            logger.trace("Successfully extracted data from result '{result}'", result=result)
             return data
 
     def StringToIntCheck(self, value):
