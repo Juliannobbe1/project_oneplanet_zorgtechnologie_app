@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'pages/home_page.dart';
 
 void main() {
   runApp(
-    const MediaQuery(
-      data: MediaQueryData(),
-      child: MyApp(),
+    const ProviderScope(
+      child: MediaQuery(
+        data: MediaQueryData(),
+        child: MyApp(),
+      ),
     ),
   );
 }
