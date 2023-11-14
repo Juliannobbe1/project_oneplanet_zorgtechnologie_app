@@ -1,8 +1,11 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:logger/logger.dart';
 import 'package:zorgtechnologieapp/models/clients.dart';
 import 'package:zorgtechnologieapp/models/toepassing.dart';
+import 'package:zorgtechnologieapp/providers/logging_provider/logging_provider.dart';
 import '../handlers/data_api_handler.dart';
 import '../handlers/responsive_layout_handler.dart';
 import '../models/products.dart';
@@ -24,7 +27,7 @@ enum FutureDataType {
   recommendProduct // Data type representing recommended product
 }
 
-class FutureDataWidget extends StatefulWidget {
+class FutureDataWidget extends ConsumerStatefulWidget {
   final Future<List<dynamic>> fetchData; // Future that fetches data
   final int? countRow; // Number of rows
   final FutureWidgetType widgetType; // Type of future widget
@@ -44,12 +47,13 @@ class FutureDataWidget extends StatefulWidget {
   FutureDataWidgetState createState() => FutureDataWidgetState();
 }
 
-class FutureDataWidgetState extends State<FutureDataWidget> {
+class FutureDataWidgetState extends ConsumerState<FutureDataWidget> {
   late Future<List<dynamic>> _dataFuture; // Future to fetch data
   late int countRow; // Number of rows in grid view
   late FutureWidgetType
       widgetType; // Type of widget (grid view or selectable list)
   late FutureDataType dataType; // Type of data to display
+  late Logger _logger;
 
   @override
   void initState() {
@@ -63,12 +67,16 @@ class FutureDataWidgetState extends State<FutureDataWidget> {
 
   @override
   Widget build(BuildContext context) {
+    _logger = ref.watch(loggingProvider);
+
     return FutureBuilder<List<dynamic>>(
       future: _dataFuture,
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
+          _logger.t("Retrieving $dataType data...");
           return const CircularProgressIndicator(); // Show loading indicator while data is being fetched
         } else if (snapshot.hasError) {
+          _logger.e("Error fetching data: ${snapshot.error}");
           return Text(
               'Error: ${snapshot.error}'); // Show error message if data fetching fails
         } else {
@@ -89,6 +97,8 @@ class FutureDataWidgetState extends State<FutureDataWidget> {
 
   Widget selectableListWidget(BuildContext context, List<dynamic> dataList,
       int selectedItemIndex, FutureDataType dataType) {
+    _logger.t(
+        "Building selectableList with selectedItemIndex '$selectedItemIndex', dataType '$dataType' and item amount '${dataList.length}'");
     return ListView.builder(
       itemCount: dataList.length,
       itemBuilder: (context, index) {
@@ -150,9 +160,13 @@ class FutureDataWidgetState extends State<FutureDataWidget> {
               if (selectedItemIndex == index) {
                 selectedItemIndex = -1; // Deselect the item
                 widget.onItemSelected!(-1, "");
+                _logger.t(
+                    "Deselected product '${product.iD}' with name '${product.naam}'");
               } else {
                 selectedItemIndex = index; // Select the item
                 widget.onItemSelected!(index, product.iD);
+                _logger.t(
+                    "Selected product '${product.iD}' with name '${product.naam}'");
               }
             });
           },
@@ -187,9 +201,11 @@ class FutureDataWidgetState extends State<FutureDataWidget> {
               if (selectedItemIndex == index) {
                 selectedItemIndex = -1; // Deselect the item
                 widget.onItemSelected!(-1, "");
+                _logger.t("Deselected problem '${client.probleem}'");
               } else {
                 selectedItemIndex = index; // Select the item
                 widget.onItemSelected!(index, client.probleem);
+                _logger.t("Selected problem '${client.probleem}'");
               }
             });
           },
@@ -234,9 +250,12 @@ class FutureDataWidgetState extends State<FutureDataWidget> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               FutureBuilder<List<Product>>(
-                future: DataAPI().getProductsForClient(client.iD!),
+                future:
+                    DataAPI(logger: _logger).getProductsForClient(client.iD!),
                 builder: (context, snapshot) {
                   if (snapshot.hasData) {
+                    _logger.t(
+                        "Amount of products retrieved: '${snapshot.data!.length}'");
                     final productList = snapshot.data!;
                     final productNames =
                         productList.map((product) => product.naam).join(', ');
@@ -251,6 +270,8 @@ class FutureDataWidgetState extends State<FutureDataWidget> {
                       ),
                     );
                   } else if (snapshot.hasError) {
+                    _logger.e(
+                        "An error occurred fetching the products: '${snapshot.error}'");
                     // Display an error message if there's an error
                     return Text(
                       'Error: ${snapshot.error}',
@@ -297,8 +318,10 @@ class FutureDataWidgetState extends State<FutureDataWidget> {
             setState(() {
               if (selectedItemIndex == index) {
                 selectedItemIndex = -1; // Deselect the item
+                _logger.t("Deselected toepassing '${toepassing.toepassing}'");
               } else {
                 selectedItemIndex = index; // Select the item
+                _logger.t("Selected toepassing '${toepassing.toepassing}'");
               }
             });
           },

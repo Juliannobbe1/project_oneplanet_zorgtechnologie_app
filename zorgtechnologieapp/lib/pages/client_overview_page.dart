@@ -1,15 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:zorgtechnologieapp/providers/logging_provider/logging_provider.dart';
 
 import '../handlers/data_api_handler.dart';
 import '../handlers/responsive_layout_handler.dart';
 import '../widgets/futurebuilder.dart';
 import 'selection_guide.dart';
 
-class ClientOverview extends StatelessWidget {
+class ClientOverview extends ConsumerWidget {
   const ClientOverview({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final logger = ref.watch(loggingProvider);
+
     return Scaffold(
       backgroundColor: Colors.indigo[50],
       appBar: AppBar(
@@ -29,7 +33,7 @@ class ClientOverview extends StatelessWidget {
           children: [
             Expanded(
               child: FutureDataWidget(
-                fetchData: DataAPI().providedClient(
+                fetchData: DataAPI(logger: logger).providedClient(
                     "e040d519-dcc5-4969-86c3-54006f21656c"), // Fetch client data using DataAPI
                 widgetType: FutureWidgetType
                     .selectableList, // Display a selectable list of clients

@@ -1,8 +1,9 @@
-import 'dart:developer';
-
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:logger/logger.dart';
 import 'package:zorgtechnologieapp/pages/home_page.dart';
+import 'package:zorgtechnologieapp/providers/logging_provider/logging_provider.dart';
 import 'package:zorgtechnologieapp/widgets/futurebuilder.dart';
 import 'package:uuid/uuid.dart';
 
@@ -53,7 +54,7 @@ class SelectionGuidePage extends StatelessWidget {
 }
 
 // Widget for the tablet selection screen
-class TabletSelectionScreen extends StatefulWidget {
+class TabletSelectionScreen extends ConsumerStatefulWidget {
   // Dimensions of the tablet screen
   final double screenWidth;
   final double screenHeight;
@@ -70,35 +71,43 @@ class TabletSelectionScreen extends StatefulWidget {
   TabletSelectionScreenState createState() => TabletSelectionScreenState();
 }
 
-class TabletSelectionScreenState extends State<TabletSelectionScreen> {
+class TabletSelectionScreenState extends ConsumerState<TabletSelectionScreen> {
   var uuid = const Uuid(); // Uuid generator instance
-  var api = DataAPI(); // DataAPI instance
   int selectedBehoefteIndex = -1; // Index of the selected zorgbehoefte
   int selectedProductIndex = -1; // Index of the selected product
   String? product; // Selected product
   String? zorgbehoefte; // Selected zorgbehoefte
   String? clientID; // Client ID
 
-  // Callback function when a zorgbehoefte is selected
-  void handleZorgbehoefteSelected(int index, String item) async {
-    var v4 = uuid.v4(); // Generate a unique client ID using Uuid
-    setState(() {
-      clientID = v4; // Update the client ID
-      selectedBehoefteIndex = index; // Update the selected zorgbehoefte index
-      zorgbehoefte = item; // Update the selected zorgbehoefte
-    });
+  // Builder for callback function when a zorgbehoefte is selected
+  Function(int, String) handleZorgbehoefteSelectedBuilder(Logger logger) {
+    return (int index, String item) async {
+      var v4 = uuid.v4(); // Generate a unique client ID using Uuid
+      logger.i("Selecting zorgbehoefte: '$item' for client '$v4'");
+      setState(() {
+        clientID = v4; // Update the client ID
+        selectedBehoefteIndex = index; // Update the selected zorgbehoefte index
+        zorgbehoefte = item; // Update the selected zorgbehoefte
+      });
+    };
   }
 
-  // Callback function when a product is selected
-  void handleProductSelected(int index, String item) async {
-    setState(() {
-      selectedBehoefteIndex = index; // Update the selected zorgbehoefte index
-      product = item; // Update the selected product
-    });
+  // Builder for callback function when a product is selected
+  Function(int, String) handleProductSelectedBuilder(Logger logger) {
+    return (int index, String item) async {
+      logger.i("Selecting product: '$item'");
+      setState(() {
+        selectedBehoefteIndex = index; // Update the selected zorgbehoefte index
+        product = item; // Update the selected product
+      });
+    };
   }
 
   @override
   Widget build(BuildContext context) {
+    final logger = ref.watch(loggingProvider);
+    final api = DataAPI(logger: logger);
+
     final screenWidth = widget.screenWidth; // Get the screen width
     final screenHeight = widget.screenHeight; // Get the screen height
 
@@ -164,7 +173,8 @@ class TabletSelectionScreenState extends State<TabletSelectionScreen> {
                               fetchData: api.distinctProbleem(),
                               widgetType: FutureWidgetType.selectableList,
                               dataType: FutureDataType.probleemSelect,
-                              onItemSelected: handleZorgbehoefteSelected,
+                              onItemSelected:
+                                  handleZorgbehoefteSelectedBuilder(logger),
                             ),
                           ),
                         ],
@@ -212,7 +222,8 @@ class TabletSelectionScreenState extends State<TabletSelectionScreen> {
                                     ),
                                     widgetType: FutureWidgetType.selectableList,
                                     dataType: FutureDataType.recommendProduct,
-                                    onItemSelected: handleProductSelected,
+                                    onItemSelected:
+                                        handleProductSelectedBuilder(logger),
                                   ),
                                 )
                               : Container(
@@ -229,6 +240,8 @@ class TabletSelectionScreenState extends State<TabletSelectionScreen> {
                                       alignment: Alignment.bottomRight,
                                       child: FloatingActionButton.extended(
                                         onPressed: () {
+                                          logger.i(
+                                              "Saving selection for zorgbehoefte '$zorgbehoefte' and product '$product'");
                                           // Save function
                                           if (zorgbehoefte != null &&
                                               product != null) {
@@ -239,21 +252,28 @@ class TabletSelectionScreenState extends State<TabletSelectionScreen> {
                                               ),
                                             );
 
+                                            logger.t(
+                                                "Creating client with clientID '$clientID' and zorgbehoefte '$zorgbehoefte'");
                                             api.createClient(
                                               clientID!,
                                               zorgbehoefte!,
                                             );
+                                            logger.t(
+                                                "Creating client relationship between clientID '$clientID' and 'e040d519-dcc5-4969-86c3-54006f21656c'");
                                             api.createClientRelationship(
                                               clientID!,
                                               "e040d519-dcc5-4969-86c3-54006f21656c",
                                             );
+                                            logger.t(
+                                                "Creating recommendation relationship between clientID '$clientID' and 'e040d519-dcc5-4969-86c3-54006f21656c' for product '$product'");
                                             api.createRecommendationRelationship(
                                               clientID!,
                                               "e040d519-dcc5-4969-86c3-54006f21656c",
                                               product!,
                                             );
                                           } else {
-                                            log("test"); // Log a test message
+                                            logger.t(
+                                                "Unable to save; zorgbehoefte or product is null");
                                           }
                                         },
                                         icon: const Icon(Icons.save),

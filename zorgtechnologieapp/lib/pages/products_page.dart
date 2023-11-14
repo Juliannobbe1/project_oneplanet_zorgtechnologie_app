@@ -1,15 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:logger/logger.dart';
+import 'package:zorgtechnologieapp/providers/logging_provider/logging_provider.dart';
 
 import '../handlers/data_api_handler.dart';
 import '../handlers/responsive_layout_handler.dart';
 import '../models/products.dart';
 import '../widgets/futurebuilder.dart';
 
-class ProductPage extends StatelessWidget {
+class ProductPage extends ConsumerWidget {
   const ProductPage({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final logger = ref.watch(loggingProvider);
+
     return Scaffold(
       backgroundColor: Colors.indigo[50],
       appBar: AppBar(
@@ -26,8 +31,8 @@ class ProductPage extends StatelessWidget {
       body: Column(
         children: [
           FutureDataWidget(
-              fetchData:
-                  DataAPI().getProducts(), // Fetch product data using DataAPI
+              fetchData: DataAPI(logger: logger)
+                  .getProducts(), // Fetch product data using DataAPI
               countRow: 2, // Specify the number of rows for the grid view
               widgetType:
                   FutureWidgetType.gridView, // Display the data in a grid view
@@ -39,26 +44,29 @@ class ProductPage extends StatelessWidget {
   }
 }
 
-class SingleProductView extends StatelessWidget {
+class SingleProductView extends ConsumerWidget {
   final String productId;
 
   const SingleProductView({Key? key, required this.productId})
       : super(key: key);
 
-  Future<Product> fetchProduct() async {
-    List<Product> products =
-        await DataAPI().getProducts(); // Fetch all products using DataAPI
+  Future<Product> fetchProduct(Logger logger) async {
+    List<Product> products = await DataAPI(logger: logger)
+        .getProducts(); // Fetch all products using DataAPI
     return products.firstWhere((product) =>
         product.iD == productId); // Find the product with matching ID
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    Logger logger = ref.watch(loggingProvider);
+
     return FutureBuilder<Product>(
-      future:
-          fetchProduct(), // Fetch the product data using fetchProduct() method
+      future: fetchProduct(
+          logger), // Fetch the product data using fetchProduct() method
       builder: (context, snapshot) {
         if (snapshot.hasData) {
+          logger.t("Successfully retrieved product data: '${snapshot.data}'");
           // If product data is available
           Product product = snapshot.data!; // Get the product object
           return IconButton(
@@ -123,6 +131,8 @@ class SingleProductView extends StatelessWidget {
             },
           );
         } else if (snapshot.hasError) {
+          logger.e(
+              "An error occurred while fetching product data: '${snapshot.error}'");
           // If there's an error fetching product data
           return IconButton(
             icon: const Icon(
