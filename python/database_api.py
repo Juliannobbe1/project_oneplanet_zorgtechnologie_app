@@ -1,18 +1,22 @@
-from flask import Flask, abort, jsonify, send_file
+from uuid import uuid4
+from flask import Flask, abort, jsonify
 from flask_restx import Api, Resource
 from database.connect_database import database
 from models.domain_model import *
-import json
 from api_initialation import NamespaceFactory
+from loguru import logger
 
 # Create Flask application
 app = Flask(__name__)
+logger.trace("Initialized Flask app")
 
 # Create API
 api = Api(app)
+logger.trace("Initialized Flask API")
 
 # Connect to the database
 driver = database.connectDatabase()
+logger.trace("Successfully connected to the database")
 
 # Initialize the NamespaceFactory with the database driver and API
 factory = NamespaceFactory(driver=driver, api=api)
@@ -57,13 +61,16 @@ relationship_ns = namespaces['relatie']
 @recommendation_ns.route('/<string:zorgprofessionalID>/<string:productID>/<string:clientID>')
 class RecommendationResource(Resource):
     @api.marshal_with(recommendationModel)     
-    def put(self, zorgprofessionalID, productID,clientID):
+    def put(self, zorgprofessionalID, productID, clientID):
         """
         This method handles the PUT request to update a recommendation.
         It takes the payload as input and updates the recommendation with the provided data.
         It returns the updated recommendation.
         """
-        recommendation.setRecommendation( zorgprofessionalID, productID,clientID)
+        requestId = uuid4()
+        logger.info("requestID: '{requestId}'\nSetting recommendation for 'zorgProfessionalID': '{zorgprofessionalID}' 'productID': '{productID}' 'clientID': '{clientID}'", requestId=requestId, zorgprofessionalID=zorgprofessionalID, productID=productID, clientID=clientID)
+        recommendation.setRecommendation(zorgprofessionalID, productID, clientID)
+        logger.info("requestID: '{requestId}'\nSuccessfully set recommendation for 'zorgProfessionalID': '{zorgprofessionalID}' 'productID': '{productID}' 'clientID': '{clientID}'", requestId=requestId, zorgprofessionalID=zorgprofessionalID, productID=productID, clientID=clientID)
 
 # Define the routes for the OrganisationResource
 @organisation_ns.route('/')
@@ -75,7 +82,11 @@ class OrganisationResource(Resource):
         This method handles the GET request to retrieve all organisations.
         It returns a list of organisations.
         """
-        return org.get_all()
+        requestId = uuid4()
+        logger.info("requestID: '{requestId}'\nReceived request to retrieve all organisations", requestId=requestId)
+        response = org.get_all()
+        logger.info("requestID: '{requestId}'\nSuccessfully retrieved all organisations '{organisations}'", requestId=requestId, organisations=response)
+        return response
 
     def post(self, data):
         """
@@ -84,35 +95,14 @@ class OrganisationResource(Resource):
         If the data is None, it returns an error response indicating that information is missing.
         Otherwise, it creates the organisation and returns a success message.
         """
+        requestId = uuid4()
+        logger.info("requestID: '{requestId}'\nReceived request to create organisation with data '{data}'", requestId=requestId, data=data)
         if data is None:
+            logger.error("requestID: '{requestId}'\nCannot create organisation, information is missing", requestId=requestId)
             return abort(404, "Cannot create, information is missing")
         else:
             org.create(data)
-            return jsonify({"message": "Organisation created successfully."})
-
-# Define the routes for the OrganisationResource
-@organisation_ns.route('/')
-class OrganisationResource(Resource):
-    @api.doc(responses={200: 'Success'}, description='Get method description')
-    @api.marshal_with(orgModel)
-    def get(self):
-        """
-        This method handles the GET request to retrieve all organisations.
-        It returns a list of organisations.
-        """
-        return org.get_all()
-
-    def post(self, data):
-        """
-        This method handles the POST request to create a new organisation.
-        It takes in data as input and creates a new organisation based on the provided data.
-        If the data is None, it returns an error response indicating that information is missing.
-        Otherwise, it creates the organisation and returns a success message.
-        """
-        if data is None:
-            return abort(404, "Cannot create, information is missing")
-        else:
-            org.create(data)
+            logger.info("requestID: '{requestId}'\nOrganisation created successfully with data '{data}'", requestId=requestId, data=data)
             return jsonify({"message": "Organisation created successfully."})
 
 
@@ -124,7 +114,11 @@ class OrganisationPropertyResource(Resource):
         This method handles the GET request to retrieve organisations based on a specific property and its value.
         It takes in the property and value as input and returns a list of organisations matching the criteria.
         """
-        return org.get(property, value)
+        requestId = uuid4()
+        logger.info("requestID: '{requestId}'\nReceived request to retrieve organisation with property '{property}' matching value '{value}'", requestId=requestId, property=property, value=value)
+        response = org.get(property, value)
+        logger.info("requestID: '{requestId}'\nSucessfully retrieved organisation '{organisation}'", requestId=requestId, organisation=response)
+        return response
 
     def delete(self, property, value):
         """
@@ -133,10 +127,14 @@ class OrganisationPropertyResource(Resource):
         If either the property or value is None, it returns an error response indicating that information is missing.
         Otherwise, it deletes the organisations and returns a success message.
         """
+        requestId = uuid4()
+        logger.info("requestID: '{requestId}'\nReceived request to delete organisation with property '{property}' matching value '{value}'", requestId=requestId, property=property, value=value)
         if property and value is None:
+            logger.error("requestID: '{requestId}'\nCannot delete organisation, information is missing", requestId=requestId)
             return abort(404, "Cannot delete, information is missing")
         else:
             org.delete(property, value)
+            logger.info("requestID: '{requestId}'\nOrganisation deleted successfully", requestId=requestId)
             return jsonify({"message": "Organisation deleted successfully."})
 
 
@@ -148,7 +146,11 @@ class ReviewResource(Resource):
         This method handles the GET request to retrieve all reviews.
         It returns a list of reviews.
         """
-        return review.get_all()
+        requestId = uuid4()
+        logger.info("requestID: '{requestId}'\nReceived request to retrieve all reviews", requestId=requestId)
+        response = review.get_all()
+        logger.info("requestID: '{requestId}'\nSuccessfully retrieved all reviews '{reviews}'", requestId=requestId, reviews=response)
+        return response
 
     def post(self, data):
         """
@@ -157,10 +159,14 @@ class ReviewResource(Resource):
         If the data is None, it returns an error response indicating that information is missing.
         Otherwise, it creates the review and returns a success message.
         """
+        requestId = uuid4()
+        logger.info("requestID: '{requestId}'\nReceived request to create a new review with data '{data}'", requestId=requestId, data=data)
         if data is None:
+            logger.error("requestID: '{requestId}'\nCannot create review, information is missing")
             return abort(404, "Cannot create, information is missing")
         else:
             review.create(data)
+            logger.info("requestID: '{requestId}'\nReview created successfully")
             return jsonify({"message": "Review created successfully."})
 
 
@@ -171,7 +177,11 @@ class ReviewPropertyResource(Resource):
         This method handles the GET request to retrieve reviews based on a specific property and its value.
         It takes in the property and value as input and returns a list of reviews matching the criteria.
         """
-        return review.get(property, value)
+        requestId = uuid4()
+        logger.info("requestID: '{requestId}'\nReceived request to retrieve review with property '{property}' containing '{value}'", requestId=requestId, property=property, value=value)
+        response = review.get(property, value)
+        logger.info("requestID: '{requestId}'\nSuccessfully retrieved review '{review}'", requestId=requestId, review=response)
+        return response
 
     def delete(self, property, value):
         """
@@ -180,10 +190,14 @@ class ReviewPropertyResource(Resource):
         If either the property or value is None, it returns an error response indicating that information is missing.
         Otherwise, it deletes the reviews and returns a success message.
         """
+        requestId = uuid4()
+        logger.info("requestID: '{requestId}'\nReceived request to delete review with property '{property}' containing '{value}'", requestId=requestId, property=property, value=value)
         if property or value is None:
+            logger.error("requestID: '{requestId}'\nCannot delete review, information is missing")
             return abort(404, "Cannot delete, information is missing")
         else:
             review.delete(property, value)
+            logger.info("requestID: '{requestId}'\nReview deleted successfully")
             return jsonify({"message": "Review deleted successfully."})
 
 
@@ -197,7 +211,11 @@ class SupplierResource(Resource):
         This method handles the GET request to retrieve all suppliers.
         It returns a list of suppliers.
         """
-        return supplier.get_all()
+        requestId = uuid4()
+        logger.info("requestID: '{requestId}'\nReceived request to retrieve all suppliers", requestId=requestId)
+        response = supplier.get_all()
+        logger.info("requestID: '{requestId}'\nSuccessfully retrieved sll suppliers '{suppliers}'", requestId=requestId, suppliers=response)
+        return response
 
     def post(self, data):
         """
@@ -206,10 +224,14 @@ class SupplierResource(Resource):
         If the data is None, it returns an error response indicating that information is missing.
         Otherwise, it creates the supplier and returns a success message.
         """
+        requestId = uuid4()
+        logger.info("requestID: '{requestId}'\nReceived request to create a new supplier with data '{data}'", requestId=requestId, data=data)
         if data is None:
+            logger.error("requestID: '{requestId}'\nCannot create supplier, information is missing", requestId=requestId)
             return abort(404, "Cannot create, information is missing")
         else:
             supplier.create(data)
+            logger.info("requestID: '{requestId}'\nSuccessfully created supplier", requestId=requestId)
             return jsonify({"message": "Supplier created successfully."})
 
 
@@ -220,7 +242,11 @@ class SupplierPropertyResource(Resource):
         This method handles the GET request to retrieve suppliers based on a specific property and its value.
         It takes in the property and value as input and returns a list of suppliers matching the criteria.
         """
-        return supplier.get(property, value)
+        requestId = uuid4()
+        logger.info("requestID: '{requestId}'\nReceived request to retrieve all suppliers", requestId=requestId)
+        response = supplier.get(property, value)
+        logger.info("requestID: '{requestId}'\nSuccessfully retrieved all reviews '{reviews}'", requestId=requestId, reviews=response)
+        return response
 
     def delete(self, property, value):
         """
@@ -229,10 +255,14 @@ class SupplierPropertyResource(Resource):
         If either the property or value is None, it returns an error response indicating that information is missing.
         Otherwise, it deletes the suppliers and returns a success message.
         """
+        requestId = uuid4()
+        logger.info("requestID: '{requestId}'\nReceived request to delete supplier with property '{property}' containing '{value}'", requestId=requestId, property=property, value=value)
         if property or value is None:
+            logger.error("requestID: '{requestId}'\nCannot delete supplier, information is missing", requestId=requestId)
             return abort(404, "Cannot delete, information is missing")
         else:
             supplier.delete(property, value)
+            logger.info("requestID: '{requestId}'\nSuccessfully deleted supplier", requestId=requestId)
             return jsonify({"message": "Supplier deleted successfully."})
 
 
@@ -244,7 +274,11 @@ class HealthProfessionalResource(Resource):
         This method handles the GET request to retrieve all health professionals.
         It returns a list of health professionals.
         """
-        return healthprof.get_all()
+        requestId = uuid4()
+        logger.info("requestID: '{requestId}'\nReceived request to retrieve all HealthProfessionals", requestId=requestId)
+        response = healthprof.get_all()
+        logger.info("requestID: '{requestId}'\nSuccessfully retrieved all HealthProfessionals '{healthProfessionals}'", requestId=requestId, healthProfessionals=response)
+        return response
 
     def post(self, data):
         """
@@ -253,10 +287,14 @@ class HealthProfessionalResource(Resource):
         If the data is None, it returns an error response indicating that information is missing.
         Otherwise, it creates the health professional and returns a success message.
         """
+        requestId = uuid4()
+        logger.info("requestID: '{requestId}'\nReceived request to create a new HealthProfessional with data '{data}'", requestId=requestId, data=data)
         if data is None:
+            logger.error("requestID: '{requestId}'\nCannot create HealthProfessional, information is missing", requestId=requestId)
             return abort(404, "Cannot create, information is missing")
         else:
             healthprof.create(data)
+            logger.info("requestID: '{requestId}'\nSucessfully created HealthProfessional", requestId=requestId)
             return jsonify({"message": "Health professional created successfully."})
 
 
@@ -267,7 +305,11 @@ class HealthProfessionalPropertyResource(Resource):
         This method handles the GET request to retrieve health professionals based on a specific property and its value.
         It takes in the property and value as input and returns a list of health professionals matching the criteria.
         """
-        return healthprof.get(property, value)
+        requestId = uuid4()
+        logger.info("requestID: '{requestId}'\nReceived request to retrieve HealthProfessional with property '{property}' containing '{value}'", requestId=requestId, property=property, value=value)
+        response = healthprof.get(property, value)
+        logger.info("requestID: '{requestId}'\nSucessfully retrieved HealthProfessional", requestId=requestId)
+        return response
 
     def delete(self, property, value):
         """
@@ -276,10 +318,14 @@ class HealthProfessionalPropertyResource(Resource):
         If either the property or value is None, it returns an error response indicating that information is missing.
         Otherwise, it deletes the health professionals and returns a success message.
         """
+        requestId = uuid4()
+        logger.info("requestID: '{requestId}'\nReceived request to delete HealthProfessional with property '{property}' containing '{value}'", requestId=requestId, property=property, value=value)
         if property or value is None:
+            logger.error("requestID: '{requestId}'\nCannot delete HealthProfessional, information is missing", requestId=requestId)
             return abort(404, "Cannot delete, information is missing")
         else:
             healthprof.delete(property, value)
+            logger.info("requestID: '{requestId}'\nSucessfully deleted HealthProfessional", requestId=requestId)
             return jsonify({"message": "Health professional deleted successfully."})
 
 
@@ -292,7 +338,11 @@ class ClientList(Resource):
         This method handles the GET request to retrieve all clients.
         It returns a list of clients.
         """
-        return client.get_all()
+        requestId = uuid4()
+        logger.info("requestID: '{requestId}'\nReceived request to retrieve all clients", requestId=requestId)
+        response = client.get_all()
+        logger.info("requestID: '{requestId}'\nSucessfully retrieved all clients '{clients}'", requestId=requestId, clients=response)
+        return response
 
     @api.expect(clientModel)
     @api.doc(description="Create a client with ID and problem")
@@ -303,11 +353,15 @@ class ClientList(Resource):
         If the payload is None, it returns an error response indicating that information is missing.
         Otherwise, it creates the client and returns a success message.
         """
+        requestId = uuid4()
         payload = api.payload
+        logger.info("requestID: '{requestId}'\nReceived request to create a new client with data '{data}'", requestId=requestId, data=payload)
         if payload is None:
+            logger.error("requestID: '{requestId}'\nCannot create client, information is missing", requestId=requestId)
             return abort(404, "Cannot create, information is missing")
         else:
             client.create(payload)
+            logger.info("requestID: '{requestId}'\nSuccessfully created client", requestId=requestId)
             return jsonify({"message": "Client created successfully."})
 
     @api.expect(clientModel)
@@ -318,7 +372,11 @@ class ClientList(Resource):
         It takes the payload as input and updates the client with the provided data.
         It returns the updated client.
         """
-        return client.update(api.payload)
+        requestId = uuid4()
+        logger.info("requestID: '{requestId}'\nReceived request to update client with data '{data}'", requestId=requestId, data=api.payload)
+        response = client.update(api.payload)
+        logger.info("requestID: '{requestId}'\nSuccessfully updated client", requestId=requestId)
+        return response
 
 
 @client_ns.route('/<string:id>')
@@ -329,10 +387,15 @@ class Client(Resource):
         It takes the client ID as input and returns the client details.
         If the ID is None, it returns an error response indicating that information is missing.
         """
+        requestId = uuid4()
+        logger.info("requestID: '{requestId}'\nReceived request to retrieve client with id '{id}'", requestId=requestId, id=id)
         if id is None:
+            logger.error("requestID: '{requestId}'\nCannot retrieve client, information is missing", requestId=requestId)
             return abort(404, "Cannot get, information is missing")
         else:
-            return client.get(id)
+            response = client.get(id)
+            logger.info("requestID: '{requestId}'\nSuccessfully retrieved client '{client}'", requestId=requestId, client=response)
+            return response
 
     def delete(self, id):
         """
@@ -341,10 +404,14 @@ class Client(Resource):
         If the ID is None, it returns an error response indicating that information is missing.
         Otherwise, it deletes the client and returns a success message.
         """
+        requestId = uuid4()
+        logger.info("requestID: '{requestId}'\nReceived request to delete client with id '{id}'", requestId=requestId, id=id)
         if id is None:
+            logger.error("requestID: '{requestId}'\nCannot delete client, information is missing", requestId=requestId)
             return abort(404, "Cannot delete, information is missing")
         else:
             client.delete(id)
+            logger.info("requestID: '{requestId}'\nSuccessfully deleted client", requestId=requestId)
             return jsonify({"message": "Client deleted successfully."})
 
 
@@ -356,7 +423,11 @@ class LatestClient(Resource):
         This method handles the GET request to retrieve the latest client.
         It returns the most recently created client.
         """
-        return client.getLatestClient()
+        requestId = uuid4()
+        logger.info("requestID: '{requestId}'\nRetrieved request to retrieve the latest client", requestId=requestId)
+        response = client.getLatestClient()
+        logger.info("requestID: '{requestId}'\nSuccessfully retrieved the latest client '{client}'", requestId=requestId, client=response)
+        return response
 
 
 @client_ns.route('/relationship/<string:clientID>/<string:zorgprofID>')
@@ -366,7 +437,11 @@ class ClientRelationship(Resource):
         This method handles the PUT request to set the relationship between a client and a healthcare professional.
         It takes the client ID and healthcare professional ID as input and establishes the relationship between them.
         """
-        return client.setClientHealthcareProfRelationship(clientID, zorgprofID)
+        requestId = uuid4()
+        logger.info("requestID: '{requestId}'\nReceived request to set the relationship between client '{client}' and HealthcareProfessional '{healthcareProfessional}'", requestId=requestId, client=clientID, healthcareProfessional=zorgprofID)
+        response = client.setClientHealthcareProfRelationship(clientID, zorgprofID)
+        logger.info("requestID: '{requestId}'\nSuccessfully set the relationship between the client and HealthcareProfessional", requestId=requestId)
+        return response
 
 
 @client_ns.route('/distinct-problem')
@@ -376,7 +451,11 @@ class DistinctApplication(Resource):
         This method handles the GET request to retrieve distinct client problems.
         It returns a list of distinct problems reported by clients.
         """
-        return client.getDistinctProblems()
+        requestId = uuid4()
+        logger.info("requestID: '{requestId}'\nReceived request to retrieve distinct client problems", requestId=requestId)
+        response = client.getDistinctProblems()
+        logger.info("requestID: '{requestId}'\nSuccessfully retrieved the distinct client problems '{distinctProblems}'", requestId=requestId, distinctProblems=response)
+        return response
 
 
 @client_ns.route('/wordtverzorgd/<string:zorgprofID>')
@@ -386,7 +465,11 @@ class ClientsOfHCProf(Resource):
         This method handles the GET request to retrieve clients associated with a specific healthcare professional.
         It takes the healthcare professional ID as input and returns the clients associated with that professional.
         """
-        return client.getClientsOfHCProf(zorgprofID)
+        requestId = uuid4()
+        logger.info("requestID: '{requestId}'\nReceived request to retrieve clients for HealthcareProfessional '{healthcareProfessional}'", requestId, healthcareProfessional=zorgprofID)
+        response = client.getClientsOfHCProf(zorgprofID)
+        logger.info("requestID: '{requestId}'\nSuccessfully retrieved clients '{clients}'", requestId=requestId, clients=response)
+        return response
 
     
 @application_ns.route('/')
@@ -397,7 +480,11 @@ class ApplicationResource(Resource):
         This method handles the GET request to retrieve all applications.
         It returns a list of applications.
         """
-        return application.get_all()
+        requestId = uuid4()
+        logger.info("requestID: '{requestId}'\nReceived request to retrieve all applications", requestId=requestId)
+        response = application.get_all()
+        logger.info("requestID: '{requestId}'\nSuccessfully retrieved all applications '{applications}'", requestId=requestId, applications=response)
+        return response
 
     def post(self, data):
         """
@@ -406,11 +493,15 @@ class ApplicationResource(Resource):
         If the payload is None, it returns an error response indicating that information is missing.
         Otherwise, it creates the application and returns a success message.
         """
+        requestId = uuid4()
+        logger.info("requestID: '{requestId}'\Received request to create an application with data '{data}'", requestId=requestId, data=data)
         if data is None:
+            logger.error("requestID: '{requestId}'\nCannot create application, information is missing", requestId=requestId)
             return abort(404, "Cannot create, information is missing")
         else:
             client.create(data)
-            return jsonify({"message": "Organisation created successfully."})
+            logger.info("requestID: '{requestId}'\nSuccessfully created application", requestId=requestId)
+            return jsonify({"message": "Application created successfully."})
 
 
 @application_ns.route('/<string:property>/<value>')
@@ -421,7 +512,11 @@ class ApplicationPropertyResource(Resource):
         This method handles the GET request to retrieve applications based on a specific property and value.
         It takes the property and value as input and returns the applications matching the criteria.
         """
-        return application.get(property, value)
+        requestId = uuid4()
+        logger.info("requestID: '{requestId}'\nReceived request to retrieve application with property '{property}' containing '{value}'", requestId=requestId, property=property, value=value)
+        response = application.get(property, value)
+        logger.info("requestID: '{requestId}'\nSuccessfully retrieved application '{application}'", requestId=requestId, application=response)
+        return response
 
     def delete(self, property, value):
         """
@@ -430,10 +525,14 @@ class ApplicationPropertyResource(Resource):
         If the property or value is None, it returns an error response indicating that information is missing.
         Otherwise, it deletes the applications and returns a success message.
         """
+        requestId = uuid4()
+        logger.info("requestID: '{requestId}'\nReceived request to delete application with property '{property}' containing '{value}'", requestId=requestId, property=property, value=value)
         if property or value is None:
+            logger.error("requestID: '{requestId}'\nCannot delete application, information is missing", requestId)
             return abort(404, "Cannot delete, information is missing")
         else:
             application.delete(property, value)
+            logger.info("requestID: '{requestId}'\nSuccessfully deleted application", requestId=requestId)
             return jsonify({"message": "Application deleted successfully."})
 
 
@@ -445,7 +544,11 @@ class HEEFT_TOEPASSING(Resource):
         This method handles the GET request to retrieve applications with products.
         It returns a list of applications that have associated products.
         """
-        return application.getApplicationWithProduct()
+        requestId = uuid4()
+        logger.info("requestID: '{requestId}'\nReceived request to retrieve all applications with their associated products", requestId=requestId)
+        response = application.getApplicationWithProduct()
+        logger.info("requestID: '{requestId}'\nSucessfully retrieved all applications with their associated products '{applicationsWithProducts}'", requestId=requestId, applicationsWithProducts=response)
+        return response
 
 
 @application_ns.route('/distinct')
@@ -455,7 +558,11 @@ class DistinctApplication(Resource):
         This method handles the GET request to retrieve distinct applications.
         It returns a list of distinct applications.
         """
-        return application.getDistinctApplications()
+        requestId = uuid4()
+        logger.info("requestID: '{requestId}'\nReceived request to retrieve the distinct applications", requestId=requestId)
+        response = application.getDistinctApplications()
+        logger.info("requestID: '{requestId}'\nSuccessfuly retrieved the distinct applications '{distinctApplications}'", requestId=requestId, distinctApplications=response)
+        return response
 
 
 # product get single
@@ -467,10 +574,15 @@ class Product(Resource):
         It takes the product ID as input and returns the product details.
         If the ID is None, it returns an error response indicating that information is missing.
         """
+        requestId = uuid4()
+        logger.info("requestID: '{requestId}'\nReceived request to retrieve product with id '{id}'", requestId=requestId, id=id)
         if id is None:
+            logger.error("requestID: '{requestId}'\nCannot retrieve product, information is missing", requestId=requestId)
             return abort(404, "Cannot get, information is missing")
-        else: 
-            return product.get(id)
+        else:
+            response = product.get(id)
+            logger.info("requestID: '{requestId}'\nSuccessfully retrieved product '{product}'", requestId=requestId, product=product)
+            return response
 
     def delete(self, id):
         """
@@ -479,10 +591,14 @@ class Product(Resource):
         If the ID is None, it returns an error response indicating that information is missing.
         Otherwise, it deletes the product and returns a success message.
         """
+        requestId = uuid4()
+        logger.info("requestID: '{requestId}'\nReceived request to delete product '{id}'", requestId=requestId, id=id)
         if id is None:
+            logger.error("requestID: '{requestId}'\nCannot delete product, information is missing", requestId=requestId)
             return abort(404, "Cannot delete, information is missing")
         else:
             product.delete(id)
+            logger.info("requestID: '{requestId}'\nSuccessfully deleted product", requestId=requestId)
             return jsonify({"message": "Product deleted successfully."})
 
 
@@ -494,7 +610,11 @@ class ProductResource(Resource):
         This method handles the GET request to retrieve all products.
         It returns a list of products.
         """
-        return product.get_all()
+        requestId = uuid4()
+        logger.info("requestID: '{requestId}'\nReceived request to retrieve all products", requestId=requestId)
+        response = product.get_all()
+        logger.info("requestID: '{requestId}'\nSuccessfully retrieved all products '{products}'", requestId=requestId, products=response)
+        return response
 
     def post(self, data):
         """
@@ -503,10 +623,14 @@ class ProductResource(Resource):
         If the payload is None, it returns an error response indicating that information is missing.
         Otherwise, it creates the product and returns a success message.
         """
+        requestId = uuid4()
+        logger.info("requestID: '{requestId}'\nReceived request to create new product with data '{data}'", requestId=requestId, data=data)
         if data is None:
+            logger.error("requestID: '{requestId}'\nCannot create product, information is missing", requestId=requestId)
             return abort(404, "Cannot create, information is missing")
         else:
             client.create(data)
+            logger.info("requestID: '{requestId}'\nSuccessfully created product", requestId=requestId)
             return jsonify({"message": "Product created successfully."})
 
 
@@ -518,7 +642,11 @@ class NewProducts(Resource):
         This method handles the GET request to retrieve the newest products.
         It returns a list of the newest products.
         """
-        return product.getNewestProducts()
+        requestId = uuid4()
+        logger.info("requestID: '{requestId}'\nReceived request to retrieve the newest products", requestId=requestId)
+        response = product.getNewestProducts()
+        logger.info("requestID: '{requestId}'\nSuccessfully retrieved the newest products '{products}'", requestId=requestId, products=response)
+        return response
 
 
 @product_ns.route('/aanbeveling/<string:zorgprofID>/<string:probleem>')
@@ -526,10 +654,14 @@ class ProductsRecommendation(Resource):
     @api.marshal_with(productModel)
     def get(self, zorgprofID, probleem):
         """
-        This method handles the GET request to retrieve recommended products for a specific healthcare professional and client.
-        It takes the healthcare professional ID and client ID as input and returns the recommended products.
+        This method handles the GET request to retrieve recommended products for a specific healthcare professional and problem.
+        It takes the healthcare professional ID and problem ID as input and returns the recommended products.
         """
-        return product.getRecommendationProducts(zorgprofID, probleem)
+        requestId = uuid4()
+        logger.info("requestID: '{requestId}'\nReceived request to retrieve recommended products for HealthcareProfessional '{healthcareProfessional}' and problem '{problem}'", requestId=requestId, healthcareProfessional=zorgprofID, problem=probleem)
+        response = product.getRecommendationProducts(zorgprofID, probleem)
+        logger.info("requestID: '{requestId}'\nSuccessfully retrieved recommendation products '{recommendationProducts}'", requestId=requestId, recommendationProducts=response)
+        return response
 
 
 @product_ns.route('/client/<string:clientID>')
@@ -540,7 +672,11 @@ class ProductOneClient(Resource):
         This method handles the GET request to retrieve products associated with a specific client.
         It takes the client ID as input and returns the products associated with the client.
         """
-        return product.getProductsOneClient(clientID)
+        requestId = uuid4()
+        logger.info("requestID: '{requestId}'\nReceived request to retrieve all products for client '{client}'", requestId=requestId, client=clientID)
+        response = product.getProductsOneClient(clientID)
+        logger.info("requestID: '{requestId}'\nSuccessfully retrieved the products '{products}'", requestId=requestId, products=response)
+        return response
 
 
 @product_ns.route('/setRecommendedRelationship/<string:zpID>/<string:productID>')
@@ -550,7 +686,10 @@ class RecommendedRelationship(Resource):
         This method handles the PUT request to set a recommended relationship between a healthcare professional and a product.
         It takes the healthcare professional ID and product ID as input and sets the recommended relationship between them.
         """
+        requestId = uuid4()
+        logger.info("requestID: '{requestId}'\nReceived request to set a recommended relationship between HealthcareProfessional '{healthcareProfessional}' and product '{product}'", requestId=requestId, healthcareProfessional=zpID, product=productID)
         product.setRecommendedRelationship(zpID, productID)
+        logger.info("requestID: '{requestId}'\nSuccessfully set the recommended relationship", requestId=requestId)
 
 
 @relationship_ns.route('/<string:start_node>/<string:start_id>/<string:end_node>/<string:end_id>/<string:relationship_name>')
@@ -561,7 +700,11 @@ class RelationshipResource(Resource):
         It takes the start node, start node ID, end node, end node ID, and relationship name as input
         and creates a relationship between the specified nodes.
         """
-        return relationship.setRelationship(start_node, start_id, end_node, end_id, relationship_name)
+        requestId = uuid4()
+        logger.info("requestID: '{requestId}'\nReceived request to create relationship '{relationship_name}' between startNode '{start_node}' with ID '{start_id}' and endNode '{end_node}' with ID '{end_id}'", requestId=requestId, relationship_name=relationship_name, start_node=start_node, start_id=start_id, end_node=end_node, end_id=end_id)
+        response = relationship.setRelationship(start_node, start_id, end_node, end_id, relationship_name)
+        logger.info("requestID: '{requestId}'\nSuccessfully set the relationship", requestId=requestId)
+        return response
 
     def delete(self, start_node, start_id, end_node, end_id, relationship_name):
         """
@@ -571,12 +714,18 @@ class RelationshipResource(Resource):
         If any of the input parameters is None, it returns an error response indicating that information is missing.
         Otherwise, it deletes the relationship and returns a success message.
         """
+        requestId = uuid4()
+        logger.info("requestID: '{requestId}'\nReceived request to delete relationship '{relationship_name}' between startNode '{start_node}' with ID '{start_id}' and endNode '{end_node}' with ID '{end_id}'", requestId=requestId, relationship_name=relationship_name, start_node=start_node, start_id=start_id, end_node=end_node, end_id=end_id)
         if all(value is not None for value in (start_node, start_id, end_node, end_id, relationship_name)):
             relationship.deleteRelationship(start_node, start_id, end_node, end_id, relationship_name)
+            logger.info("requestID: '{requestId}'\nSuccessfully deleted relationship", requestId=requestId)
             return jsonify({"message": "Relationship deleted successfully."})
         else:
+            logger.error("requestID: '{requestId}'\nCannot delete relationship, information is missing")
             return abort(404, "Cannot delete, information is missing")
 
 
 if __name__ == '__main__':
+    logger.add("file_{time}.log", level="INFO", rotation="1 day")
+    logger.trace("Starting app on port 5001")
     app.run(host='0.0.0.0', port=5001)
