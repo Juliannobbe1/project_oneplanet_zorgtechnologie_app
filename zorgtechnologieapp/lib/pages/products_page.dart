@@ -47,8 +47,7 @@ class ProductPage extends ConsumerWidget {
 class SingleProductView extends ConsumerWidget {
   final String productId;
 
-  const SingleProductView({Key? key, required this.productId})
-      : super(key: key);
+  const SingleProductView({super.key, required this.productId});
 
   Future<Product> fetchProduct(Logger logger) async {
     List<Product> products = await DataAPI(logger: logger)

@@ -57,10 +57,10 @@ class TabletHomeScreen extends ConsumerWidget {
   final double screenHeight;
 
   const TabletHomeScreen({
-    Key? key,
+    super.key,
     required this.screenHeight,
     required this.screenWidth,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

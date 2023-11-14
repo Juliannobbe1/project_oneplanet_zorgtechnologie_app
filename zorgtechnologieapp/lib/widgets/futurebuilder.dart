@@ -35,13 +35,13 @@ class FutureDataWidget extends ConsumerStatefulWidget {
   final SelectedItemCallback? onItemSelected; // Callback for item selection
 
   const FutureDataWidget({
-    Key? key,
+    super.key,
     required this.fetchData,
     this.countRow,
     required this.widgetType,
     required this.dataType,
     this.onItemSelected,
-  }) : super(key: key);
+  });
 
   @override
   FutureDataWidgetState createState() => FutureDataWidgetState();

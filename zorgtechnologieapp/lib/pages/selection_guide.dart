@@ -61,10 +61,10 @@ class TabletSelectionScreen extends ConsumerStatefulWidget {
 
   // Constructor
   const TabletSelectionScreen({
-    Key? key,
+    super.key,
     required this.screenWidth,
     required this.screenHeight,
-  }) : super(key: key);
+  });
 
   // Create state for the tablet selection screen
   @override
