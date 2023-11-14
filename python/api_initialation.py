@@ -1,5 +1,6 @@
 from flask_restx import Namespace
 from models.domain_model import Application, Client, HealthcareProfessional, Organisation, Product, Recommendation, Review, Supplier, Relationship
+from loguru import logger
 
 class NamespaceFactory:
     def __init__(self, driver, api):
@@ -20,7 +21,9 @@ class NamespaceFactory:
         self.object_names = {}
 
     def create_namespace(self, name, description=None, decorators=None):
-        return Namespace(name, description=description, decorators=decorators)
+        namespace = Namespace(name, description=description, decorators=decorators)
+        logger.trace("Created namespace using '{self}' with name '{name}', description '{description}' and decorators '{decorators}'", self=self, name=name, description=description, decorators=decorators)
+        return namespace
 
     def initialize_factory(self):
         models = {}
@@ -35,4 +38,6 @@ class NamespaceFactory:
             self.api.add_namespace(namespace)
             namespace.models = models  # Set models dictionary as namespace attribute
 
+        logger.trace("Initialized NamespaceFactory with models '{models}', namespaces '{namespaces}' and object_names '{object_names}'", models=models, namespaces=self.namespaces, object_names=self.object_names)
+        
         return models, self.namespaces, self.object_names

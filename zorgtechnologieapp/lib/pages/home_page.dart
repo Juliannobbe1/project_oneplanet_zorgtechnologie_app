@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:logger/logger.dart';
 import 'package:zorgtechnologieapp/pages/client_overview_page.dart';
+import 'package:zorgtechnologieapp/providers/logging_provider/logging_provider.dart';
 
 import '../handlers/data_api_handler.dart';
 import '../handlers/responsive_layout_handler.dart';
@@ -49,18 +52,20 @@ class HomePage extends StatelessWidget {
   }
 }
 
-class TabletHomeScreen extends StatelessWidget {
+class TabletHomeScreen extends ConsumerWidget {
   final double screenWidth;
   final double screenHeight;
 
   const TabletHomeScreen({
-    Key? key,
+    super.key,
     required this.screenHeight,
     required this.screenWidth,
-  }) : super(key: key);
+  });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final logger = ref.watch(loggingProvider);
+
     return Expanded(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -166,7 +171,7 @@ class TabletHomeScreen extends StatelessWidget {
             ),
           ),
           FutureDataWidget(
-              fetchData: DataAPI()
+              fetchData: DataAPI(logger: logger)
                   .newestProducts(), // Fetch the newest products data using DataAPI
               countRow: 2, // Display two products per row
               widgetType: FutureWidgetType
@@ -179,13 +184,15 @@ class TabletHomeScreen extends StatelessWidget {
   }
 }
 
-class PhoneHomeScreen extends StatelessWidget {
+class PhoneHomeScreen extends ConsumerWidget {
   final double screenWidth;
 
   const PhoneHomeScreen({super.key, required this.screenWidth});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    Logger logger = ref.watch(loggingProvider);
+
     return Expanded(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -280,10 +287,12 @@ class PhoneHomeScreen extends StatelessWidget {
 
           // FutureBuilder for displaying Newest Products
           FutureBuilder<List<Product>>(
-            future: DataAPI()
+            future: DataAPI(logger: logger)
                 .newestProducts(), // Fetch the newest products data using DataAPI
             builder: (context, snapshot) {
               if (snapshot.hasData) {
+                logger.t(
+                    "Successfully retrieved '${snapshot.data}' newest products.");
                 final products = snapshot.data!;
                 return SizedBox(
                   height: 325,
@@ -327,6 +336,8 @@ class PhoneHomeScreen extends StatelessWidget {
                   ),
                 );
               } else if (snapshot.hasError) {
+                logger.e(
+                    "An error occurred while retrieving the newest products: '${snapshot.error}'");
                 return Center(
                     child: Text(
                         "${snapshot.error}")); // Display an error message if there's an error in fetching the data
