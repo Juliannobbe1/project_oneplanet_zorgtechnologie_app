@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "85410724549",
+    "project_id": "smartcareassist-96be1",
+    "storage_bucket": "smartcareassist-96be1.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:85410724549:android:29b2314746b9f4ceec0eac",
+        "android_client_info": {
+          "package_name": "com.example.zorgtechnologieapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBZH5CeeDqAamOF6-AgwOtWgcYxMnafsWo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
