@@ -78,10 +78,10 @@ class LoginPageState extends State<LoginPage> {
           children: [
             const SizedBox(height: 25.0),
             Image.asset(
-              'assets/logo.png', // Replace with the actual path to your image
-              width: 225.0, // Adjust the width as needed
-              height: 200.0, // Adjust the height as needed
-              fit: BoxFit.contain, // Adjust the fit as needed
+              'assets/logo.png',
+              width: 225.0,
+              height: 200.0,
+              fit: BoxFit.contain,
             ),
             Card(
               color: Colors.white,
