@@ -1,0 +1,43 @@
+// For format details, see https://aka.ms/devcontainer.json. For config options, see the
+// README at: https://github.com/devcontainers/templates/tree/main/src/dotnet
+{
+	"name": "zorgtechnologie_api",
+	"dockerComposeFile": [
+		"compose.yml"
+	],
+	// Needed for the network configurations
+	"initializeCommand": ".devcontainer/docker-init.sh",
+	// Needed to keep the container running
+	"overrideCommand": true,
+	"service": "zorgtechnologie_api",
+	"runServices": [
+		"zorgtechnologie_api"
+	],
+	"workspaceFolder": "/workspaces/zorgtechnologie_api",
+	"customizations": {
+		"vscode": {
+			"extensions": [
+				"usernamehw.errorlens",
+				"eamodio.gitlens",
+				"VisualStudioExptTeam.vscodeintellicode",
+				"ms-python.python"
+			],
+			"settings": {
+				"[json]": {
+					"editor.formatOnSave": true
+				},
+				"[jsonc]": {
+					"editor.formatOnSave": true
+				}
+			}
+		}
+	},
+	"remoteUser": "vscode",
+	"containerUser": "vscode"
+	// Features to add to the dev container. More info: https://containers.dev/features.
+	// "features": {},
+	// Use 'forwardPorts' to make a list of ports inside the container available locally.
+	// "forwardPorts": [5000, 5001],
+	// Use 'postCreateCommand' to run commands after the container is created.
+	// "postCreateCommand": "dotnet restore",
+}

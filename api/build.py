@@ -7,12 +7,14 @@ use_plugin("python.unittest")
 use_plugin("python.flake8")
 use_plugin("python.coverage")
 use_plugin("python.distutils")
+use_plugin("python.install_dependencies")
 
 name = "api"
 default_task = "publish"
 
 @init
 def set_properties(project):
+    project.depends_on_requirements("requirements.txt")
     project.set_property("coverage_break_build", False) # Set to True when coverage is above threshold
     pass
 
