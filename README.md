@@ -40,17 +40,17 @@ Projectstructuur
 
     Clone de repository naar je lokale machine.
     Navigeer naar de projectmap: cd zorgtechnologie-applicatie.
-    Installeer de vereiste afhankelijkheden van python met pip: `pip install flask-restx flask neo4j pandas loguru pybuilder`
+    Installeer de vereiste afhankelijkheden van python met pip: `pip install flask-restx flask neo4j pandas loguru pybuilder flask_monitoringdashboard`
     Navigeer naar de flutter deel van de applicatie: cd project_oneplant_zorgtechnologie_app/zorgtechnologieapp/
     Installeer de vereiste van flutter met pub: pub get
     run python programma vanuit de repo root om database te vullen: `python python/database/cvs_to_database.py`
 
 ## Gebruik
 
-    navigeer naar: cd project_oneplant_zorgtechnologie_app/python
-    Start api server: python database_api.py
-    (Nieuwe terminal) navigeer naar: project_oneplant_zorgtechnologie_app/zorgtechnologieapp/lib/
-    Start applicatie: flutter run
+    navigeer naar de api: `cd api`
+    Start api server: `USERNAME=hfBkZnJzmUaQfMGyqAzorWZlh PASSWORD=vaxKWyVCvKmkRlEkZGFi SECURITY_TOKEN=MVhpEvXpGSbplwCcjDZGOftenqszfwzXGScerRJbSjLPEmjPsU pyb run`
+    (Nieuwe terminal) navigeer naar de Flutter app: `cd zorgtechnologieapp`
+    Start applicatie: `just run`
     select device
 
 ## Beschikbare aparaten
