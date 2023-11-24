@@ -16,19 +16,7 @@ jobs:
         uses: subosito/flutter-action@v2
         with:
           channel: 'stable'
-      - name: Get dependencies
+      - name: Run CI job
         run: |
          cd zorgtechnologieapp
-         flutter pub get
-      - name: Format code
-        run: |
-         cd zorgtechnologieapp
-         dart format --set-exit-if-changed .
-      - name: Analyze code
-        run: |
-         cd zorgtechnologieapp
-         flutter analyze
-      - name: Analyze project source
-        run: |
-         cd zorgtechnologieapp
-         dart analyze --fatal-infos
+         just ci
