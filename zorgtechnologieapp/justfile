@@ -1,0 +1,22 @@
+get_deps:
+    flutter pub get
+
+format: get_deps
+    dart format --set-exit-if-changed .
+
+analyze: get_deps
+    flutter analyze
+    dart analyze --fatal-infos
+
+test: get_deps
+    flutter test
+
+test_coverage: get_deps
+    flutter test --coverage
+
+ci: get_deps format analyze test_coverage
+    python check_coverage.py coverage/lcov.info 0
+# Change to threshold when tests have been added
+
+build_android: get_deps
+    flutter build apk
