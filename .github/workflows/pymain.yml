@@ -23,4 +23,5 @@ jobs:
         python -m pip install flask-restx flask neo4j pandas loguru pybuilder
     - name: Run CI job
       run: |
+        cd api
         pyb
