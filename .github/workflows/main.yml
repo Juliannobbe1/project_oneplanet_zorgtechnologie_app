@@ -17,6 +17,7 @@ jobs:
         with:
           channel: 'stable'
       - name: Run CI job
+        uses: extractions/setup-just@v1
         run: |
          cd zorgtechnologieapp
          just ci
