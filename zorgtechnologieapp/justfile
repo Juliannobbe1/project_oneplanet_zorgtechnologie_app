@@ -1,6 +1,9 @@
 get_deps:
     flutter pub get
 
+run: get_deps
+    flutter run
+
 format: get_deps
     dart format --set-exit-if-changed .
 
