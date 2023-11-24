@@ -17,6 +17,9 @@ jobs:
         uses: subosito/flutter-action@v2
         with:
           channel: 'stable'
+      - name: Install Lcov
+        run: |
+          sudo apt install lcov
       - name: Run CI job
         run: |
          cd zorgtechnologieapp
