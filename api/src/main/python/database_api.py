@@ -6,10 +6,16 @@ from database.connect_database import Database
 from models.domain_model import *
 from api_initialation import NamespaceFactory
 from loguru import logger
+import flask_monitoringdashboard as dashboard
 
 # Create Flask application
 app = Flask(__name__)
 logger.trace("Initialized Flask app")
+
+dashboard.config.init_from(file='flask_monitoring_dashboard.cfg')
+logger.trace("Initialized dashboard from configuration file")
+dashboard.bind(app)
+logger.trace("Successfully bound dashboard to Flask")
 
 # Create API
 api = Api(app)
@@ -728,7 +734,7 @@ class RelationshipResource(Resource):
 def main():
     logger.add(sys.stdout, colorize=True, format="<green>{time}</green> <level>{message}</level>", level="TRACE")
     logger.add(sys.stderr, format="<red>{time}</red> <level>{message}</level>", level="ERROR")
-    logger.add("file_{time}.log", level="TRACE", rotation="1 day")
+    logger.add("logs/file_{time}.log", level="TRACE", rotation="1 day")
     logger.trace("Starting app on port 5001")
     app.run(host='0.0.0.0', port=5001)
 

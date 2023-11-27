@@ -47,10 +47,10 @@ Projectstructuur
 
 ## Gebruik
 
-    navigeer naar: cd project_oneplant_zorgtechnologie_app/python
-    Start api server: python database_api.py
-    (Nieuwe terminal) navigeer naar: project_oneplant_zorgtechnologie_app/zorgtechnologieapp/lib/
-    Start applicatie: flutter run
+    navigeer naar de api: `cd api`
+    Start api server: `USERNAME=hfBkZnJzmUaQfMGyqAzorWZlh PASSWORD=vaxKWyVCvKmkRlEkZGFi SECURITY_TOKEN=MVhpEvXpGSbplwCcjDZGOftenqszfwzXGScerRJbSjLPEmjPsU pyb run`
+    (Nieuwe terminal) navigeer naar de Flutter app: `cd zorgtechnologieapp`
+    Start applicatie: `just run`
     select device
 
 ## Deployment
