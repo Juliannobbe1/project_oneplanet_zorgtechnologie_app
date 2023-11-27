@@ -1,0 +1,22 @@
+version: "3.8"
+
+services:
+  zorgtechnologie_api:
+    container_name: zorgtechnologie_api
+    init: true
+    build:
+      context: ../
+      dockerfile: ./.devcontainer/Containerfile
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      # Repo name
+      - ../:/workspaces/zorgtechnologie_api
+      # SSH folder
+      - ~/.ssh/:/home/vscode/.ssh
+    networks:
+      - zorgtechnologie_api
+
+networks:
+  zorgtechnologie_api:
+    name: zorgtechnologie_api
+    external: true

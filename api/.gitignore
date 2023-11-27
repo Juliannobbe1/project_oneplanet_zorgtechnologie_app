@@ -3,3 +3,4 @@ target
 .pybuilder
 logs
 flask_monitoringdashboard.db
+__pycache__
