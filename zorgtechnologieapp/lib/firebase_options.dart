@@ -17,10 +17,7 @@ import 'package:flutter/foundation.dart'
 class DefaultFirebaseOptions {
   static FirebaseOptions get currentPlatform {
     if (kIsWeb) {
-      throw UnsupportedError(
-        'DefaultFirebaseOptions have not been configured for web - '
-        'you can reconfigure this by running the FlutterFire CLI again.',
-      );
+      return web;
     }
     switch (defaultTargetPlatform) {
       case TargetPlatform.android:
@@ -28,10 +25,7 @@ class DefaultFirebaseOptions {
       case TargetPlatform.iOS:
         return ios;
       case TargetPlatform.macOS:
-        throw UnsupportedError(
-          'DefaultFirebaseOptions have not been configured for macos - '
-          'you can reconfigure this by running the FlutterFire CLI again.',
-        );
+        return macos;
       case TargetPlatform.windows:
         throw UnsupportedError(
           'DefaultFirebaseOptions have not been configured for windows - '
@@ -49,6 +43,16 @@ class DefaultFirebaseOptions {
     }
   }
 
+  static const FirebaseOptions web = FirebaseOptions(
+    apiKey: 'AIzaSyDqsEM09yrWKNDqBouH1Ij5T5I0M2pGKFI',
+    appId: '1:85410724549:web:d3f9c48c7734da94ec0eac',
+    messagingSenderId: '85410724549',
+    projectId: 'smartcareassist-96be1',
+    authDomain: 'smartcareassist-96be1.firebaseapp.com',
+    storageBucket: 'smartcareassist-96be1.appspot.com',
+    measurementId: 'G-MYP760JS7M',
+  );
+
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyBZH5CeeDqAamOF6-AgwOtWgcYxMnafsWo',
     appId: '1:85410724549:android:29b2314746b9f4ceec0eac',
@@ -58,6 +62,15 @@ class DefaultFirebaseOptions {
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
+    apiKey: 'AIzaSyAU3Xn49hp2OYi7kOlXG3wbQoxBi7I62nM',
+    appId: '1:85410724549:ios:c4915f4decdda6c7ec0eac',
+    messagingSenderId: '85410724549',
+    projectId: 'smartcareassist-96be1',
+    storageBucket: 'smartcareassist-96be1.appspot.com',
+    iosBundleId: 'com.example.zorgtechnologieapp',
+  );
+
+  static const FirebaseOptions macos = FirebaseOptions(
     apiKey: 'AIzaSyAU3Xn49hp2OYi7kOlXG3wbQoxBi7I62nM',
     appId: '1:85410724549:ios:c4915f4decdda6c7ec0eac',
     messagingSenderId: '85410724549',
