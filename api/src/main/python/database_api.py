@@ -725,10 +725,12 @@ class RelationshipResource(Resource):
             logger.error("requestID: '{requestId}'\nCannot delete relationship, information is missing")
             return abort(404, "Cannot delete, information is missing")
 
-
-if __name__ == '__main__':
+def main():
     logger.add(sys.stdout, colorize=True, format="<green>{time}</green> <level>{message}</level>", level="TRACE")
     logger.add(sys.stderr, format="<red>{time}</red> <level>{message}</level>", level="ERROR")
     logger.add("file_{time}.log", level="TRACE", rotation="1 day")
     logger.trace("Starting app on port 5001")
     app.run(host='0.0.0.0', port=5001)
+
+if __name__ == '__main__':
+    main()

@@ -6,25 +6,30 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'pages/login_page.dart';
 import 'firebase_options.dart';
 
-main() async {
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  runApp(
-    const ProviderScope(
-      child: MediaQuery(
-        data: MediaQueryData(),
-        child: MyApp(),
-      ),
-    ),
-  );
+  runApp(const App());
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class App extends StatelessWidget {
+  const App({super.key});
 
-  // This widget is the root of your application.
+  @override
+  Widget build(BuildContext context) {
+    return const ProviderScope(
+      child: MyApp(),
+    );
+  }
+}
+
+class PreferredOrientationWrapper extends StatelessWidget {
+  final Widget child;
+
+  const PreferredOrientationWrapper({super.key, required this.child});
+
   @override
   Widget build(BuildContext context) {
     final double screenWidth = MediaQuery.of(context).size.width;
@@ -41,14 +46,26 @@ class MyApp extends StatelessWidget {
         DeviceOrientation.portraitDown,
       ]);
     }
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
+    return child;
+  }
+}
+
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
+  // This widget is the root of your application.
+  @override
+  Widget build(BuildContext context) {
+    return PreferredOrientationWrapper(
+      child: MaterialApp(
+        title: 'Flutter Demo',
+        theme: ThemeData(
+          primarySwatch: Colors.blue,
+        ),
+        // home: const HomePage(),
+        home: const LoginPage(),
+        debugShowCheckedModeBanner: false,
       ),
-      home: const LoginPage(),
-      //const HomePage(),
-      debugShowCheckedModeBanner: false,
     );
   }
 }

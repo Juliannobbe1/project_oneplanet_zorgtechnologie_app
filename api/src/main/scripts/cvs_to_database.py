@@ -1,5 +1,5 @@
 # Import necessary libraries
-from connect_database import Database
+from python.database.connect_database import Database
 import pandas as pd
 import os
 
