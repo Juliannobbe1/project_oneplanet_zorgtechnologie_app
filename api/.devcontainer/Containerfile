@@ -1,0 +1,63 @@
+# Rust DevContainer base image
+FROM mcr.microsoft.com/devcontainers/python:3.12-bookworm
+
+ARG DEBIAN_FRONTEND=noninteractive
+
+# Install utility packages to allow installation of other packages
+RUN apt-get update --quiet
+RUN apt-get install --quiet --yes ca-certificates wget curl gnupg lsb-release software-properties-common
+
+# Install `Docker` and `Docker-Compose`
+RUN mkdir -p /etc/apt/keyrings
+RUN curl -fsSL https://download.docker.com/linux/debian/gpg | gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+RUN echo "deb [arch="$(dpkg --print-architecture)" signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/debian \
+  "$(. /etc/os-release && echo "$VERSION_CODENAME")" stable" | \
+  sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+RUN apt-get update --quiet
+RUN apt-get install --quiet --yes docker-ce docker-ce-cli containerd.io docker-compose-plugin
+
+# Add the `Docker` group and add the `vscode` user
+# to the group
+RUN sudo getent group docker || sudo groupadd docker
+RUN sudo usermod -aG docker vscode
+
+# Install `Fish shell`
+RUN apt-get install --quiet --yes fish
+RUN chsh -s /usr/bin/fish
+SHELL ["fish", "--command"]
+ENV SHELL /usr/bin/fish
+ENV LANG=C.UTF-8 LANGUAGE=C.UTF-8 LC_ALL=C.UTF-8
+
+USER vscode
+
+# Install `Fisher`
+COPY .devcontainer/fisher.fish /home/vscode/custom/fisher.fish
+RUN cat /home/vscode/custom/fisher.fish | source && fisher install jorgebucaran/fisher
+
+USER root
+
+# Install `Just`
+RUN wget -qO - 'https://proget.makedeb.org/debian-feeds/prebuilt-mpr.pub' | gpg --dearmor | tee /usr/share/keyrings/prebuilt-mpr-archive-keyring.gpg 1> /dev/null
+RUN echo "deb [arch=all,$(dpkg --print-architecture) signed-by=/usr/share/keyrings/prebuilt-mpr-archive-keyring.gpg] https://proget.makedeb.org prebuilt-mpr $(lsb_release -cs)" | tee /etc/apt/sources.list.d/prebuilt-mpr.list
+RUN apt-get update --quiet && sudo apt-get upgrade --quiet -y
+RUN apt-get install just
+
+USER vscode
+
+# Copy the shell configuration files
+COPY .devcontainer/config.fish /home/vscode/.config/fish/config.fish
+COPY .devcontainer/starship.toml /home/vscode/.config/starship.toml
+
+# Copy the project directory
+COPY . /workspaces/zorgtechnologie_api
+
+USER root
+
+# Install `Starship Prompt`
+RUN curl -fsSL https://starship.rs/install.sh | sh -s -- --yes
+
+# Install `PyBuilder`
+RUN pip install pybuilder
+
+# End of installation:
+ENTRYPOINT [ "fish" ]
