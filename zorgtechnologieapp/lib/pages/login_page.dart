@@ -1,18 +1,19 @@
-import 'dart:developer';
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:logger/logger.dart';
+import 'package:zorgtechnologieapp/providers/logging_provider/logging_provider.dart';
 
 import 'home_page.dart';
 
-class LoginPage extends StatefulWidget {
+class LoginPage extends ConsumerStatefulWidget {
   const LoginPage({super.key});
 
   @override
   LoginPageState createState() => LoginPageState();
 }
 
-class LoginPageState extends State<LoginPage> {
+class LoginPageState extends ConsumerState<LoginPage> {
   final GlobalKey<FormState> _formkey = GlobalKey<FormState>();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _wachtwoordController = TextEditingController();
@@ -24,6 +25,8 @@ class LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
+    final logger = ref.watch(loggingProvider);
+
     final email = TextFormField(
       keyboardType: TextInputType.emailAddress,
       controller: _emailController,
@@ -115,7 +118,7 @@ class LoginPageState extends State<LoginPage> {
                       onPressed: () async {
                         if (_formkey.currentState!.validate()) {
                           try {
-                            await _login();
+                            await _login(logger);
                             if (mounted) {
                               // Only navigate to HomePage if login was successful
                               Navigator.push(
@@ -172,7 +175,7 @@ class LoginPageState extends State<LoginPage> {
     super.dispose();
   }
 
-  Future<void> _login() async {
+  Future<void> _login(Logger logger) async {
     try {
       UserCredential userCredential =
           await FirebaseAuth.instance.signInWithEmailAndPassword(
@@ -180,8 +183,9 @@ class LoginPageState extends State<LoginPage> {
         password: _wachtwoordController.text,
       );
 
-      log('User ${userCredential.user!.uid} logged in');
+      logger.i('User ${userCredential.user!.uid} logged in');
     } catch (e) {
+      logger.e("An error occurred while logging in user: $e");
       // Propagate the exception so it can be handled in the onPressed method
       rethrow;
     }
