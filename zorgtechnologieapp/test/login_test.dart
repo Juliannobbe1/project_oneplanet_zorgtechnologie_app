@@ -1,8 +1,14 @@
 import 'package:logger/logger.dart';
 import 'package:test/test.dart';
 import 'package:mockito/mockito.dart';
+@GenerateNiceMocks([MockSpec<UserCredential>()])
+@GenerateNiceMocks([MockSpec<User>()])
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:mockito/annotations.dart';
+@GenerateNiceMocks([MockSpec<AuthService>()])
 import 'package:zorgtechnologieapp/handlers/auth_handler.dart'; // Replace with the actual path to your AuthService file
+
+import 'login_test.mocks.dart';
 
 class MockLogger extends Mock implements Logger {}
 
@@ -34,14 +40,15 @@ void main() {
       const email = 'test@example.com';
       const password = 'password';
       final userCredential = MockUserCredential();
-      final MockUser _mockUser = MockUser();
+      final MockUser mockUser = MockUser();
+
+      when(userCredential.user).thenReturn(mockUser);
+      when(mockUser.uid).thenReturn("test_uid");
 
       when(mockFirebaseAuth.signInWithEmailAndPassword(
         email: email,
         password: password,
       )).thenAnswer((_) => Future.value(userCredential));
-
-      when(() => userCredential.user).thenReturn(_mockUser);
 
       // Act
       await authService.login(mockLogger, email, password);
@@ -71,7 +78,7 @@ void main() {
   });
 }
 
-// Mock class for UserCredential
-class MockUserCredential extends Mock implements UserCredential {}
+// // Mock class for UserCredential
+// class MockUserCredential extends Mock implements UserCredential {}
 
-class MockUser extends Mock implements User {}
+// class MockUser extends Mock implements User {}
