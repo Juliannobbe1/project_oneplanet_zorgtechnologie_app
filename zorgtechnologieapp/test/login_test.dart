@@ -6,7 +6,7 @@ import 'package:mockito/mockito.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:mockito/annotations.dart';
 @GenerateNiceMocks([MockSpec<AuthService>()])
-import 'package:zorgtechnologieapp/handlers/auth_handler.dart'; // Replace with the actual path to your AuthService file
+import 'package:zorgtechnologieapp/handlers/auth_handler.dart';
 
 import 'login_test.mocks.dart';
 
@@ -60,16 +60,32 @@ void main() {
       )).called(1);
     });
 
-    test('Login failure', () async {
+    test('Login failure - email', () async {
       // Arrange
-      const email = 'test@example.com';
+      const email = 'test@example-wrong.com';
       const password = 'password';
 
       when(mockFirebaseAuth.signInWithEmailAndPassword(
         email: email,
         password: password,
       )).thenThrow(
-          FirebaseAuthException(code: 'code', message: 'error message'));
+          FirebaseAuthException(code: 'code', message: 'invalid-credentials'));
+
+      // Act and Assert
+      expect(() => authService.login(mockLogger, email, password),
+          throwsException);
+    });
+
+    test('Login failure - password', () async {
+      // Arrange
+      const email = 'test@example.com';
+      const password = 'pasword';
+
+      when(mockFirebaseAuth.signInWithEmailAndPassword(
+        email: email,
+        password: password,
+      )).thenThrow(
+          FirebaseAuthException(code: 'code', message: 'invalid-email'));
 
       // Act and Assert
       expect(() => authService.login(mockLogger, email, password),
@@ -77,8 +93,3 @@ void main() {
     });
   });
 }
-
-// // Mock class for UserCredential
-// class MockUserCredential extends Mock implements UserCredential {}
-
-// class MockUser extends Mock implements User {}
