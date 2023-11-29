@@ -47,10 +47,12 @@ dependencies:
   flutter_login: ^4.2.1
   firebase_core: ^2.22.0
   firebase_performance: ^0.9.3+5
+  get_it: ^7.2.0
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  mockito: ^5.0.7
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
@@ -61,6 +63,8 @@ dev_dependencies:
   build_runner: ^2.4.6
   riverpod_generator: ^2.2.5
   nock: ^1.2.3
+  firebase_auth_mocks: ^0.13.0
+  test: ^1.24.9
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -76,8 +80,6 @@ flutter:
   # To add assets to your application, add an assets section, like this:
   assets:
     - assets/logo.png
-    # - images/a_dot_burr.jpeg
-  #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
