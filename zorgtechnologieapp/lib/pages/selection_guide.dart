@@ -168,7 +168,8 @@ class TabletSelectionScreenState extends ConsumerState<TabletSelectionScreen> {
                             ),
                           ),
                           SizedBox(
-                            height: selectedBehoefteIndex == -1 ? 500 : 80,
+                            //! overflow needs to be fixed
+                            //height: selectedBehoefteIndex == -1 ? 400 : 40,
                             child: FutureDataWidget(
                               fetchData: api.distinctProbleem(),
                               widgetType: FutureWidgetType.selectableList,
@@ -239,6 +240,7 @@ class TabletSelectionScreenState extends ConsumerState<TabletSelectionScreen> {
                                     child: Align(
                                       alignment: Alignment.bottomRight,
                                       child: FloatingActionButton.extended(
+                                        heroTag: "saveButton",
                                         onPressed: () {
                                           logger.i(
                                               "Saving selection for zorgbehoefte '$zorgbehoefte' and product '$product'");
@@ -289,6 +291,7 @@ class TabletSelectionScreenState extends ConsumerState<TabletSelectionScreen> {
                                   child: Align(
                                     alignment: Alignment.bottomRight,
                                     child: FloatingActionButton.extended(
+                                      heroTag: "exitButton",
                                       onPressed: () {
                                         Navigator.of(context).push(
                                           MaterialPageRoute(
