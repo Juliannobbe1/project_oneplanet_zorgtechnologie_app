@@ -43,9 +43,6 @@ void main() {
 
     // Calculate the loading time
     final loadingTime = DateTime.now().difference(startTime).inMilliseconds;
-    if (kDebugMode) {
-      print(loadingTime);
-    }
 
     // Ensure that the loading time is faster than 1289 seconds.
     expect(loadingTime, lessThan(1000));
