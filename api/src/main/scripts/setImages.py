@@ -1,6 +1,6 @@
 import os
 import base64
-from connect_database import database
+from database.connect_database import Database
 
 # Function to retrieve the image file names in the specified folder
 def get_image_files(folder_path):
@@ -16,13 +16,10 @@ def encode_image_to_base64(image_path):
         encoded_string = base64.b64encode(image_file.read()).decode('utf-8')
     return encoded_string
 
-driver = database.connectDatabase()
+driver = Database.connectDatabase()
 
 # Folder path containing the images
 image_folder_path = 'Afbeeldingen Zorgtechnologiëen'
-
-# Connect to the Neo4j database
-# driver = GraphDatabase.driver(uri, auth=(username, password))
 
 # Retrieve the image files in the folder
 image_files = get_image_files(image_folder_path)
