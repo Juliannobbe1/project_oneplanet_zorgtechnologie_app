@@ -61,7 +61,7 @@ Projectstructuur
 #### Deploy
     Copy `api/target/dist/dist/api-{version}.tar.gz` to the server
     `pip install api/target/dist/dist/api-{version}.tar.gz`
-    Run `zorgtechnologie_api.py`
+    Run `NEO4J_HOST=bolt://<NEO4J-IP> zorgtechnologie_api.py`
 
 ### App
 #### Build
