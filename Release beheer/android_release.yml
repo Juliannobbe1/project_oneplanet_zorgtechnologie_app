@@ -1,0 +1,46 @@
+name: android release
+
+on:
+  push:
+    branches:
+      - main # change to desired release branch
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v2
+
+    - name: Set up Flutter
+      uses: subosito/flutter-action@v2
+      with:
+        flutter-version: '2.x.x' # Specify the desired Flutter version
+
+    - name: Install Dependencies
+      run: flutter pub get
+
+    - name: Build APK
+      run: flutter build apk
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Upload APK to Releases
+      uses: softprops/action-gh-release@v1
+      with:
+        files: build/app/outputs/flutter-apk/app-release.apk
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Deploy to Google Play Store
+      uses: wzieba/Dokkie@v1
+      with:
+        packageName: com.example.zorgtechnologieapp # Replace with smartcareassist https://stackoverflow.com/questions/51534616/how-to-change-package-name-in-flutter
+        track: production
+        releaseNotes: |
+          Release Notes for this version
+        serviceAccountKey: ${{ secrets.GOOGLE_PLAY_JSON_KEY }} # create account and set secrets
