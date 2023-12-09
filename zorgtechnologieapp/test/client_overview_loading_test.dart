@@ -42,9 +42,10 @@ void main() {
     // Verify that we are on the home page.
     expect(find.text('Welcome'), findsOneWidget);
 
-    // Tap the Keuzegids button.
+    // Get start time
     final startTime = DateTime.now();
 
+    // Tap the Keuzegids button.
     await tester.tap(find.text('Keuzegids'));
     final clientinterceptor = nock("http://192.168.72.182:5001")
         .get("/client/wordtverzorgd/e040d519-dcc5-4969-86c3-54006f21656c")
@@ -75,10 +76,7 @@ void main() {
         ]),
       );
 
-    await tester.pumpAndSettle();
-
-    // Use pumpAndSettle to ensure that the navigation has completed.
-    // You might need to adjust the duration based on your app's navigation speed.
+    // Use pumpAndSettle to ensure that the navigation has completed
     await tester.pumpAndSettle(const Duration(seconds: 1));
 
     // Verify that we are on the Clienten Overzicht page.
@@ -91,7 +89,7 @@ void main() {
     // Calculate the loading time
     final loadingTime = DateTime.now().difference(startTime).inMilliseconds;
 
-    // Ensure that the loading time is faster than 1289 seconds.
+    // Ensure that the loading time is faster than 1 seconds.
     expect(loadingTime, lessThan(1000));
   });
 }

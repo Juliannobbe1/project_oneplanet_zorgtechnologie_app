@@ -10,8 +10,7 @@ class MockNavigatorObserver extends Mock implements NavigatorObserver {}
 //! Ignore Data fetching log errors, this test is pure testing going of one page to another
 
 void main() {
-  testWidgets(
-      'Clicking new recommmendation button navigates to selection guide test',
+  testWidgets('Integrationtest - navigation to selection guide',
       (WidgetTester tester) async {
     // Create a mock navigator observer
     final mockObserver = MockNavigatorObserver();
