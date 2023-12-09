@@ -1,5 +1,7 @@
+#!/usr/bin/python
+
 # Import necessary libraries
-from python.database.connect_database import Database
+from database.connect_database import Database
 import pandas as pd
 import os
 

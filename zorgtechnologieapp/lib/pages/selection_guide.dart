@@ -150,37 +150,40 @@ class TabletSelectionScreenState extends ConsumerState<TabletSelectionScreen> {
                         borderRadius: BorderRadius.circular(10),
                       ),
                       color: Colors.blue[200],
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          SizedBox(
-                            height: screenHeight * 0.05,
-                          ),
-                          Padding(
-                            padding:
-                                const EdgeInsets.only(left: 10.0, right: 10),
-                            child: Text(
-                              "Select the care needs of your client",
-                              style: SizeScaler.getResponsiveTextStyle(
-                                context,
-                                15,
-                                FontWeight.bold,
-                                Colors.black,
+                      child: SingleChildScrollView(
+                        key: const Key("SelectionGuide | Care Needs List"),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            SizedBox(
+                              height: screenHeight * 0.05,
+                            ),
+                            Padding(
+                              padding:
+                                  const EdgeInsets.only(left: 10.0, right: 10),
+                              child: Text(
+                                "Select the care needs of your client",
+                                style: SizeScaler.getResponsiveTextStyle(
+                                  context,
+                                  15,
+                                  FontWeight.bold,
+                                  Colors.black,
+                                ),
                               ),
                             ),
-                          ),
-                          SizedBox(
-                            //!overflow needs to be fixed
-                            //height: selectedBehoefteIndex == -1 ? 400 : 40,
-                            child: FutureDataWidget(
-                              fetchData: api.distinctProbleem(),
-                              widgetType: FutureWidgetType.selectableList,
-                              dataType: FutureDataType.probleemSelect,
-                              onItemSelected:
-                                  handleZorgbehoefteSelectedBuilder(logger),
+                            SizedBox(
+                              //!overflow needs to be fixed
+                              height: selectedBehoefteIndex == -1 ? 400 : 40,
+                              child: FutureDataWidget(
+                                fetchData: api.distinctProbleem(),
+                                widgetType: FutureWidgetType.selectableList,
+                                dataType: FutureDataType.probleemSelect,
+                                onItemSelected:
+                                    handleZorgbehoefteSelectedBuilder(logger),
+                              ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                     ),
                   ),
@@ -293,6 +296,8 @@ class TabletSelectionScreenState extends ConsumerState<TabletSelectionScreen> {
                                   child: Align(
                                     alignment: Alignment.bottomRight,
                                     child: FloatingActionButton.extended(
+
+                                      key: const Key("exitButton"),
                                       heroTag: "exitButton",
                                       onPressed: () {
                                         Navigator.of(context).push(
