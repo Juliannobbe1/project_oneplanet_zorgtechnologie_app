@@ -1,0 +1,22 @@
+name: Apply Puppet Manifests
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  apply_puppet:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Install Puppet
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y puppet
+
+      - name: Apply Puppet manifests
+        run: puppet apply puppet/manifests/site.pp
