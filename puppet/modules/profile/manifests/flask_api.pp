@@ -3,22 +3,33 @@ class profile::flask_api {
     ensure => installed,
   }
 
-  package { 'gunicorn':
+  package { 'uwsgi':
     ensure => installed,
   }
 
-  file { 'api/src/main/python/database_api.py':
+ file { '/project_oneplanet_zorgtechnologie_app/api/src/main/python':
     ensure => directory,
   }
 
-  file { '/etc/systemd/system/flask-api.service':
+  file { '/etc/uwsgi/apps-available/flask-api.ini':
+    content => '
+[uwsgi]
+chdir = chdir = /project_oneplanet_zorgtechnologie_app
+module = api.src.main.python.database_api:app
+master = true
+processes = 4
+socket = 0.0.0.0:5001
+vacuum = true
+    ',
+  }
+
+  file { '/etc/systemd/system/uwsgi.service':
     content => '
 [Unit]
-Description=Flask API
+Description=uWSGI
 
 [Service]
-ExecStart=/usr/bin/gunicorn -w 4 -b 0.0.0.0:5001 your_flask_app:app
-WorkingDirectory=api/src/main/python/database_api.py
+ExecStart=/usr/bin/uwsgi --ini /etc/uwsgi/apps-available/flask-api.ini
 Restart=always
 
 [Install]
@@ -26,7 +37,7 @@ WantedBy=default.target
     ',
   }
 
-  service { 'flask-api':
+  service { 'uwsgi':
     ensure => running,
     enable => true,
   }
