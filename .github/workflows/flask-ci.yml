@@ -24,4 +24,4 @@ jobs:
     - name: Run CI job
       run: |
         cd api
-        pyb
+        pyb run_unit_tests -v
