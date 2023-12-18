@@ -124,7 +124,7 @@ class TabletSelectionScreenState extends ConsumerState<TabletSelectionScreen> {
         children: [
           // Welcome text
           Padding(
-            padding: const EdgeInsets.fromLTRB(20.0, 5.0, 15.0, 15.0),
+            padding: const EdgeInsets.fromLTRB(20.0, 5.0, 15.0, 5.0),
             child: Text(
               "Welcome to the choice guide. The guide will ask you some questions to help you find the right care technology to assist your client with their care needs. Select one of the options below to get started.",
               style: SizeScaler.getResponsiveTextStyle(
@@ -172,7 +172,6 @@ class TabletSelectionScreenState extends ConsumerState<TabletSelectionScreen> {
                               ),
                             ),
                             SizedBox(
-                              //!overflow needs to be fixed
                               height: selectedBehoefteIndex == -1 ? 400 : 40,
                               child: FutureDataWidget(
                                 fetchData: api.distinctProbleem(),
@@ -245,6 +244,7 @@ class TabletSelectionScreenState extends ConsumerState<TabletSelectionScreen> {
                                     child: Align(
                                       alignment: Alignment.bottomRight,
                                       child: FloatingActionButton.extended(
+                                        heroTag: "saveButton",
                                         onPressed: () {
                                           logger.i(
                                               "Saving selection for zorgbehoefte '$zorgbehoefte' and product '$product'");

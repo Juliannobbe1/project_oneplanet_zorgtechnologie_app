@@ -18,7 +18,7 @@ class ClientOverview extends ConsumerWidget {
       backgroundColor: Colors.indigo[50],
       appBar: AppBar(
         title: Text(
-          "Clienten Overzicht ", // App bar title
+          "Clienten Overzicht", // App bar title
           style: SizeScaler.getResponsiveTextStyle(
               context,
               16,
