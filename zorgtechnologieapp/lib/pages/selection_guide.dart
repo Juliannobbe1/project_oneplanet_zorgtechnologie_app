@@ -30,24 +30,26 @@ class SelectionGuidePage extends StatelessWidget {
           "Welkom bij de keuzegids",
         ),
       ),
-      body: Column(
-        children: [
-          if (deviceType ==
-                  DeviceType
-                      .tablet || // Conditionally render the TabletSelectionScreen for tablets and desktops
-              deviceType == DeviceType.desktop) ...[
-            TabletSelectionScreen(
-              screenWidth: screenWidth,
-              screenHeight: screenHeight,
-            )
-          ] else ...[
-            // Conditionally render the PhoneSelectionScreen for phones
-            PhoneSelectionScreen(
-              screenWidth: screenWidth,
-              screenHeight: screenHeight,
-            )
-          ]
-        ],
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            if (deviceType ==
+                    DeviceType
+                        .tablet || // Conditionally render the TabletSelectionScreen for tablets and desktops
+                deviceType == DeviceType.desktop) ...[
+              TabletSelectionScreen(
+                screenWidth: screenWidth,
+                screenHeight: screenHeight,
+              )
+            ] else ...[
+              // Conditionally render the PhoneSelectionScreen for phones
+              PhoneSelectionScreen(
+                screenWidth: screenWidth,
+                screenHeight: screenHeight,
+              )
+            ]
+          ],
+        ),
       ),
     );
   }
