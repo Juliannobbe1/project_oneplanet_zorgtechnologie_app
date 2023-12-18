@@ -10,7 +10,6 @@ import 'package:zorgtechnologieapp/pages/home_page.dart';
 
 class MockNavigatorObserver extends Mock implements NavigatorObserver {}
 
-//! Ignore Data fetching log Error fetching data: Request was: GET http://192.168.72.182:5001/product/newest, this test is pure testing the loading time of clientoverview
 
 void main() {
   setUpAll(() {
