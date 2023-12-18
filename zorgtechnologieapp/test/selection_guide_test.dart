@@ -18,8 +18,7 @@ void main() {
   setUp(() {
     nock.cleanAll();
   });
-  testWidgets('Integrationtest - select problem test',
-      (WidgetTester tester) async {
+  testWidgets('Unit test - select problem', (WidgetTester tester) async {
     final mockObserver = MockNavigatorObserver();
     final probleeminterceptor =
         nock("http://192.168.72.182:5001").get("/client/distinct-problem")
@@ -54,9 +53,10 @@ void main() {
       const Offset(0, 1), // delta to move
     );
     await tester.tap(find.text('Verwarring en desorientatie'));
+    expect(find.text('Verwarring en desorientatie'), findsOneWidget);
   });
 
-  testWidgets('Integrationtest - selection guide exit test',
+  testWidgets('Unit Test - selection guide exit test',
       (WidgetTester tester) async {
     // Create a mock navigator observer
     final mockObserver = MockNavigatorObserver();
