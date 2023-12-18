@@ -33,8 +33,6 @@ void main() {
         child: PreferredOrientationWrapper(
             child: MaterialApp(home: ClientOverview()))));
 
-    // Use nock.cleanAll() to reset the interceptor and then check if there are no more pending mock requests
-    nock.cleanAll();
     expect(clientinterceptor.isDone, true);
   });
 }
