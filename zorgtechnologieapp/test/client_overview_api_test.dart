@@ -15,8 +15,7 @@ void main() {
     nock.cleanAll();
   });
 
-  testWidgets('Integrationtest - clientoverview screen',
-      (WidgetTester tester) async {
+  testWidgets('Unittest - clientoverview screen', (WidgetTester tester) async {
     final clientinterceptor = nock("http://192.168.72.182:5001")
         .get("/client/wordtverzorgd/e040d519-dcc5-4969-86c3-54006f21656c")
       ..reply(
@@ -34,5 +33,8 @@ void main() {
             child: MaterialApp(home: ClientOverview()))));
 
     expect(clientinterceptor.isDone, true);
+    await tester.pumpAndSettle();
+
+    expect(find.text("Probleem: Veiligheid en toezicht"), findsOneWidget);
   });
 }

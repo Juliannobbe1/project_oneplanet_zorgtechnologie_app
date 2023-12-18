@@ -10,7 +10,6 @@ import 'package:zorgtechnologieapp/pages/home_page.dart';
 
 class MockNavigatorObserver extends Mock implements NavigatorObserver {}
 
-
 void main() {
   setUpAll(() {
     nock.init();
@@ -21,7 +20,7 @@ void main() {
   });
 
   testWidgets(
-      'Clicking Keuzegids button navigates to ClientOverview performance test',
+      'performance test - Clicking Keuzegids button navigates to ClientOverview',
       (WidgetTester tester) async {
     // Create a mock navigator observer
     final mockObserver = MockNavigatorObserver();
@@ -75,13 +74,12 @@ void main() {
         ]),
       );
 
-    // Use pumpAndSettle to ensure that the navigation has completed
-    await tester.pumpAndSettle(const Duration(seconds: 1));
+    // to ensure that the navigation has completed
+    await tester.pumpAndSettle();
 
     // Verify that we are on the Clienten Overzicht page.
     expect(find.text('Clienten Overzicht'), findsOneWidget);
 
-    //nock.cleanAll();
     expect(clientinterceptor.isDone, true);
     expect(productinteceptor.isDone, true);
 

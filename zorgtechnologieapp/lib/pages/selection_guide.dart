@@ -172,7 +172,6 @@ class TabletSelectionScreenState extends ConsumerState<TabletSelectionScreen> {
                               ),
                             ),
                             SizedBox(
-                              //!overflow needs to be fixed
                               height: selectedBehoefteIndex == -1 ? 400 : 40,
                               child: FutureDataWidget(
                                 fetchData: api.distinctProbleem(),
@@ -296,7 +295,6 @@ class TabletSelectionScreenState extends ConsumerState<TabletSelectionScreen> {
                                   child: Align(
                                     alignment: Alignment.bottomRight,
                                     child: FloatingActionButton.extended(
-
                                       key: const Key("exitButton"),
                                       heroTag: "exitButton",
                                       onPressed: () {
