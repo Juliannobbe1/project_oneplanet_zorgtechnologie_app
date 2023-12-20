@@ -44,10 +44,11 @@ dependencies:
   firebase_auth: ^4.14.0
   flutter_svg: ^2.0.9
   google_fonts: ^6.1.0
-  flutter_login: ^4.2.1
+  flutter_login: ^5.0.0
   firebase_core: ^2.22.0
   firebase_performance: ^0.9.3+5
   get_it: ^7.2.0
+  freerasp: ^6.3.0
 
 dev_dependencies:
   flutter_test:
