@@ -89,11 +89,6 @@ void main() {
     // to ensure that the navigation has completed
     await tester.pumpAndSettle();
 
-    // final widgets = tester.allWidgets;
-    // for (final widget in widgets) {
-    //   print('Widgets: $widget');
-    // }
-
     // Verify that we are on the Clienten Overzicht page.
     expect(find.text('Clienten Overzicht'), findsOneWidget);
 
