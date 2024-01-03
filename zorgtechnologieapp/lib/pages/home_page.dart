@@ -67,120 +67,118 @@ class TabletHomeScreen extends ConsumerWidget {
     final logger = ref.watch(loggingProvider);
 
     return Expanded(
-      child: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                // Button to Keuzegids
-                Expanded(
-                  flex: 1,
-                  child: Padding(
-                    padding: const EdgeInsets.fromLTRB(30, 45, 20, 20),
-                    child: Material(
-                      elevation: 10,
-                      borderRadius: const BorderRadius.all(Radius.circular(10)),
-                      child: Container(
-                        decoration: BoxDecoration(
-                          borderRadius: const BorderRadius.all(
-                            Radius.circular(10),
-                          ),
-                          color: Colors.blue[800],
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              // Button to Keuzegids
+              Expanded(
+                flex: 1,
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(30, 45, 20, 20),
+                  child: Material(
+                    elevation: 10,
+                    borderRadius: const BorderRadius.all(Radius.circular(10)),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        borderRadius: const BorderRadius.all(
+                          Radius.circular(10),
                         ),
-                        child: Center(
-                          child: TextButton(
-                            style: TextButton.styleFrom(
-                              fixedSize: const Size(300, 150),
-                            ),
-                            onPressed: () {
-                              Navigator.of(context).push(MaterialPageRoute(
-                                builder: (context) => const ClientOverview(),
-                              ));
-                            },
-                            child: Text(
-                              "Keuzegids", // Button text
-                              style: SizeScaler.getResponsiveTextStyle(
-                                  context,
-                                  20,
-                                  FontWeight.normal,
-                                  Colors
-                                      .white), // Define the text style using SizeScaler for responsive text sizing
-                            ),
+                        color: Colors.blue[800],
+                      ),
+                      child: Center(
+                        child: TextButton(
+                          style: TextButton.styleFrom(
+                            fixedSize: const Size(300, 150),
+                          ),
+                          onPressed: () {
+                            Navigator.of(context).push(MaterialPageRoute(
+                              builder: (context) => const ClientOverview(),
+                            ));
+                          },
+                          child: Text(
+                            "Keuzegids", // Button text
+                            style: SizeScaler.getResponsiveTextStyle(
+                                context,
+                                20,
+                                FontWeight.normal,
+                                Colors
+                                    .white), // Define the text style using SizeScaler for responsive text sizing
                           ),
                         ),
                       ),
                     ),
                   ),
                 ),
-
-                // Button to Catalogus
-                Expanded(
-                  flex: 1,
-                  child: Padding(
-                    padding: const EdgeInsets.fromLTRB(20, 45, 30, 20),
-                    child: Material(
-                      elevation: 10,
-                      borderRadius: const BorderRadius.all(Radius.circular(10)),
-                      child: Container(
-                        decoration: BoxDecoration(
-                          borderRadius: const BorderRadius.all(
-                            Radius.circular(10),
-                          ),
-                          color: Colors.blue[800],
-                        ),
-                        child: Center(
-                          child: TextButton(
-                            style: TextButton.styleFrom(
-                              fixedSize: const Size(300, 150),
-                            ),
-                            onPressed: () {
-                              Navigator.of(context).push(MaterialPageRoute(
-                                builder: (context) => const ProductPage(),
-                              ));
-                            },
-                            child: Text(
-                              "Technologie-catalogus", // Button text
-                              style: SizeScaler.getResponsiveTextStyle(
-                                  context,
-                                  20,
-                                  FontWeight.normal,
-                                  Colors
-                                      .white), // Define the text style using SizeScaler for responsive text sizing
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-
-            // Newest Products
-            Padding(
-              padding: EdgeInsets.only(
-                  left: screenWidth * 0.025, top: screenWidth * 0.05),
-              child: Text(
-                "Nieuwste producten: ", // Heading text
-                style: SizeScaler.getResponsiveTextStyle(
-                    context,
-                    21,
-                    FontWeight.bold,
-                    Colors
-                        .black), // Define the text style using SizeScaler for responsive text sizing
               ),
+
+              // Button to Catalogus
+              Expanded(
+                flex: 1,
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(20, 45, 30, 20),
+                  child: Material(
+                    elevation: 10,
+                    borderRadius: const BorderRadius.all(Radius.circular(10)),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        borderRadius: const BorderRadius.all(
+                          Radius.circular(10),
+                        ),
+                        color: Colors.blue[800],
+                      ),
+                      child: Center(
+                        child: TextButton(
+                          style: TextButton.styleFrom(
+                            fixedSize: const Size(300, 150),
+                          ),
+                          onPressed: () {
+                            Navigator.of(context).push(MaterialPageRoute(
+                              builder: (context) => const ProductPage(),
+                            ));
+                          },
+                          child: Text(
+                            "Technologie-catalogus", // Button text
+                            style: SizeScaler.getResponsiveTextStyle(
+                                context,
+                                20,
+                                FontWeight.normal,
+                                Colors
+                                    .white), // Define the text style using SizeScaler for responsive text sizing
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+
+          // Newest Products
+          Padding(
+            padding: EdgeInsets.only(
+                left: screenWidth * 0.025, top: screenWidth * 0.05),
+            child: Text(
+              "Nieuwste producten: ", // Heading text
+              style: SizeScaler.getResponsiveTextStyle(
+                  context,
+                  21,
+                  FontWeight.bold,
+                  Colors
+                      .black), // Define the text style using SizeScaler for responsive text sizing
             ),
-            FutureDataWidget(
-                fetchData: DataAPI(logger: logger)
-                    .newestProducts(), // Fetch the newest products data using DataAPI
-                countRow: 2, // Display two products per row
-                widgetType: FutureWidgetType
-                    .gridView, // Use gridView as the widget type for displaying the products
-                dataType: FutureDataType
-                    .product), // Specify that the data type is a product
-          ],
-        ),
+          ),
+          FutureDataWidget(
+              fetchData: DataAPI(logger: logger)
+                  .newestProducts(), // Fetch the newest products data using DataAPI
+              countRow: 2, // Display two products per row
+              widgetType: FutureWidgetType
+                  .gridView, // Use gridView as the widget type for displaying the products
+              dataType: FutureDataType
+                  .product), // Specify that the data type is a product
+        ],
       ),
     );
   }
