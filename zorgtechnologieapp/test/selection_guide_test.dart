@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:nock/nock.dart';
+import 'package:zorgtechnologieapp/handlers/data_api_handler.dart';
 import 'package:zorgtechnologieapp/main.dart';
 import 'package:zorgtechnologieapp/pages/selection_guide.dart';
 
@@ -21,7 +22,7 @@ void main() {
   testWidgets('Unit test - select problem', (WidgetTester tester) async {
     final mockObserver = MockNavigatorObserver();
     final probleeminterceptor =
-        nock("http://192.168.72.182:5001").get("/client/distinct-problem")
+        nock(kApiBaseUrl).get("/client/distinct-problem")
           ..reply(
             200,
             jsonEncode([

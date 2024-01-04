@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:nock/nock.dart';
+import 'package:zorgtechnologieapp/handlers/data_api_handler.dart';
 import 'package:zorgtechnologieapp/main.dart';
 import 'package:zorgtechnologieapp/pages/home_page.dart';
 
@@ -57,7 +58,7 @@ void main() {
 
     // Tap the Keuzegids button.
     await tester.tap(find.text('Keuzegids'));
-    final clientinterceptor = nock("http://192.168.72.182:5001")
+    final clientinterceptor = nock(kApiBaseUrl)
         .get("/client/wordtverzorgd/e040d519-dcc5-4969-86c3-54006f21656c")
       ..reply(
         200,
@@ -68,7 +69,7 @@ void main() {
           },
         ]),
       );
-    final productinteceptor = nock("http://192.168.72.182:5001")
+    final productinteceptor = nock(kApiBaseUrl)
         .get("/product/client/2e7cdd22-6d64-4e43-a8c6-9c6d3f3a7b3e")
       ..reply(
         200,

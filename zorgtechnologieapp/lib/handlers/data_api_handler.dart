@@ -1,12 +1,16 @@
 import 'dart:convert';
+import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:logger/logger.dart';
 import '../models/products.dart';
 import '../models/toepassing.dart';
 import '../models/clients.dart';
 
+const kDebugApiBaseUrl = "http://10.0.2.2:5001";
+const kProdApiBaseUrl = "http://10.0.2.2:5001";
+const kApiBaseUrl = kDebugMode ? kDebugApiBaseUrl : kProdApiBaseUrl;
+
 class DataAPI {
-  String baseUrl = 'http://192.168.72.182:5001';
   Logger logger;
 
   DataAPI({required this.logger});
@@ -14,7 +18,7 @@ class DataAPI {
   /// Fetches data from the specified [endpoint] using a GET request.
   /// Returns a [Future] that resolves to a list of dynamic objects.
   Future<List<dynamic>> fetchData(String endpoint) async {
-    String url = '$baseUrl$endpoint';
+    String url = '$kApiBaseUrl$endpoint';
     logger.t("Retrieving data from '$url'");
     http.Response response = await http.get(Uri.parse(url));
     if (response.statusCode == 200) {
@@ -30,7 +34,7 @@ class DataAPI {
   /// Sends data to the specified [endpoint] using a POST request.
   /// The [payload] is the data to be sent in the request body.
   Future<void> postData(String endpoint, payload) async {
-    final url = '$baseUrl$endpoint';
+    final url = '$kApiBaseUrl$endpoint';
 
     logger.t("Sending POST request to '$url' with payload '$payload'");
 
@@ -48,7 +52,7 @@ class DataAPI {
 
   /// Sends a PUT request to the specified [endpoint].
   Future<void> putData(String endpoint) async {
-    final url = '$baseUrl$endpoint';
+    final url = '$kApiBaseUrl$endpoint';
 
     logger.t("Sending PUT request to '$url'");
 
@@ -66,7 +70,7 @@ class DataAPI {
 
   /// Deletes a client with the specified [id].
   Future<void> deleteClient(String id) async {
-    String url = '$baseUrl/client/$id';
+    String url = '$kApiBaseUrl/client/$id';
     logger.i("Attempting to delete client '$id'");
 
     http.Response response = await http.delete(Uri.parse(url));
