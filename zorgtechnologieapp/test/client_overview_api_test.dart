@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:nock/nock.dart';
+import 'package:zorgtechnologieapp/handlers/data_api_handler.dart';
 import 'package:zorgtechnologieapp/main.dart';
 import 'package:zorgtechnologieapp/pages/client_overview_page.dart';
 
@@ -16,7 +17,7 @@ void main() {
   });
 
   testWidgets('Unittest - clientoverview screen', (WidgetTester tester) async {
-    final clientinterceptor = nock("http://192.168.72.182:5001")
+    final clientinterceptor = nock(kApiBaseUrl)
         .get("/client/wordtverzorgd/e040d519-dcc5-4969-86c3-54006f21656c")
       ..reply(
         200,
