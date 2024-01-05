@@ -382,12 +382,19 @@ Widget productListTile(BuildContext context, Product product) {
     margin: const EdgeInsets.all(10),
     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
     child: ListTile(
-      leading: Image.memory(
-        base64.decode(product.imageBase64!),
-        key: ValueKey(
-          "productListTileImage | ${product.iD}",
-        ),
-      ),
+      leading: product.imageBase64 != null
+          ? Image.memory(
+              base64.decode(product.imageBase64!),
+              key: ValueKey(
+                "productListTileImage | ${product.iD}",
+              ),
+            )
+          : Icon(
+              Icons.image_not_supported_rounded,
+              key: ValueKey(
+                "productListTilePlaceholderImage | ${product.iD}",
+              ),
+            ),
       // Display the product name
       title: Text(
         product.naam,
