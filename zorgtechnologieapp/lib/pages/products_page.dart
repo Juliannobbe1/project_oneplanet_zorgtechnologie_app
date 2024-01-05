@@ -102,13 +102,13 @@ class SingleProductView extends ConsumerWidget {
                           ),
                           const SizedBox(height: 5),
                           Text(
-                            'Prijs: ${product.prijs}', // Display the product price
+                            'Prijs: ${product.prijs ?? "Niet beschikbaar"}', // Display the product price
                             style: SizeScaler.getResponsiveTextStyle(
                                 context, 20, FontWeight.normal, Colors.black),
                           ),
                           const SizedBox(height: 5),
                           Text(
-                            'Link: ${product.link}', // Display the product link
+                            'Link: ${product.link ?? "Niet beschikbaar"}', // Display the product link
                             style: SizeScaler.getResponsiveTextStyle(
                                 context, 20, FontWeight.normal, Colors.black),
                           ),
