@@ -1,5 +1,5 @@
 from flask_restx import Namespace
-from models.domain_model import Application, Client, HealthcareProfessional, Organisation, Product, Recommendation, Review, Supplier, Relationship
+from models.domain_model import ApplicationModel, ClientModel, HealthcareProfessionalModel, OrganisationModel, ProductModel, RecommendationModel, ReviewModel, SupplierModel, RelationshipModel
 from loguru import logger
 
 class NamespaceFactory:
@@ -7,15 +7,15 @@ class NamespaceFactory:
         self.driver = driver
         self.api = api
         self.models = {
-            'aanbeveling': Recommendation(driver),
-            'toepassing': Application(driver),
-            'product': Product(driver),
-            'client': Client(driver),
-            'zorgprofessional': HealthcareProfessional(driver),
-            'organisatie': Organisation(driver),
-            'review': Review(driver),
-            'leverancier': Supplier(driver),
-            'relatie': Relationship(driver)
+            'aanbeveling': RecommendationModel(driver),
+            'toepassing': ApplicationModel(driver),
+            'product': ProductModel(driver),
+            'client': ClientModel(driver),
+            'zorgprofessional': HealthcareProfessionalModel(driver),
+            'organisatie': OrganisationModel(driver),
+            'review': ReviewModel(driver),
+            'leverancier': SupplierModel(driver),
+            'relatie': RelationshipModel(driver)
         }
         self.namespaces = {}
         self.object_names = {}

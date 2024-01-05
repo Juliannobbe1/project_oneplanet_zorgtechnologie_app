@@ -3,12 +3,16 @@ from flask_restx import fields
 from models.base_model import base_model
 from loguru import logger
 
-class Application(base_model):
+class ApplicationModel(base_model):
     def __init__(self, driver):
         super().__init__("toepassing", driver=driver)
         self.model_data['toepassing'] = fields.String(required=True)
         self.model_data['productID'] = fields.String(required=True)
         self.model_data['ID'] = fields.String(required=True)
+
+    @staticmethod
+    def get_str_of_dict(application_dict: dict) -> str:
+        return f"Application(Toepassing: '{application_dict['toepassing']}', ProductID: '{application_dict['productID']}', ID: '{application_dict['ID']}')"
         
     def getApplicationWithProduct(self):
         logger.trace("Attempting to retrieve applications with associated products")
@@ -38,11 +42,15 @@ class Application(base_model):
                 logger.error("Failed to retrieve all distinct applications")
                 return abort(404, "Something went wrong")
 
-class Client(base_model):
+class ClientModel(base_model):
     def __init__(self, driver):
         super().__init__("client", driver=driver)
         self.model_data['ID'] = fields.String(required=False)
         self.model_data['probleem'] = fields.String(required=True)
+
+    @staticmethod
+    def get_str_of_dict(client_dict: dict) -> str:
+        return f"Client(ID: '{client_dict['ID']}', Probleem: '{client_dict['probleem']}')"
         
     def getDistinctProblems(self):
         logger.trace("Attempting to retrieve distinct client problems")
@@ -85,11 +93,15 @@ class Client(base_model):
                 logger.error("Failed to create relationship for client '{client}' and HealthcareProfessional '{healthcareProfessional}'", client=clientID, healthcareProfessional=zorgprofID)
                 return abort(404, "Something went wrong")
 
-class HealthcareProfessional(base_model):
+class HealthcareProfessionalModel(base_model):
     def __init__(self, driver):
         super().__init__("zorgprofessional", driver=driver)
         self.model_data['ID'] = fields.String(required=True)
         self.model_data['naam'] = fields.String(required=True)
+
+    @staticmethod
+    def get_str_of_dict(healthcareprofessional_dict: dict) -> str:
+        return f"HealthcareProfessional(ID: '{healthcareprofessional_dict['ID']}', Naam: '{healthcareprofessional_dict['naam']}')"
         
     def getHealthcareProfessionalByID(self, zorgprofID):
         logger.trace("Attempting to retrieve HealthcareProfessional '{healthcareProfessional}'", healthcareProfessional=zorgprofID)
@@ -119,11 +131,15 @@ class HealthcareProfessional(base_model):
                 logger.error("Failed to retrieve all distinct HealthcareProfessionals")
                 return abort(404, "Something went wrong")
 
-class Organisation(base_model):
+class OrganisationModel(base_model):
     def __init__(self, driver):
         super().__init__("organisatie", driver=driver)
         self.model_data['ID'] = fields.String(required=True)
         self.model_data['naam'] = fields.String(required=True)
+
+    @staticmethod
+    def get_str_of_dict(organisation_dict: dict) -> str:
+        return f"Organisation(ID: '{organisation_dict['ID']}', Naam: '{organisation_dict['naam']}')"
         
     def getDistinctOrganisations(self):
         logger.trace("Attempting to retrieve all distinct organizations")
@@ -139,7 +155,7 @@ class Organisation(base_model):
                 logger.error("Failed to retrieve all distinct organizations")
                 return abort(404, "Something went wrong")
 
-class Product(base_model):
+class ProductModel(base_model):
     def __init__(self, driver):
         super().__init__("product", driver=driver)
         self.model_data['beschrijving'] = fields.String()
@@ -149,6 +165,10 @@ class Product(base_model):
         self.model_data['naam'] = fields.String(required=True, description='Naam van het product')
         self.model_data['prijs'] = fields.Float()
         self.model_data['imageBase64'] = fields.String()
+
+    @staticmethod
+    def get_str_of_dict(product_dict: dict) -> str:
+        return f"Product(ID: '{product_dict['ID']}', Naam: '{product_dict['naam']}', Prijs: '{product_dict['prijs']}', Beschrijving: '{product_dict['beschrijving']}', LeverancierID: '{product_dict['leverancierID']}', Link: '{product_dict['link']}', ImageBase64: '{product_dict['imageBase64'][:5] if 'imageBase64' in product_dict else None}')"
     
     def getNewestProducts(self):
         logger.trace("Attempting to retrieve the newest products")
@@ -156,7 +176,8 @@ class Product(base_model):
             result = session.run(f"MATCH (n:product)RETURN n ORDER BY id(n) DESC LIMIT 6")
             if result:
                 data = self.extract(result)
-                logger.trace("Successfully retrieved the newest products: '{newest_products}'", newest_products=data)
+                logger_data = [ProductModel.get_str_of_dict(p) for p in data]
+                logger.trace("Successfully retrieved the newest products: '{newest_products}'", newest_products=logger_data)
                 return data
             else:
                 logger.error("Failed to retrieve the newest products")
@@ -180,7 +201,8 @@ class Product(base_model):
             result = session.run(query)
             if result:
                 data = self.extract(result)
-                logger.trace("Successfully retrieved the recommendation products '{recommendation_products}'", recommendation_products=data)
+                logger_data = [ProductModel.get_str_of_dict(p) for p in data]
+                logger.trace("Successfully retrieved the recommendation products '{recommendation_products}'", recommendation_products=logger_data)
                 return data
             else:
                 logger.error("Failed to retrieve the recommendation products for HealthcareProfessional '{healthcare_professional}' and problem '{problem}'", healthcare_professional=zorgprofID, problem=probleem)
@@ -193,7 +215,8 @@ class Product(base_model):
             result = session.run(query)
             if result:
                 data = self.extract(result)
-                logger.trace("Successfully retrieved products for client '{client}': '{products}'", client=clientID, products=data)
+                logger_data = [ProductModel.get_str_of_dict(p) for p in data]
+                logger.trace("Successfully retrieved products for client '{client}': '{products}'", client=clientID, products=logger_data)
                 return data
             else:
                 logger.error("Failed to retrieve products for client '{client}'", client=clientID)
@@ -253,11 +276,15 @@ class Product(base_model):
                 logger.error("Failed to create recommendation relationship between product '{product}' and recommendation '{recommendation}'", product=productID, recommendation=recommendationID)
                 return abort(404, "Could not delete")
             
-class Recommendation(base_model):
+class RecommendationModel(base_model):
     def __init__(self, driver):
         super().__init__("aanbeveling", driver=driver)
         self.model_data['ID'] = fields.String(required=True)
         self.model_data['aanbeveling'] = fields.String(required=True)
+
+    @staticmethod
+    def get_str_of_dict(recommendation_dict: dict) -> str:
+        return f"Recommendation(ID: '{recommendation_dict['ID']}', Aanbeveling: '{recommendation_dict['aanbeveling']}')"
         
     def getRecommendationsByProduct(self, productID):
         logger.trace("Attempting to retrieve recommendations for product '{product}'", product=productID)
@@ -286,7 +313,7 @@ class Recommendation(base_model):
                 logger.error("Failed to create recommendation relationship for HealthcareProfessional '{healthcare_professional}', product '{product}' and client '{client}'", healthcare_professional=zorgprofessionalID, product=productID, client=clientID)
                 return abort(404, "Something went wrong")
             
-class Review(base_model):
+class ReviewModel(base_model):
     def __init__(self, driver):
         super().__init__("review", driver=driver)
         self.model_data['datum'] = fields.Date(required=True)
@@ -295,19 +322,31 @@ class Review(base_model):
         self.model_data['productID'] = fields.String(required=True)
         self.model_data['ID'] = fields.String(required=True)
         self.model_data['zorgprofessionalID'] = fields.String(required=True)
+
+    @staticmethod
+    def get_str_of_dict(review_dict: dict) -> str:
+            return f"Review(ID: '{review_dict['ID']}', Datum: '{review_dict['datum']}', Score: '{review_dict['score']}', Beschrijving: '{review_dict['beschrijving']}', ProductID: '{review_dict['productID']}', ZorgprofessionalID: '{review_dict['zorgprofessionalID']}')"
         
-class Supplier(base_model):
+class SupplierModel(base_model):
     def __init__(self, driver):
         super().__init__("leverancier", driver=driver)
         self.model_data['ID'] = fields.String(required=True)
         self.model_data['naam'] = fields.String(required=True)
+
+    @staticmethod
+    def get_str_of_dict(supplier_dict: dict) -> str:
+        return f"Supplier(ID: '{supplier_dict['ID']}', Naam: '{supplier_dict['naam']}')"
         
-class Relationship(base_model):
+class RelationshipModel(base_model):
     def __init__(self, driver):
         super().__init__("relatie", driver)
         self.model_data['start_id'] = fields.String()
         self.model_data['end_id'] = fields.String()
         self.model_data['relationship_name'] = fields.String()
+
+    @staticmethod
+    def get_str_of_dict(relationship_dict: dict) -> str:
+        return f"Relationship(Name: '{relationship_dict['relationship_name']}', StartID: '{relationship_dict['start_id']}', EndID: '{relationship_dict['end_id']}')"
         
     def setRelationship( self, start_node, start_id, end_node, end_id, relationship_name):
         logger.trace("Attempting to set relationship '{relationship_name}' between startNode '{start_node}' with ID '{start_id}' and endNode '{end_node}' with ID '{end_id}'", relationship_name=relationship_name, start_node=start_node, start_id=start_id, end_node=end_node, end_id=end_id)
@@ -330,36 +369,3 @@ class Relationship(base_model):
             else:
                 logger.error("Failed to delete the relationship")
                 return abort(404, "Could not delete")
-            
-class Recommendation(base_model):
-    def __init__(self, driver):
-        super().__init__("aanbeveling", driver=driver)
-        self.model_data['ID'] = fields.String(required=True)
-        self.model_data['aanbeveling'] = fields.String(required=True)
-        
-    def getRecommendationsByProduct(self, productID):
-        logger.trace("Attempting to retrieve recommendations for product '{product_id}'", product_id=productID)
-        # Query to retrieve recommendations by product ID
-        query = f"MATCH (p:product)-[:AANBEVELEN]-(r:aanbeveling) WHERE p.ID = '{productID}' RETURN r"
-        with self.driver.session() as session:
-            result = session.run(query)
-            if result:
-                data = self.extract(result)
-                logger.trace("Successfully retrieved recommendations '{recommendations}' for product '{product_id}'", recommendations=data, product_id=productID)
-                return data
-            else:
-                logger.error("Failed to retrieve recommendations for product '{product_id}'", product_id=productID)
-                return abort(404, "Something went wrong")
-
-    def setRecommendation(self, zorgprofessionalID, productID,clientID):
-        logger.trace("Attempting to set recommendation for zorgprofessional '{zorgprofessional}' and client '{client}' for product '{product}'", zorgprofessional=zorgprofessionalID, client=clientID, product=productID)
-        # Query to create a recommendation relationship between a product and a recommendation
-        query = f"MATCH (p:product) WHERE p.ID = '{productID}' MATCH (z:zorgprofessional) WHERE z.ID = '{zorgprofessionalID}' CREATE (p)<-[:KRIJGT_AANBEVELING {{aanbevelingsID: randomUUID(), zorgprofessionalID: '{zorgprofessionalID}', productID: '{productID}', clientID: '{clientID}'}}]-(z)"
-        with self.driver.session() as session:
-            result = session.run(query)
-            if result:
-                logger.trace("Successfully set recommendation for zorgprofessional '{zorgprofessional}' and client '{client}' for product '{product}'", zorgprofessional=zorgprofessionalID, client=clientID, product=productID)
-                return "Relationship created successfully"
-            else:
-                logger.error("Failed to set recommendation for zorgprofessional '{zorgprofessional}' and client '{client}' for product '{product}'", zorgprofessional=zorgprofessionalID, client=clientID, product=productID)
-                return abort(404, "Something went wrong")

@@ -92,7 +92,8 @@ class OrganisationResource(Resource):
         requestId = uuid4()
         logger.info("requestID: '{requestId}'\nReceived request to retrieve all organisations", requestId=requestId)
         response = org.get_all()
-        logger.info("requestID: '{requestId}'\nSuccessfully retrieved all organisations '{organisations}'", requestId=requestId, organisations=response)
+        logger_response = [OrganisationModel.get_str_of_dict(o) for o in response]
+        logger.info("requestID: '{requestId}'\nSuccessfully retrieved all organisations '{organisations}'", requestId=requestId, organisations=logger_response)
         return response
 
     def post(self, data):
@@ -156,7 +157,8 @@ class ReviewResource(Resource):
         requestId = uuid4()
         logger.info("requestID: '{requestId}'\nReceived request to retrieve all reviews", requestId=requestId)
         response = review.get_all()
-        logger.info("requestID: '{requestId}'\nSuccessfully retrieved all reviews '{reviews}'", requestId=requestId, reviews=response)
+        logger_response = [ReviewModel.get_str_of_dict(r) for r in response]
+        logger.info("requestID: '{requestId}'\nSuccessfully retrieved all reviews '{reviews}'", requestId=requestId, reviews=logger_response)
         return response
 
     def post(self, data):
@@ -207,9 +209,6 @@ class ReviewPropertyResource(Resource):
             logger.info("requestID: '{requestId}'\nReview deleted successfully")
             return jsonify({"message": "Review deleted successfully."})
 
-
-
-
 @supplier_ns.route('/')
 class SupplierResource(Resource):
     @api.marshal_with(supplierModel)
@@ -221,7 +220,8 @@ class SupplierResource(Resource):
         requestId = uuid4()
         logger.info("requestID: '{requestId}'\nReceived request to retrieve all suppliers", requestId=requestId)
         response = supplier.get_all()
-        logger.info("requestID: '{requestId}'\nSuccessfully retrieved sll suppliers '{suppliers}'", requestId=requestId, suppliers=response)
+        logger_response = [SupplierModel.get_str_of_dict(s) for s in response]
+        logger.info("requestID: '{requestId}'\nSuccessfully retrieved sll suppliers '{suppliers}'", requestId=requestId, suppliers=logger_response)
         return response
 
     def post(self, data):
@@ -284,7 +284,8 @@ class HealthProfessionalResource(Resource):
         requestId = uuid4()
         logger.info("requestID: '{requestId}'\nReceived request to retrieve all HealthProfessionals", requestId=requestId)
         response = healthprof.get_all()
-        logger.info("requestID: '{requestId}'\nSuccessfully retrieved all HealthProfessionals '{healthProfessionals}'", requestId=requestId, healthProfessionals=response)
+        logger_response = [HealthcareProfessionalModel.get_str_of_dict(h) for h in response]
+        logger.info("requestID: '{requestId}'\nSuccessfully retrieved all HealthProfessionals '{healthProfessionals}'", requestId=requestId, healthProfessionals=logger_response)
         return response
 
     def post(self, data):
@@ -348,7 +349,8 @@ class ClientList(Resource):
         requestId = uuid4()
         logger.info("requestID: '{requestId}'\nReceived request to retrieve all clients", requestId=requestId)
         response = client.get_all()
-        logger.info("requestID: '{requestId}'\nSucessfully retrieved all clients '{clients}'", requestId=requestId, clients=response)
+        logger_response = [ClientModel.get_str_of_dict(c) for c in response]
+        logger.info("requestID: '{requestId}'\nSucessfully retrieved all clients '{clients}'", requestId=requestId, clients=logger_response)
         return response
 
     @api.expect(clientModel)
@@ -490,7 +492,8 @@ class ApplicationResource(Resource):
         requestId = uuid4()
         logger.info("requestID: '{requestId}'\nReceived request to retrieve all applications", requestId=requestId)
         response = application.get_all()
-        logger.info("requestID: '{requestId}'\nSuccessfully retrieved all applications '{applications}'", requestId=requestId, applications=response)
+        logger_response = [ApplicationModel.get_str_of_dict(a) for a in response]
+        logger.info("requestID: '{requestId}'\nSuccessfully retrieved all applications '{applications}'", requestId=requestId, applications=logger_response)
         return response
 
     def post(self, data):
@@ -588,7 +591,7 @@ class Product(Resource):
             return abort(404, "Cannot get, information is missing")
         else:
             response = product.get(id)
-            logger.info("requestID: '{requestId}'\nSuccessfully retrieved product '{product}'", requestId=requestId, product=product)
+            logger.info("requestID: '{requestId}'\nSuccessfully retrieved product '{product}'", requestId=requestId, product=ProductModel.get_str_of_dict(response))
             return response
 
     def delete(self, id):
@@ -620,7 +623,8 @@ class ProductResource(Resource):
         requestId = uuid4()
         logger.info("requestID: '{requestId}'\nReceived request to retrieve all products", requestId=requestId)
         response = product.get_all()
-        logger.info("requestID: '{requestId}'\nSuccessfully retrieved all products '{products}'", requestId=requestId, products=response)
+        logger_response = [ProductModel.get_str_of_dict(p) for p in response]
+        logger.info("requestID: '{requestId}'\nSuccessfully retrieved all products '{products}'", requestId=requestId, products=logger_response)
         return response
 
     def post(self, data):
@@ -652,7 +656,8 @@ class NewProducts(Resource):
         requestId = uuid4()
         logger.info("requestID: '{requestId}'\nReceived request to retrieve the newest products", requestId=requestId)
         response = product.getNewestProducts()
-        logger.info("requestID: '{requestId}'\nSuccessfully retrieved the newest products '{products}'", requestId=requestId, products=response)
+        logger_response = [ProductModel.get_str_of_dict(p) for p in response]
+        logger.info("requestID: '{requestId}'\nSuccessfully retrieved the newest products '{products}'", requestId=requestId, products=logger_response)
         return response
 
 
@@ -667,7 +672,8 @@ class ProductsRecommendation(Resource):
         requestId = uuid4()
         logger.info("requestID: '{requestId}'\nReceived request to retrieve recommended products for HealthcareProfessional '{healthcareProfessional}' and problem '{problem}'", requestId=requestId, healthcareProfessional=zorgprofID, problem=probleem)
         response = product.getRecommendationProducts(zorgprofID, probleem)
-        logger.info("requestID: '{requestId}'\nSuccessfully retrieved recommendation products '{recommendationProducts}'", requestId=requestId, recommendationProducts=response)
+        logger_response = [ProductModel.get_str_of_dict(p) for p in response]
+        logger.info("requestID: '{requestId}'\nSuccessfully retrieved recommendation products '{recommendationProducts}'", requestId=requestId, recommendationProducts=logger_response)
         return response
 
 
@@ -682,7 +688,8 @@ class ProductOneClient(Resource):
         requestId = uuid4()
         logger.info("requestID: '{requestId}'\nReceived request to retrieve all products for client '{client}'", requestId=requestId, client=clientID)
         response = product.getProductsOneClient(clientID)
-        logger.info("requestID: '{requestId}'\nSuccessfully retrieved the products '{products}'", requestId=requestId, products=response)
+        logger_response = [ProductModel.get_str_of_dict(p) for p in response]
+        logger.info("requestID: '{requestId}'\nSuccessfully retrieved the products '{products}'", requestId=requestId, products=logger_response)
         return response
 
 
@@ -732,6 +739,8 @@ class RelationshipResource(Resource):
             return abort(404, "Cannot delete, information is missing")
 
 def main():
+    # Remove the default logger and add the custom loggers
+    logger.remove()
     logger.add(sys.stdout, colorize=True, format="<green>{time}</green> <level>{message}</level>", level="TRACE")
     logger.add(sys.stderr, format="<red>{time}</red> <level>{message}</level>", level="ERROR")
     logger.add("logs/file_{time}.log", level="TRACE", rotation="1 day")
