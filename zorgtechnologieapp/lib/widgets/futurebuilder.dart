@@ -359,72 +359,77 @@ class FutureDataWidgetState extends ConsumerState<FutureDataWidget> {
                       color: Colors.blue[500],
                     ),
                     child: dataType == FutureDataType.product
-                        ? productListTile(data)
-                        : clientsListTile(data)),
+                        ? productListTile(context, data)
+                        : clientsListTile(context, data)),
               ),
             );
           }),
     );
   }
+}
 
-  String limitStringCharacters(String text, int limit) {
-    if (text.length <= limit) {
-      return text;
-    } else {
-      return '${text.substring(0, limit)}...';
-    }
+String limitStringCharacters(String text, int limit) {
+  if (text.length <= limit) {
+    return text;
+  } else {
+    return '${text.substring(0, limit)}...';
   }
+}
 
-  // Generate the tile for each product
-  Widget productListTile(Product product) {
-    return Card(
-      margin: const EdgeInsets.all(10),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-      child: ListTile(
-        leading: Image.memory(base64.decode(product.imageBase64!)),
-        // Display the product name
-        title: Text(
-          product.naam,
-          style: SizeScaler.getResponsiveTextStyle(
-              context, 18, FontWeight.bold, Colors.black),
+// Generate the tile for each product
+Widget productListTile(BuildContext context, Product product) {
+  return Card(
+    margin: const EdgeInsets.all(10),
+    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+    child: ListTile(
+      leading: Image.memory(
+        base64.decode(product.imageBase64!),
+        key: ValueKey(
+          "productListTileImage | ${product.iD}",
         ),
-        // Display a truncated description of the product
-        subtitle: Text(limitStringCharacters(product.beschrijving, 85),
-            style: const TextStyle(fontSize: 16)),
-        trailing: SingleProductView(
-          productId: product.iD,
-        ),
-        contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-        dense: true,
-        enabled: false,
-        selected: true,
-        selectedTileColor: Colors.blue,
       ),
-    );
-  }
-
-  // Generate the tile for each client
-  Widget clientsListTile(Clients client) {
-    return ListTile(
-      // Display client ID
-      leading: Text(
-        'Client: ${client.iD}',
-        style: SizeScaler.getResponsiveTextStyle(
-            context, 18, FontWeight.bold, Colors.white),
-      ),
-      // Display client problem
+      // Display the product name
       title: Text(
-        client.probleem,
+        product.naam,
         style: SizeScaler.getResponsiveTextStyle(
-            context, 18, FontWeight.bold, Colors.white),
+            context, 18, FontWeight.bold, Colors.black),
       ),
-      contentPadding: const EdgeInsets.all(20),
-      // Display "Maakt gebruik van: " (translated: "Uses: ")
-      subtitle: Text(
-        'Maakt gebruik van: ',
-        style: SizeScaler.getResponsiveTextStyle(
-            context, 16, FontWeight.bold, Colors.white),
+      // Display a truncated description of the product
+      subtitle: Text(limitStringCharacters(product.beschrijving, 85),
+          style: const TextStyle(fontSize: 16)),
+      trailing: SingleProductView(
+        productId: product.iD,
       ),
-    );
-  }
+      contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+      dense: true,
+      enabled: false,
+      selected: true,
+      selectedTileColor: Colors.blue,
+    ),
+  );
+}
+
+// Generate the tile for each client
+Widget clientsListTile(BuildContext context, Clients client) {
+  return ListTile(
+    // Display client ID
+    leading: Text(
+      'Client: ${client.iD}',
+      style: SizeScaler.getResponsiveTextStyle(
+          context, 18, FontWeight.bold, Colors.white),
+    ),
+    // Display client problem
+    title: Text(
+      client.probleem,
+      style: SizeScaler.getResponsiveTextStyle(
+          context, 18, FontWeight.bold, Colors.white),
+    ),
+    contentPadding: const EdgeInsets.all(20),
+    // Display "Maakt gebruik van: " (translated: "Uses: ")
+    subtitle: Text(
+      'Maakt gebruik van: ',
+      style: SizeScaler.getResponsiveTextStyle(
+          context, 16, FontWeight.bold, Colors.white),
+    ),
+  );
 }

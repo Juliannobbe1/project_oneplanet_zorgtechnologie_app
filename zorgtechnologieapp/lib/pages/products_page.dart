@@ -19,7 +19,7 @@ class ProductPage extends ConsumerWidget {
       backgroundColor: Colors.indigo[50],
       appBar: AppBar(
         title: Text(
-          "Technologie Overzicht ", // App bar title
+          "Technologie Overzicht", // App bar title
           style: SizeScaler.getResponsiveTextStyle(
               context,
               16,
@@ -69,6 +69,7 @@ class SingleProductView extends ConsumerWidget {
           // If product data is available
           Product product = snapshot.data!; // Get the product object
           return IconButton(
+            key: ValueKey("SingleProductViewButton | ${product.iD}"),
             icon: const Icon(
               Icons.info,
               color: Colors.black,
