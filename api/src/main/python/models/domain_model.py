@@ -175,6 +175,7 @@ class Product(base_model):
         WITH product AS n
         RETURN DISTINCT n
         """
+        # This part of the algorithm is being excluded due to new data not having enough relations
         # WHERE NOT (zorgprofessional)-[:KRIJGT_AANBEVELING]->(product) AND K.clientID = andereCliënt.ID
         
         
