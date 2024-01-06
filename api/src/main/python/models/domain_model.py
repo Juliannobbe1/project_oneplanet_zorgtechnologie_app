@@ -172,10 +172,13 @@ class Product(base_model):
         WHERE andereCliënt.probleem = '{probleem}'
         WITH zorgprofessional, andereCliënt
         MATCH (andereCliënt)<-[VERZORGD_CLIENT]-(andereZorgprofessional)-[K:KRIJGT_AANBEVELING]->(product:product)
-        WHERE NOT (zorgprofessional)-[:KRIJGT_AANBEVELING]->(product) AND K.clientID = andereCliënt.ID
         WITH product AS n
         RETURN DISTINCT n
         """
+        # This part of the algorithm is being excluded due to new data not having enough relations
+        # WHERE NOT (zorgprofessional)-[:KRIJGT_AANBEVELING]->(product) AND K.clientID = andereCliënt.ID
+        
+        
         with self.driver.session() as session:
             result = session.run(query)
             if result:
