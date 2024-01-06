@@ -106,9 +106,14 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return PreferredOrientationWrapper(
       child: MaterialApp(
-        title: 'Flutter Demo',
+        title: 'SmartCareAssist',
         theme: ThemeData(
-          primarySwatch: Colors.blue,
+          useMaterial3: true,
+          // Define the default brightness and colors.
+          colorScheme: ColorScheme.fromSeed(
+            seedColor: Colors.blue,
+            brightness: Brightness.light,
+          ),
         ),
         // home: const HomePage(),
         home: const LoginPage(),

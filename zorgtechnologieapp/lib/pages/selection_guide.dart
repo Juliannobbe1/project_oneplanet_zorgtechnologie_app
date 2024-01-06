@@ -25,6 +25,7 @@ class SelectionGuidePage extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.indigo[50],
       appBar: AppBar(
+        backgroundColor: Colors.blue,
         leading: const Icon(Icons.menu), // Display a menu icon in the app bar
         title: const Text(
           "Welkom bij de keuzegids",
@@ -172,7 +173,7 @@ class TabletSelectionScreenState extends ConsumerState<TabletSelectionScreen> {
                               ),
                             ),
                             SizedBox(
-                              height: selectedBehoefteIndex == -1 ? 400 : 40,
+                              height: selectedBehoefteIndex == -1 ? 550 : 100,
                               child: FutureDataWidget(
                                 fetchData: api.distinctProbleem(),
                                 widgetType: FutureWidgetType.selectableList,

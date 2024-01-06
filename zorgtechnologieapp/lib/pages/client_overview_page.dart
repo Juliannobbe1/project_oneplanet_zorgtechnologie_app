@@ -17,6 +17,7 @@ class ClientOverview extends ConsumerWidget {
     return Scaffold(
       backgroundColor: Colors.indigo[50],
       appBar: AppBar(
+        backgroundColor: Colors.blue,
         title: Text(
           "Clienten Overzicht", // App bar title
           style: SizeScaler.getResponsiveTextStyle(
@@ -60,7 +61,7 @@ class ClientOverview extends ConsumerWidget {
                     16,
                     FontWeight.bold,
                     Colors
-                        .white), // Define the text style using SizeScaler for responsive text sizing
+                        .black), // Define the text style using SizeScaler for responsive text sizing
               ),
             ),
           ],

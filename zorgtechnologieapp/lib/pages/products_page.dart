@@ -18,12 +18,13 @@ class ProductPage extends ConsumerWidget {
     return Scaffold(
       backgroundColor: Colors.indigo[50],
       appBar: AppBar(
+        backgroundColor: Colors.blue,
         title: Text(
           "Technologie Overzicht ", // App bar title
           style: SizeScaler.getResponsiveTextStyle(
               context,
               16,
-              FontWeight.bold,
+              FontWeight.normal,
               Colors
                   .white), // Define the text style using SizeScaler for responsive text sizing
         ),

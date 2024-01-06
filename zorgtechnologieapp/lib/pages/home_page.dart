@@ -27,10 +27,12 @@ class HomePage extends StatelessWidget {
       backgroundColor:
           Colors.indigo[50], // Set the background color of the scaffold
       appBar: AppBar(
+        backgroundColor: Colors.blue,
         leading:
             const Icon(Icons.menu), // Display a menu icon as the leading widget
         title: const Text(
           "Welcome", // Set the title of the app bar
+          style: TextStyle(color: Colors.white),
         ),
       ),
       body: Column(
@@ -76,7 +78,7 @@ class TabletHomeScreen extends ConsumerWidget {
               Expanded(
                 flex: 1,
                 child: Padding(
-                  padding: const EdgeInsets.fromLTRB(30, 45, 20, 20),
+                  padding: const EdgeInsets.fromLTRB(30, 25, 20, 20),
                   child: Material(
                     elevation: 10,
                     borderRadius: const BorderRadius.all(Radius.circular(10)),
@@ -117,7 +119,7 @@ class TabletHomeScreen extends ConsumerWidget {
               Expanded(
                 flex: 1,
                 child: Padding(
-                  padding: const EdgeInsets.fromLTRB(20, 45, 30, 20),
+                  padding: const EdgeInsets.fromLTRB(20, 25, 30, 20),
                   child: Material(
                     elevation: 10,
                     borderRadius: const BorderRadius.all(Radius.circular(10)),
@@ -159,7 +161,8 @@ class TabletHomeScreen extends ConsumerWidget {
           // Newest Products
           Padding(
             padding: EdgeInsets.only(
-                left: screenWidth * 0.025, top: screenWidth * 0.05),
+              left: screenWidth * 0.025,
+            ),
             child: Text(
               "Nieuwste producten: ", // Heading text
               style: SizeScaler.getResponsiveTextStyle(
