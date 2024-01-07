@@ -475,7 +475,7 @@ class ClientsOfHCProf(Resource):
         It takes the healthcare professional ID as input and returns the clients associated with that professional.
         """
         requestId = uuid4()
-        logger.info("requestID: '{requestId}'\nReceived request to retrieve clients for HealthcareProfessional '{healthcareProfessional}'", requestId, healthcareProfessional=zorgprofID)
+        logger.info("requestID: '{requestId}'\nReceived request to retrieve clients for HealthcareProfessional '{healthcareProfessional}'", requestId=requestId, healthcareProfessional=zorgprofID)
         response = client.getClientsOfHCProf(zorgprofID)
         logger.info("requestID: '{requestId}'\nSuccessfully retrieved clients '{clients}'", requestId=requestId, clients=response)
         return response
