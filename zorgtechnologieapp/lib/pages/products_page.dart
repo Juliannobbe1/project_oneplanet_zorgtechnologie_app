@@ -20,7 +20,7 @@ class ProductPage extends ConsumerWidget {
       appBar: AppBar(
         backgroundColor: Colors.blue,
         title: Text(
-          "Technologie Overzicht ", // App bar title
+          "Technologie Overzicht", // App bar title
           style: SizeScaler.getResponsiveTextStyle(
               context,
               16,
@@ -70,6 +70,7 @@ class SingleProductView extends ConsumerWidget {
           // If product data is available
           Product product = snapshot.data!; // Get the product object
           return IconButton(
+            key: ValueKey("SingleProductViewButton | ${product.iD}"),
             icon: const Icon(
               Icons.info,
               color: Colors.black,
@@ -102,13 +103,13 @@ class SingleProductView extends ConsumerWidget {
                           ),
                           const SizedBox(height: 5),
                           Text(
-                            'Prijs: ${product.prijs}', // Display the product price
+                            'Prijs: ${product.prijs ?? "Niet beschikbaar"}', // Display the product price
                             style: SizeScaler.getResponsiveTextStyle(
                                 context, 20, FontWeight.normal, Colors.black),
                           ),
                           const SizedBox(height: 5),
                           Text(
-                            'Link: ${product.link}', // Display the product link
+                            'Link: ${product.link ?? "Niet beschikbaar"}', // Display the product link
                             style: SizeScaler.getResponsiveTextStyle(
                                 context, 20, FontWeight.normal, Colors.black),
                           ),
