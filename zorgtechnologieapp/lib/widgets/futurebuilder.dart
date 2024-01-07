@@ -140,14 +140,14 @@ class FutureDataWidgetState extends ConsumerState<FutureDataWidget> {
             product.naam,
             style: SizeScaler.getResponsiveTextStyle(
               context,
-              18,
+              15,
               FontWeight.bold,
               Colors.black,
             ),
           ),
           // Display the name of the product
           subtitle: Text(
-            limitStringCharacters(product.beschrijving, 85),
+            limitStringCharacters(product.beschrijving, 50),
             // Limit the description text to 85 characters
             style: const TextStyle(fontSize: 16),
           ),
@@ -340,7 +340,7 @@ class FutureDataWidgetState extends ConsumerState<FutureDataWidget> {
             childAspectRatio: screenHeight > 900
                 ? 3.5
                 : count >= 2
-                    ? 4.5
+                    ? 3.75
                     : 5.5, // Width to height ratio of each grid item
           ),
           itemCount: dataList.length,
@@ -411,7 +411,7 @@ Widget productListTile(BuildContext context, Product product) {
       dense: true,
       enabled: false,
       selected: true,
-      selectedTileColor: Colors.blue,
+      selectedTileColor: Colors.white10,
     ),
   );
 }

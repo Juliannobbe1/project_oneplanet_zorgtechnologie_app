@@ -18,7 +18,7 @@ void main() {
 
   testWidgets('Unittest - clientoverview screen', (WidgetTester tester) async {
     final clientinterceptor = nock(kApiBaseUrl)
-        .get("/client/wordtverzorgd/e040d519-dcc5-4969-86c3-54006f21656c")
+        .get("/client/wordtverzorgd/8b5f14d4-dac9-4c44-a9b6-6e2e8f15fd4b")
       ..reply(
         200,
         jsonEncode([

@@ -17,6 +17,7 @@ class ClientOverview extends ConsumerWidget {
     return Scaffold(
       backgroundColor: Colors.indigo[50],
       appBar: AppBar(
+        backgroundColor: Colors.blue,
         title: Text(
           "Clienten Overzicht", // App bar title
           style: SizeScaler.getResponsiveTextStyle(
@@ -34,7 +35,7 @@ class ClientOverview extends ConsumerWidget {
             Expanded(
               child: FutureDataWidget(
                 fetchData: DataAPI(logger: logger).providedClient(
-                    "e040d519-dcc5-4969-86c3-54006f21656c"), // Fetch client data using DataAPI
+                    "8b5f14d4-dac9-4c44-a9b6-6e2e8f15fd4b"), // Fetch client data using DataAPI
                 widgetType: FutureWidgetType
                     .selectableList, // Display a selectable list of clients
                 dataType:
@@ -60,7 +61,7 @@ class ClientOverview extends ConsumerWidget {
                     16,
                     FontWeight.bold,
                     Colors
-                        .white), // Define the text style using SizeScaler for responsive text sizing
+                        .black), // Define the text style using SizeScaler for responsive text sizing
               ),
             ),
           ],

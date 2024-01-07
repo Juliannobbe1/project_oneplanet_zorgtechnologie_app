@@ -25,6 +25,7 @@ class SelectionGuidePage extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.indigo[50],
       appBar: AppBar(
+        backgroundColor: Colors.blue,
         leading: const Icon(Icons.menu), // Display a menu icon in the app bar
         title: const Text(
           "Welkom bij de keuzegids",
@@ -172,7 +173,7 @@ class TabletSelectionScreenState extends ConsumerState<TabletSelectionScreen> {
                               ),
                             ),
                             SizedBox(
-                              height: selectedBehoefteIndex == -1 ? 400 : 40,
+                              height: selectedBehoefteIndex == -1 ? 550 : 100,
                               child: FutureDataWidget(
                                 fetchData: api.distinctProbleem(),
                                 widgetType: FutureWidgetType.selectableList,
@@ -265,16 +266,16 @@ class TabletSelectionScreenState extends ConsumerState<TabletSelectionScreen> {
                                               zorgbehoefte!,
                                             );
                                             logger.t(
-                                                "Creating client relationship between clientID '$clientID' and 'e040d519-dcc5-4969-86c3-54006f21656c'");
+                                                "Creating client relationship between clientID '$clientID' and '8b5f14d4-dac9-4c44-a9b6-6e2e8f15fd4b'");
                                             api.createClientRelationship(
                                               clientID!,
-                                              "e040d519-dcc5-4969-86c3-54006f21656c",
+                                              "8b5f14d4-dac9-4c44-a9b6-6e2e8f15fd4b",
                                             );
                                             logger.t(
-                                                "Creating recommendation relationship between clientID '$clientID' and 'e040d519-dcc5-4969-86c3-54006f21656c' for product '$product'");
+                                                "Creating recommendation relationship between clientID '$clientID' and '8b5f14d4-dac9-4c44-a9b6-6e2e8f15fd4b' for product '$product'");
                                             api.createRecommendationRelationship(
                                               clientID!,
-                                              "e040d519-dcc5-4969-86c3-54006f21656c",
+                                              "8b5f14d4-dac9-4c44-a9b6-6e2e8f15fd4b",
                                               product!,
                                             );
                                           } else {
