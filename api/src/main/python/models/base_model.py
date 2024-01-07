@@ -10,11 +10,11 @@ class base_model:
         self.model_data = {}
 
     def model(self):
-        logger.trace("Retrieving model_data '{model_data}'", model_data=self.model_data)
+        logger.trace("Retrieving model_data for '{label}'", label=self.label)
         return self.model_data
 
     def extract(self, result):
-        logger.trace("Attempting data extraction from result '{result}'", result=result)
+        logger.trace("Attempting data extraction for '{label}'", label=self.label)
         # Extracts 'n' from each item in the result data
         data = [item['n'] for item in result.data()]
 
@@ -23,7 +23,7 @@ class base_model:
             # Raises a 404 error if no data is found
             abort(404, "Item not found")
         else:
-            logger.trace("Successfully extracted data from result '{result}'", result=result)
+            logger.trace("Successfully extracted data from result for '{label}'", label=self.label)
             return data
 
     def StringToIntCheck(self, value):
@@ -42,7 +42,7 @@ class base_model:
             result = session.run(query)
             if result:
                 data = self.extract(result)
-                logger.trace("Successfully retrieved all nodes with label '{label}': '{nodes}'", label=self.label, nodes=data)
+                logger.trace("Successfully retrieved all nodes with label '{label}'", label=self.label)
                 return data
             else:
                 # Raises a 404 error if something went wrong
