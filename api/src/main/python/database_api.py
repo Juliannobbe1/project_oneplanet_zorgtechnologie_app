@@ -32,15 +32,15 @@ factory = NamespaceFactory(driver=driver, api=api)
 models, namespaces, object_names = factory.initialize_factory()
 
 # Access the names of the created objects
-org = eval(object_names['organisatie'])(driver)
-product = eval(object_names['product'])(driver)
-recommendation = eval(object_names['aanbeveling'])(driver)
-application = eval(object_names['toepassing'])(driver)
-client = eval(object_names['client'])(driver)
-healthprof = eval(object_names['zorgprofessional'])(driver)
-review = eval(object_names['review'])(driver)
-supplier = eval(object_names['leverancier'])(driver)
-relationship = eval(object_names['relatie'])(driver)
+org = eval(object_names['organisatie'])(driver) # nosec
+product = eval(object_names['product'])(driver) # nosec
+recommendation = eval(object_names['aanbeveling'])(driver) # nosec
+application = eval(object_names['toepassing'])(driver) # nosec
+client = eval(object_names['client'])(driver) # nosec
+healthprof = eval(object_names['zorgprofessional'])(driver) # nosec
+review = eval(object_names['review'])(driver) # nosec
+supplier = eval(object_names['leverancier'])(driver) # nosec
+relationship = eval(object_names['relatie'])(driver) # nosec
 
 # Access the models for each object
 recommendationModel = models['aanbeveling']
@@ -745,7 +745,7 @@ def main():
     logger.add(sys.stderr, format="<red>{time}</red> <level>{message}</level>", level="ERROR")
     logger.add("logs/file_{time}.log", level="TRACE", rotation="1 day")
     logger.trace("Starting app on port 5001")
-    app.run(host='0.0.0.0', port=5001)
+    app.run(host='::', port=5001)
 
 if __name__ == '__main__':
     main()
