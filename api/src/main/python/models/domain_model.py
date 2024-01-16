@@ -168,7 +168,7 @@ class ProductModel(base_model):
 
     @staticmethod
     def get_str_of_dict(product_dict: dict) -> str:
-        return f"Product(ID: '{product_dict['ID']}', Naam: '{product_dict['naam']}', Prijs: '{product_dict['prijs']}', Beschrijving: '{product_dict['beschrijving']}', LeverancierID: '{product_dict['leverancierID']}', Link: '{product_dict['link']}', ImageBase64: '{product_dict['imageBase64'][:5] if 'imageBase64' in product_dict else None}')"
+        return f"Product(ID: '{product_dict['ID']}', Naam: '{product_dict['naam'] if 'naam' in product_dict else None}', Prijs: '{product_dict['prijs'] if 'prijs' in product_dict else None}', Beschrijving: '{product_dict['beschrijving'] if 'beschrijving' in product_dict else None}', LeverancierID: '{product_dict['leverancierID'] if 'leverancierID' in product_dict else None}', Link: '{product_dict['link'] if 'link' in product_dict else None}', ImageBase64: '{product_dict['imageBase64'][:5] if 'imageBase64' in product_dict else None}')"
     
     def getNewestProducts(self):
         logger.trace("Attempting to retrieve the newest products")
