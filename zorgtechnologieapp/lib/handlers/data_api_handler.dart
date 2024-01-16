@@ -6,7 +6,7 @@ import '../models/products.dart';
 import '../models/toepassing.dart';
 import '../models/clients.dart';
 
-const kDebugApiBaseUrl = "http://10.0.2.2:5001";
+const kDebugApiBaseUrl = "http://192.168.123.248:5001";
 const kProdApiBaseUrl = "http://smartcareassistapi.servehttp.com:5001";
 const kApiBaseUrl = kDebugMode ? kDebugApiBaseUrl : kProdApiBaseUrl;
 

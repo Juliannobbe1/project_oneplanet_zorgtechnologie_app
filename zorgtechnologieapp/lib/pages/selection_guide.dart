@@ -127,7 +127,7 @@ class TabletSelectionScreenState extends ConsumerState<TabletSelectionScreen> {
           Padding(
             padding: const EdgeInsets.fromLTRB(20.0, 5.0, 15.0, 5.0),
             child: Text(
-              "Welcome to the choice guide. The guide will ask you some questions to help you find the right care technology to assist your client with their care needs. Select one of the options below to get started.",
+              "Welkom bij de keuzegids. De gids zal u enkele vragen stellen om u te helpen de juiste zorgtechnologie te vinden om uw cliënt te helpen met zijn zorgbehoeften. Selecteer een van de onderstaande opties om aan de slag te gaan.",
               style: SizeScaler.getResponsiveTextStyle(
                 context,
                 15,
@@ -163,7 +163,7 @@ class TabletSelectionScreenState extends ConsumerState<TabletSelectionScreen> {
                               padding:
                                   const EdgeInsets.only(left: 10.0, right: 10),
                               child: Text(
-                                "Select the care needs of your client",
+                                "Selecteer de zorgbehoefte van uw cliënt",
                                 style: SizeScaler.getResponsiveTextStyle(
                                   context,
                                   15,
@@ -210,7 +210,7 @@ class TabletSelectionScreenState extends ConsumerState<TabletSelectionScreen> {
                             height: screenHeight * 0.05,
                           ),
                           Text(
-                            "Result",
+                            "Resultaat",
                             style: SizeScaler.getResponsiveTextStyle(
                               context,
                               20,
