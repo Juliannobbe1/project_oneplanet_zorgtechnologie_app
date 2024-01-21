@@ -12,7 +12,7 @@ class ApplicationModel(base_model):
 
     @staticmethod
     def get_str_of_dict(application_dict: dict) -> str:
-        return f"Application(Toepassing: '{application_dict['toepassing']}', ProductID: '{application_dict['productID']}', ID: '{application_dict['ID']}')"
+        return f"Application(Toepassing: '{application_dict['toepassing'] if 'toepassing' in application_dict else None}', ProductID: '{application_dict['productID'] if 'productID' in application_dict else None}', ID: '{application_dict['ID'] if 'ID' in application_dict else None}')"
         
     def getApplicationWithProduct(self):
         logger.trace("Attempting to retrieve applications with associated products")
@@ -50,7 +50,7 @@ class ClientModel(base_model):
 
     @staticmethod
     def get_str_of_dict(client_dict: dict) -> str:
-        return f"Client(ID: '{client_dict['ID']}', Probleem: '{client_dict['probleem']}')"
+        return f"Client(ID: '{client_dict['ID'] if 'ID' in client_dict else None}', Probleem: '{client_dict['probleem'] if 'probleem' in client_dict else None}')"
         
     def getDistinctProblems(self):
         logger.trace("Attempting to retrieve distinct client problems")
@@ -101,7 +101,7 @@ class HealthcareProfessionalModel(base_model):
 
     @staticmethod
     def get_str_of_dict(healthcareprofessional_dict: dict) -> str:
-        return f"HealthcareProfessional(ID: '{healthcareprofessional_dict['ID']}', Naam: '{healthcareprofessional_dict['naam']}')"
+        return f"HealthcareProfessional(ID: '{healthcareprofessional_dict['ID'] if 'ID' in healthcareprofessional_dict else None}', Naam: '{healthcareprofessional_dict['naam'] if 'naam' in healthcareprofessional_dict else None}')"
         
     def getHealthcareProfessionalByID(self, zorgprofID):
         logger.trace("Attempting to retrieve HealthcareProfessional '{healthcareProfessional}'", healthcareProfessional=zorgprofID)
@@ -139,7 +139,7 @@ class OrganisationModel(base_model):
 
     @staticmethod
     def get_str_of_dict(organisation_dict: dict) -> str:
-        return f"Organisation(ID: '{organisation_dict['ID']}', Naam: '{organisation_dict['naam']}')"
+        return f"Organisation(ID: '{organisation_dict['ID'] if 'ID' in organisation_dict else None}', Naam: '{organisation_dict['naam'] if 'naam' in organisation_dict else None}')"
         
     def getDistinctOrganisations(self):
         logger.trace("Attempting to retrieve all distinct organizations")
@@ -168,7 +168,7 @@ class ProductModel(base_model):
 
     @staticmethod
     def get_str_of_dict(product_dict: dict) -> str:
-        return f"Product(ID: '{product_dict['ID']}', Naam: '{product_dict['naam']}', Prijs: '{product_dict['prijs']}', Beschrijving: '{product_dict['beschrijving']}', LeverancierID: '{product_dict['leverancierID']}', Link: '{product_dict['link']}', ImageBase64: '{product_dict['imageBase64'][:5] if 'imageBase64' in product_dict else None}')"
+        return f"Product(ID: '{product_dict['ID'] if 'ID' in product_dict else None}', Naam: '{product_dict['naam'] if 'naam' in product_dict else None}', Prijs: '{product_dict['prijs'] if 'prijs' in product_dict else None}', Beschrijving: '{product_dict['beschrijving'] if 'beschrijving' in product_dict else None}', LeverancierID: '{product_dict['leverancierID'] if 'leverancierID' in product_dict else None}', Link: '{product_dict['link'] if 'link' in product_dict else None}', ImageBase64: '{product_dict['imageBase64'][:5] if 'imageBase64' in product_dict else None}')"
     
     def getNewestProducts(self):
         logger.trace("Attempting to retrieve the newest products")
@@ -287,7 +287,7 @@ class RecommendationModel(base_model):
 
     @staticmethod
     def get_str_of_dict(recommendation_dict: dict) -> str:
-        return f"Recommendation(ID: '{recommendation_dict['ID']}', Aanbeveling: '{recommendation_dict['aanbeveling']}')"
+        return f"Recommendation(ID: '{recommendation_dict['ID'] if 'ID' in recommendation_dict else None}', Aanbeveling: '{recommendation_dict['aanbeveling'] if 'aanbeveling' in recommendation_dict else None}')"
         
     def getRecommendationsByProduct(self, productID):
         logger.trace("Attempting to retrieve recommendations for product '{product}'", product=productID)
@@ -328,7 +328,7 @@ class ReviewModel(base_model):
 
     @staticmethod
     def get_str_of_dict(review_dict: dict) -> str:
-            return f"Review(ID: '{review_dict['ID']}', Datum: '{review_dict['datum']}', Score: '{review_dict['score']}', Beschrijving: '{review_dict['beschrijving']}', ProductID: '{review_dict['productID']}', ZorgprofessionalID: '{review_dict['zorgprofessionalID']}')"
+            return f"Review(ID: '{review_dict['ID'] if 'ID' in review_dict else None}', Datum: '{review_dict['datum'] if 'datum' in review_dict else None}', Score: '{review_dict['score'] if 'score' in review_dict else None}', Beschrijving: '{review_dict['beschrijving'] if 'beschrijving' in review_dict else None}', ProductID: '{review_dict['productID'] if 'productID' in review_dict else None}', ZorgprofessionalID: '{review_dict['zorgprofessionalID'] if 'zorgprofessionalID' in review_dict else None}')"
         
 class SupplierModel(base_model):
     def __init__(self, driver):
@@ -338,7 +338,7 @@ class SupplierModel(base_model):
 
     @staticmethod
     def get_str_of_dict(supplier_dict: dict) -> str:
-        return f"Supplier(ID: '{supplier_dict['ID']}', Naam: '{supplier_dict['naam']}')"
+        return f"Supplier(ID: '{supplier_dict['ID'] if 'ID' in supplier_dict else None}', Naam: '{supplier_dict['naam'] if 'naam' in supplier_dict else None}')"
         
 class RelationshipModel(base_model):
     def __init__(self, driver):
@@ -349,7 +349,7 @@ class RelationshipModel(base_model):
 
     @staticmethod
     def get_str_of_dict(relationship_dict: dict) -> str:
-        return f"Relationship(Name: '{relationship_dict['relationship_name']}', StartID: '{relationship_dict['start_id']}', EndID: '{relationship_dict['end_id']}')"
+        return f"Relationship(Name: '{relationship_dict['relationship_name'] if 'relationship_name' in relationship_dict else None}', StartID: '{relationship_dict['start_id'] if 'start_id' in relationship_dict else None}', EndID: '{relationship_dict['end_id'] if 'end_id' in relationship_dict else None}')"
         
     def setRelationship( self, start_node, start_id, end_node, end_id, relationship_name):
         logger.trace("Attempting to set relationship '{relationship_name}' between startNode '{start_node}' with ID '{start_id}' and endNode '{end_node}' with ID '{end_id}'", relationship_name=relationship_name, start_node=start_node, start_id=start_id, end_node=end_node, end_id=end_id)
