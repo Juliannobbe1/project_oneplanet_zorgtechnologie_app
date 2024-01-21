@@ -1,0 +1,58 @@
+import unittest
+from flask import jsonify
+from flask.ctx import AppContext
+from flask.testing import FlaskClient
+from neo4j import Driver
+from helpers.get_test_client import get_test_client
+from helpers.dict_equality_helpers import sort_dict_list, assert_dict_equality
+
+from models.domain_model import ProductModel
+from database.connect_database import Database
+
+class Test(unittest.TestCase):
+    _app_context: AppContext
+    _test_client: FlaskClient
+    _driver: Driver
+
+    maxDiff = None
+
+    @classmethod
+    def setUpClass(cls):
+        app_context: AppContext
+        test_client = FlaskClient
+        (app_context, test_client) = get_test_client()
+        (cls._app_context, cls._test_client) = (app_context, test_client)
+        cls._app_context.push()
+        cls._driver = Database.connectDatabase()
+        return super().setUpClass()
+    
+    @classmethod
+    def tearDownClass(cls) -> None:
+        cls._driver.close()
+        cls._app_context.pop()
+        return super().tearDownClass()
+
+    def test_get_20_products_out_of_20(self):
+        # Given
+        products = [{"beschrijving": "Test Product 1", "ID": "0b1b9708-9711-404e-944d-01b3659f15d5", "leverancierID": "45e22d68-9632-42b9-83ad-6ff5a4e577b0", "link": "https://example.com/testproductone", "naam": "TestProduct1", "prijs": 1.00, "imageBase64": None},{"beschrijving": "Test Product 2", "ID": "1b2b0809-7610-413f-855c-02c4760f25e6", "leverancierID": "8f3c1d47-2b55-4bb9-9c8b-9e3f9f272b50", "link": "https://example.com/testproducttwo", "naam": "TestProduct2", "prijs": 2.00, "imageBase64": None},{"beschrijving": "Test Product 3", "ID": "2c3c1910-5512-425d-766e-03d5871f35f7", "leverancierID": "9a4e6f23-8c69-48e1-a9f4-0cf034b58cda", "link": "https://example.com/testproductthree", "naam": "TestProduct3", "prijs": 3.00, "imageBase64": None},{"beschrijving": "Test Product 4", "ID": "3d4d2a11-3413-446f-877d-04e6983f45c8", "leverancierID": "c6e77f18-fbb6-4cda-bdc2-1c51c650fead", "link": "https://example.com/testproductfour", "naam": "TestProduct4", "prijs": 4.00, "imageBase64": None},{"beschrijving": "Test Product 5", "ID": "4e5e3b12-1314-488a-988b-05f8594e55d2", "leverancierID": "e02e5b24-d801-49b2-b3c5-2ef68d6d665c", "link": "https://example.com/testproductfive", "naam": "TestProduct5", "prijs": 5.00, "imageBase64": None},{"beschrijving": "Test Product 6", "ID": "5f6f4c13-2425-4a0b-aa59-0609ce79a6a4", "leverancierID": "fe528a53-29c0-42d9-85d4-5c17d3e6b3d9", "link": "https://example.com/testproductsix", "naam": "TestProduct6", "prijs": 6.00, "imageBase64": None},{"beschrijving": "Test Product 7", "ID": "6a7a5d14-3536-4b1c-b6b7-070f56582b08", "leverancierID": "75cd9d37-0db0-4a91-8b11-26c930a2eef5", "link": "https://example.com/testproductseven", "naam": "TestProduct7", "prijs": 7.00, "imageBase64": None},{"beschrijving": "Test Product 8", "ID": "7b8b6e15-4647-4c2d-cc39-081a2f38c2e4", "leverancierID": "932c6c79-89ae-48fe-9529-1fb87b8c24a2", "link": "https://example.com/testproducteight", "naam": "TestProduct8", "prijs": 8.00, "imageBase64": None},{"beschrijving": "Test Product 9", "ID": "8c9c7f16-5758-4d3e-546a-092bb0e42d18", "leverancierID": "db64e944-1a87-42a1-9c5f-35f48b5f4d90", "link": "https://example.com/testproductnine", "naam": "TestProduct9", "prijs": 9.00, "imageBase64": None},{"beschrijving": "Test Product 10", "ID": "9d0d8017-6869-4e4f-743b-0a7ad19ebcb4", "leverancierID": "f3a9f5d7-3319-4e7d-a43d-4a1bd4f9b9ae", "link": "https://example.com/testproductten", "naam": "TestProduct10", "prijs": 10.00, "imageBase64": None},{"beschrijving": "Test Product 11", "ID": "ae1e9118-7970-45ac-6b46-0b2c4c0c4f7c", "leverancierID": "4e876d59-34c5-4c62-98ae-ef122d056ea5", "link": "https://example.com/testproducteleven", "naam": "TestProduct11", "prijs": 11.00, "imageBase64": None},{"beschrijving": "Test Product 12", "ID": "bf2f0229-8a91-4d2b-8fb4-0c3e0a520c4d", "leverancierID": "88c654de-11e7-4ba1-a7d4-4c1e356e4b5d", "link": "https://example.com/testproducttwelve", "naam": "TestProduct12", "prijs": 12.00, "imageBase64": None},{"beschrijving": "Test Product 13", "ID": "c33c1330-9b92-4c13-afb5-0d42078e1b0e", "leverancierID": "a9cb71d7-8a76-4d4b-b493-42a4c7b95a93", "link": "https://example.com/testproductthirteen", "naam": "TestProduct13", "prijs": 13.00, "imageBase64": None},{"beschrijving": "Test Product 14", "ID": "d44d2441-0c43-486f-952a-0e3b4785ff29", "leverancierID": "6cf1f1ac-dc13-4d35-b0bb-3ef5f4cc7a26", "link": "https://example.com/testproductfourteen", "naam": "TestProduct14", "prijs": 14.00, "imageBase64": None},{"beschrijving": "Test Product 15", "ID": "e55e3552-2d54-4e9c-7a26-0f9c6a91b7b0", "leverancierID": "5d60d740-2db3-4a3d-9f0a-9b566ea21b3b", "link": "https://example.com/testproductfifteen", "naam": "TestProduct15", "prijs": 15.00, "imageBase64": None},{"beschrijving": "Test Product 16", "ID": "f66f4663-3e65-4370-b36c-10f0aaaf9c25", "leverancierID": "b6e7d1cf-30cf-4aa1-b416-c25e3c580c56", "link": "https://example.com/testproductsixteen", "naam": "TestProduct16", "prijs": 16.00, "imageBase64": None},{"beschrijving": "Test Product 17", "ID": "7a7a5774-4f75-4b66-b43d-110b3b383d1d", "leverancierID": "98f8b5a8-6b99-4371-84c5-7e1d746f85c1", "link": "https://example.com/testproductseventeen", "naam": "TestProduct17", "prijs": 17.00, "imageBase64": None},{"beschrijving": "Test Product 18", "ID": "8b8b6885-5e86-4a57-2b54-120f13d4ea17", "leverancierID": "7a3540e6-1bd5-4e9e-853f-9f3ff0c1e6e3", "link": "https://example.com/testproducteighteen", "naam": "TestProduct18", "prijs": 18.00, "imageBase64": None},{"beschrijving": "Test Product 19", "ID": "9c9c7996-6f97-4328-cf0e-13062f9e50d6", "leverancierID": "4df02c98-0dd9-4e92-8b11-ec64e45645e8", "link": "https://example.com/testproductnineteen", "naam": "TestProduct19", "prijs": 19.00, "imageBase64": None},{"beschrijving": "Test Product 20", "ID": "0a0a80a7-7088-4b19-a2b8-140e25a5f328", "leverancierID": "f4d6c1a9-731e-46fc-a0c2-f7dd3453497b", "link": "https://example.com/testproducttwenty", "naam": "TestProduct20", "prijs": 20.00, "imageBase64": None}]
+        expected_products = [{"beschrijving": "Test Product 1", "ID": "0b1b9708-9711-404e-944d-01b3659f15d5", "leverancierID": "45e22d68-9632-42b9-83ad-6ff5a4e577b0", "link": "https://example.com/testproductone", "naam": "TestProduct1", "prijs": 1.00, "imageBase64": None},{"beschrijving": "Test Product 2", "ID": "1b2b0809-7610-413f-855c-02c4760f25e6", "leverancierID": "8f3c1d47-2b55-4bb9-9c8b-9e3f9f272b50", "link": "https://example.com/testproducttwo", "naam": "TestProduct2", "prijs": 2.00, "imageBase64": None},{"beschrijving": "Test Product 3", "ID": "2c3c1910-5512-425d-766e-03d5871f35f7", "leverancierID": "9a4e6f23-8c69-48e1-a9f4-0cf034b58cda", "link": "https://example.com/testproductthree", "naam": "TestProduct3", "prijs": 3.00, "imageBase64": None},{"beschrijving": "Test Product 4", "ID": "3d4d2a11-3413-446f-877d-04e6983f45c8", "leverancierID": "c6e77f18-fbb6-4cda-bdc2-1c51c650fead", "link": "https://example.com/testproductfour", "naam": "TestProduct4", "prijs": 4.00, "imageBase64": None},{"beschrijving": "Test Product 5", "ID": "4e5e3b12-1314-488a-988b-05f8594e55d2", "leverancierID": "e02e5b24-d801-49b2-b3c5-2ef68d6d665c", "link": "https://example.com/testproductfive", "naam": "TestProduct5", "prijs": 5.00, "imageBase64": None},{"beschrijving": "Test Product 6", "ID": "5f6f4c13-2425-4a0b-aa59-0609ce79a6a4", "leverancierID": "fe528a53-29c0-42d9-85d4-5c17d3e6b3d9", "link": "https://example.com/testproductsix", "naam": "TestProduct6", "prijs": 6.00, "imageBase64": None},{"beschrijving": "Test Product 7", "ID": "6a7a5d14-3536-4b1c-b6b7-070f56582b08", "leverancierID": "75cd9d37-0db0-4a91-8b11-26c930a2eef5", "link": "https://example.com/testproductseven", "naam": "TestProduct7", "prijs": 7.00, "imageBase64": None},{"beschrijving": "Test Product 8", "ID": "7b8b6e15-4647-4c2d-cc39-081a2f38c2e4", "leverancierID": "932c6c79-89ae-48fe-9529-1fb87b8c24a2", "link": "https://example.com/testproducteight", "naam": "TestProduct8", "prijs": 8.00, "imageBase64": None},{"beschrijving": "Test Product 9", "ID": "8c9c7f16-5758-4d3e-546a-092bb0e42d18", "leverancierID": "db64e944-1a87-42a1-9c5f-35f48b5f4d90", "link": "https://example.com/testproductnine", "naam": "TestProduct9", "prijs": 9.00, "imageBase64": None},{"beschrijving": "Test Product 10", "ID": "9d0d8017-6869-4e4f-743b-0a7ad19ebcb4", "leverancierID": "f3a9f5d7-3319-4e7d-a43d-4a1bd4f9b9ae", "link": "https://example.com/testproductten", "naam": "TestProduct10", "prijs": 10.00, "imageBase64": None},{"beschrijving": "Test Product 11", "ID": "ae1e9118-7970-45ac-6b46-0b2c4c0c4f7c", "leverancierID": "4e876d59-34c5-4c62-98ae-ef122d056ea5", "link": "https://example.com/testproducteleven", "naam": "TestProduct11", "prijs": 11.00, "imageBase64": None},{"beschrijving": "Test Product 12", "ID": "bf2f0229-8a91-4d2b-8fb4-0c3e0a520c4d", "leverancierID": "88c654de-11e7-4ba1-a7d4-4c1e356e4b5d", "link": "https://example.com/testproducttwelve", "naam": "TestProduct12", "prijs": 12.00, "imageBase64": None},{"beschrijving": "Test Product 13", "ID": "c33c1330-9b92-4c13-afb5-0d42078e1b0e", "leverancierID": "a9cb71d7-8a76-4d4b-b493-42a4c7b95a93", "link": "https://example.com/testproductthirteen", "naam": "TestProduct13", "prijs": 13.00, "imageBase64": None},{"beschrijving": "Test Product 14", "ID": "d44d2441-0c43-486f-952a-0e3b4785ff29", "leverancierID": "6cf1f1ac-dc13-4d35-b0bb-3ef5f4cc7a26", "link": "https://example.com/testproductfourteen", "naam": "TestProduct14", "prijs": 14.00, "imageBase64": None},{"beschrijving": "Test Product 15", "ID": "e55e3552-2d54-4e9c-7a26-0f9c6a91b7b0", "leverancierID": "5d60d740-2db3-4a3d-9f0a-9b566ea21b3b", "link": "https://example.com/testproductfifteen", "naam": "TestProduct15", "prijs": 15.00, "imageBase64": None},{"beschrijving": "Test Product 16", "ID": "f66f4663-3e65-4370-b36c-10f0aaaf9c25", "leverancierID": "b6e7d1cf-30cf-4aa1-b416-c25e3c580c56", "link": "https://example.com/testproductsixteen", "naam": "TestProduct16", "prijs": 16.00, "imageBase64": None},{"beschrijving": "Test Product 17", "ID": "7a7a5774-4f75-4b66-b43d-110b3b383d1d", "leverancierID": "98f8b5a8-6b99-4371-84c5-7e1d746f85c1", "link": "https://example.com/testproductseventeen", "naam": "TestProduct17", "prijs": 17.00, "imageBase64": None},{"beschrijving": "Test Product 18", "ID": "8b8b6885-5e86-4a57-2b54-120f13d4ea17", "leverancierID": "7a3540e6-1bd5-4e9e-853f-9f3ff0c1e6e3", "link": "https://example.com/testproducteighteen", "naam": "TestProduct18", "prijs": 18.00, "imageBase64": None},{"beschrijving": "Test Product 19", "ID": "9c9c7996-6f97-4328-cf0e-13062f9e50d6", "leverancierID": "4df02c98-0dd9-4e92-8b11-ec64e45645e8", "link": "https://example.com/testproductnineteen", "naam": "TestProduct19", "prijs": 19.00, "imageBase64": None},{"beschrijving": "Test Product 20", "ID": "0a0a80a7-7088-4b19-a2b8-140e25a5f328", "leverancierID": "f4d6c1a9-731e-46fc-a0c2-f7dd3453497b", "link": "https://example.com/testproducttwenty", "naam": "TestProduct20", "prijs": 20.00, "imageBase64": None}]
+        for product in products:
+            ProductModel(self._driver).create(product)
+
+        # When
+        products_response = self._test_client.get("/product")
+
+        # Cleanup
+        for product in products:
+            ProductModel(self._driver).delete(product["ID"])
+
+        # Assert
+        sorted_actual = sort_dict_list(products_response.get_json(), "ID")
+        sorted_expected = sort_dict_list(jsonify(expected_products).get_json(), "ID")
+
+        for index in range(len(sorted_actual)):
+            self.assertTrue(assert_dict_equality(sorted_actual[index], sorted_expected[index]))
+        
+
+if __name__ == '__main__':
+    unittest.main()
