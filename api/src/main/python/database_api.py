@@ -12,11 +12,6 @@ import flask_monitoringdashboard as dashboard
 app = Flask(__name__)
 logger.trace("Initialized Flask app")
 
-dashboard.config.init_from(file='flask_monitoring_dashboard.cfg')
-logger.trace("Initialized dashboard from configuration file")
-dashboard.bind(app)
-logger.trace("Successfully bound dashboard to Flask")
-
 # Create API
 api = Api(app)
 logger.trace("Initialized Flask API")
@@ -737,6 +732,12 @@ class RelationshipResource(Resource):
         else:
             logger.error("requestID: '{requestId}'\nCannot delete relationship, information is missing")
             return abort(404, "Cannot delete, information is missing")
+
+# Bind dashboard to app
+dashboard.config.init_from(file='flask_monitoring_dashboard.cfg')
+logger.trace("Initialized dashboard from configuration file")
+dashboard.bind(app)
+logger.trace("Successfully bound dashboard to Flask")
 
 def main():
     # Remove the default logger and add the custom loggers
