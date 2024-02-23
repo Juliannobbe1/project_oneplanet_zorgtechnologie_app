@@ -2,6 +2,22 @@
 
 A new Flutter project.
 
+## Nix
+
+### Getting started
+
+#### Emulator
+Modify
+`.android/avd/tablet.avd/config.ini`
+and
+`.android/avd/tablet.avd/hardware-qemu.ini`
+
+```
+hw.gpu.enabled = true
+hw.gpu.mode = host
+hw.keyboard = true
+```
+
 ## Getting Started
 
 Run `dart run build_runner watch` for Riverpod code-gen

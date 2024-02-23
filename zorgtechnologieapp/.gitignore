@@ -1,3 +1,8 @@
+# Nix dev-environment
+.devenv
+.direnv
+.android
+
 # Coverage
 coverage
 
